@@ -5,6 +5,7 @@ go 1.12
 require (
 	code.cloudfoundry.org/go-envstruct v1.4.0
 	github.com/kr/pretty v0.1.0 // indirect
+	github.com/nats-io/jwt v0.2.10 // indirect
 	github.com/nats-io/nats-server/v2 v2.0.2 // indirect
 	github.com/nats-io/nats.go v1.8.1
 	github.com/onsi/ginkgo v1.8.0
