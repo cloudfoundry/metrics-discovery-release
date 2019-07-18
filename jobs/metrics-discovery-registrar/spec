@@ -1,0 +1,19 @@
+---
+name: metrics-discovery-registrar
+
+consumes:
+- name: nats
+  type: nats
+
+templates:
+  bpm.yml.erb: config/bpm.yml
+
+packages:
+  - metrics-discovery-registrar
+
+properties:
+  routes:
+    description: "A list of metrics endpoints to publish for scraping"
+  publish_interval:
+    description: "interval to publish routes"
+    default: 15s

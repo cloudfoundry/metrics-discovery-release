@@ -1,0 +1,19 @@
+---
+name: metrics-discovery-registrar-windows
+
+consumes:
+- name: nats
+  type: nats
+
+templates:
+  pre-start.ps1.erb: bin/pre-start.ps1
+
+packages:
+  - metrics-discovery-registrar-windows
+
+properties:
+  routes:
+    description: "A list of metrics endpoints to publish for scraping"
+  publish_interval:
+    description: "interval to publish routes"
+    default: 15s

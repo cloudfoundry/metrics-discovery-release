@@ -1,0 +1,5 @@
+name: metrics-discovery
+blobstore:
+  provider: s3
+  options:
+    bucket_name: metrics-discovery -release-blobs

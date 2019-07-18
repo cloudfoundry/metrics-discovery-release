@@ -1,0 +1,25 @@
+# golang
+/bin/
+*.prof
+*.mprof
+*.coverprofile
+*.test
+
+# macOS
+.DS_Store
+
+# jetbrains
+.idea
+
+# vscode
+.vscode
+
+# bosh
+.blobs
+blobs
+.dev_builds
+dev_releases
+config/dev.yml
+config/private.yml
+releases/*.tgz
+releases/**/*.tgz

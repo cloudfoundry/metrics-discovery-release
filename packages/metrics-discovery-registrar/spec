@@ -1,0 +1,11 @@
+---
+name: metrics-discovery-registrar
+
+dependencies:
+- golang1.12.7
+
+files:
+- cmd/discovery-registrar/**/*.go
+- vendor/**/*
+- go.mod
+- go.sum

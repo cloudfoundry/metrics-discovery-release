@@ -1,0 +1,8 @@
+go/go1.12.7.linux-amd64.tar.gz:
+  size: 127959471
+  object_id: d0ac9eec-36a2-45e4-480e-971d12410ec4
+  sha: sha256:66d83bfb5a9ede000e33c6579a91a29e6b101829ad41fffb5c5bb6c900e109d9
+go/go1.12.7.windows-amd64.zip:
+  size: 141335938
+  object_id: b1fcc0ad-bd0a-41f3-68c1-23e8aec52f4c
+  sha: sha256:502712c0e29edc6b9cda6fa5e4b6ff9b36e27d225373baead8708c9634aa8e50
