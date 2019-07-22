@@ -1,0 +1,24 @@
+---
+name: metrics-dynamic-registrar-windows
+
+consumes:
+- name: nats
+  type: nats
+
+templates:
+  pre-start.ps1.erb: bin/pre-start.ps1
+
+packages:
+  - metrics-dynamic-registrar-windows
+
+properties:
+  routes:
+    description: "A list of metrics endpoints to publish for scraping"
+  publish_interval:
+    description: "Interval to publish routes"
+    default: 15s
+  routes_glob:
+    description: "Files matching the glob are expected to contain routes to Prometheus metrics endpoints"
+  route_refresh_interval:
+    description: "Interval to refresh the Prometheus endpoint routes"
+    default: 15s

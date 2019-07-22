@@ -1,0 +1,22 @@
+---
+name: metrics-dynamic-registrar
+
+consumes:
+- name: nats
+  type: nats
+
+templates:
+  bpm.yml.erb: config/bpm.yml
+
+packages:
+  - metrics-dynamic-registrar
+
+properties:
+  publish_interval:
+    description: "Interval to publish routes"
+    default: 15s
+  routes_glob:
+    description: "Files matching the glob are expected to contain routes to Prometheus metrics endpoints"
+  route_refresh_interval:
+    description: "Interval to refresh the Prometheus endpoint routes"
+    default: 15s

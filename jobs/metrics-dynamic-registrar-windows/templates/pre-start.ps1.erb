@@ -1,0 +1,9 @@
+<%=
+RUN_DIR="/var/vcap/sys/run/metrics-dynamic-registrar-windows"
+LOG_DIR="/var/vcap/sys/log/metrics-dynamic-registrar-windows"
+<<-POWERSHELL
+New-Item -Path #{RUN_DIR} -ItemType directory -Force
+New-Item -Path #{LOG_DIR} -ItemType directory -Force
+POWERSHELL
+ %>
+

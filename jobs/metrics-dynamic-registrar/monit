@@ -1,0 +1,5 @@
+check process metrics-dynamic-registrar
+  with pidfile /var/vcap/sys/run/bpm/metrics-dynamic-registrar/metrics-dynamic-registrar.pid
+  start program "/var/vcap/jobs/bpm/bin/bpm start metrics-dynamic-registrar"
+  stop program "/var/vcap/jobs/bpm/bin/bpm stop metrics-dynamic-registrar"
+  group vcap
