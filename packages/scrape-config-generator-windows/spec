@@ -1,0 +1,12 @@
+---
+name: scrape-config-generator-windows
+
+dependencies:
+- golang1.12.7-windows
+
+files:
+- exiter.ps1
+- cmd/config-generator/**/*.go
+- vendor/**/*
+- go.mod
+- go.sum

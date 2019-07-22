@@ -1,0 +1,16 @@
+---
+name: scrape-config-generator-windows
+
+consumes:
+- name: nats
+  type: nats
+
+templates:
+  pre-start.ps1.erb: bin/pre-start.ps1
+
+packages:
+- scrape-config-generator-windows
+
+properties:
+  routes:
+    description: "A list of metrics endpoints to publish for scraping"

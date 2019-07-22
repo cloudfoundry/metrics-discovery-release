@@ -1,0 +1,17 @@
+---
+name: scrape-config-generator
+
+consumes:
+- name: nats
+  type: nats
+
+templates:
+  bpm.yml.erb: config/bpm.yml
+
+packages:
+- scrape-config-generator
+
+properties:
+  scrape_config_file_path:
+    description: "The path to the generated scrape config file"
+    default: /var/vcap/data/scrape-config-generator/scrape_configs.yml

@@ -1,0 +1,24 @@
+- type: replace
+  path: /addons/name=metrics-discovery?
+  value:
+    name: metrics-discovery
+    include:
+      stemcell:
+      - os: ubuntu-xenial
+    exclude:
+      jobs:
+      - name: smoke_tests
+        release: cf-smoke-tests
+    jobs:
+      - name: scrape-config-generator
+        release: metrics-discovery
+      - name: metrics-discovery-registrar
+        release: metrics-discovery
+        properties:
+          routes: "https://lemons.com/actuator/metrics,http://10.0.0.15:8888/metrics"
+
+- type: replace
+  path: /releases/name=metrics-discovery?
+  value:
+    name: metrics-discovery
+    version: latest

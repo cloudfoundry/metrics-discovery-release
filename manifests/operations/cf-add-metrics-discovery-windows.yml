@@ -1,0 +1,19 @@
+- type: replace
+  path: /instance_groups/name=windows1803-cell/jobs/name=scrape-config-generator-windows?
+  value:
+    name: scrape-config-generator-windows
+    release: metrics-discovery
+
+- type: replace
+  path: /instance_groups/name=windows1803-cell/jobs/name=metrics-discovery-registrar-windows?
+  value:
+    name: metrics-discovery-registrar-windows
+    release: metrics-discovery
+    properties:
+      routes: "https://lemons.com/actuator/metrics,http://10.0.0.15:8888/metrics"
+
+- type: replace
+  path: /releases/name=metrics-discovery?
+  value:
+    name: metrics-discovery
+    version: latest

@@ -1,0 +1,5 @@
+check process scrape-config-generator
+  with pidfile /var/vcap/sys/run/bpm/scrape-config-generator/scrape-config-generator.pid
+  start program "/var/vcap/jobs/bpm/bin/bpm start scrape-config-generator"
+  stop program "/var/vcap/jobs/bpm/bin/bpm stop scrape-config-generator"
+  group vcap

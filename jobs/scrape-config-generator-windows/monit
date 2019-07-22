@@ -1,0 +1,30 @@
+<%
+  nats_ips = link('nats').instances.map { |instance| instance.address }
+  nats_port = link('nats').p("nats.port")
+  nats_user = link('nats').p("nats.user")
+  nats_password = link('nats').p("nats.password")
+
+  nats_hosts = nats_ips.map do |h|
+    "nats://#{nats_user}:#{nats_password}@#{h}:#{nats_port}"
+  end
+
+  nats_str = nats_hosts.join(",")
+
+  env = {
+    "NATS_HOSTS" => "#{nats_str}",
+    "SCRAPE_CONFIG_FILE_PATH" => "/var/vcap/data/scrape-config-generator-windows/scrape-config.yml"
+  }
+
+  monit = {
+    "processes" => [
+      {
+        "name" => "scrape-config-generator-windows",
+        "executable" => "/var/vcap/packages/scrape-config-generator-windows/config-generator.exe",
+        "args" => [],
+        "env" => env
+      }
+    ]
+  }
+%>
+
+<%= JSON.pretty_generate(monit) %>

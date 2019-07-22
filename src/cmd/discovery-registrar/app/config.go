@@ -12,12 +12,6 @@ type Config struct {
 	NatsHosts       []string      `env:"NATS_HOSTS,       required, report"`
 }
 
-type NatsConfig struct {
-	Servers  []string `env:"NATS_SERVERS,  required, report"`
-	User     string   `env:"NATS_USERNAME, required, report"`
-	Password string   `env:"NATS_PASSWORD, required"`
-}
-
 func LoadConfig(log *log.Logger) Config {
 	cfg := Config{
 		PublishInterval: 15 * time.Second,

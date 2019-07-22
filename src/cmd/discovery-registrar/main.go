@@ -9,23 +9,27 @@ import (
 )
 
 func main() {
-	log := log.New(os.Stderr, "", log.LstdFlags)
-	log.Printf("starting Metric Discovery Registrar...")
-	defer log.Printf("closing Metric Discovery Registrar...")
+	logger := log.New(os.Stderr, "", log.LstdFlags)
+	logger.Printf("starting Metric Discovery Registrar...")
+	defer logger.Printf("closing Metric Discovery Registrar...")
 
-	cfg := app.LoadConfig(log)
+	cfg := app.LoadConfig(logger)
 
 	opts := nats.Options{
 		Servers: cfg.NatsHosts,
 		PingInterval: 20 * time.Second,
-		ClosedCB: closedCB(log),
-		DisconnectedErrCB: disconnectErrHandler(log),
-		ReconnectedCB: reconnectedCB(log),
+
+		AllowReconnect:      true,
+		MaxReconnect:        -1,
+		ReconnectWait:       100 * time.Millisecond,
+		ClosedCB:            closedCB(logger),
+		DisconnectedErrCB:   disconnectErrHandler(logger),
+		ReconnectedCB:       reconnectedCB(logger),
 	}
 
 	nc, err := opts.Connect()
 	if err != nil {
-		log.Fatalf("Unable to connect to nats servers: %s", err)
+		logger.Fatalf("Unable to connect to nats servers: %s", err)
 	}
 
 	registrar := app.NewRegistrar(cfg.Routes, cfg.PublishInterval, nc)

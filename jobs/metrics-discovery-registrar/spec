@@ -13,7 +13,7 @@ packages:
 
 properties:
   routes:
-    description: "A list of metrics endpoints to publish for scraping"
+    description: "A comma separated list of metrics endpoints to publish for scraping"
   publish_interval:
     description: "interval to publish routes"
     default: 15s
