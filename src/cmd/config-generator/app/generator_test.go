@@ -47,7 +47,7 @@ var _ = Describe("Config generator", func() {
 	It("Generates a config with data from the queue", func() {
 		tc := setup()
 
-		app.StartConfigGeneration(tc.subscriber, tc.configPath, tc.logger)
+		app.StartConfigGeneration(tc.subscriber.Subscribe, tc.configPath, tc.logger)
 		tc.subscriber.callback(&nats.Msg{
 			Data: []byte("https://route-1.com:8080/something"),
 		})
@@ -76,7 +76,7 @@ var _ = Describe("Config generator", func() {
 	It("doesn't duplicate addresses", func() {
 		tc := setup()
 
-		app.StartConfigGeneration(tc.subscriber, tc.configPath, tc.logger)
+		app.StartConfigGeneration(tc.subscriber.Subscribe, tc.configPath, tc.logger)
 		tc.subscriber.callback(&nats.Msg{
 			Data: []byte("https://route-1.com:8080/something"),
 		})

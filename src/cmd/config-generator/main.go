@@ -33,7 +33,7 @@ func main() {
 		logger.Fatalf("Unable to connect to nats servers: %s", err)
 	}
 
-	app.StartConfigGeneration(natsConn, config.ScrapeConfigFilePath, logger)
+	app.StartConfigGeneration(natsConn.Subscribe, config.ScrapeConfigFilePath, logger)
 
 	waitForTermination()
 }

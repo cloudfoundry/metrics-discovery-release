@@ -13,9 +13,7 @@ import (
 	"os"
 )
 
-type Subscriber interface {
-	Subscribe(queue string, callback nats.MsgHandler) (*nats.Subscription, error)
-}
+type Subscriber func(queue string, callback nats.MsgHandler) (*nats.Subscription, error)
 
 type configGenerator struct {
 	scrapeConfigs map[string]config.ScrapeConfig
@@ -23,14 +21,14 @@ type configGenerator struct {
 	logger        *log.Logger
 }
 
-func StartConfigGeneration(s Subscriber, path string, logger *log.Logger) {
+func StartConfigGeneration(subscriber Subscriber, path string, logger *log.Logger) {
 	configGenerator := &configGenerator{
 		scrapeConfigs: map[string]config.ScrapeConfig{},
 		path:          path,
 		logger:        logger,
 	}
 
-	_, err := s.Subscribe("metrics.endpoints", configGenerator.generate)
+	_, err := subscriber("metrics.endpoints", configGenerator.generate)
 	if err != nil {
 		logger.Fatalf("failed to subscribe to metrics.endpoints: %s", err)
 	}
