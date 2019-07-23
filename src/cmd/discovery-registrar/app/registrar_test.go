@@ -8,48 +8,50 @@ import (
 	"time"
 )
 
-var _ = Describe("App", func() {
+var _ = Describe("Dynamic Registrar", func() {
 	var (
 		fp  *fakePublisher
-		r   *app.Registrar
+		r   *app.DynamicRegistrar
+		ftp *fakeTargetProvider
+		cfg app.Config
 	)
 
 	BeforeEach(func() {
 		fp = newFakePublisher()
+		ftp = &fakeTargetProvider{
+			targets: []string{
+				"https://some-host:8080/metrics",
+			},
+		}
 	})
 
 	AfterEach(func() {
 		r.Stop()
 	})
 
-	It("publishes the configured routes", func() {
-		routes := []string{
-			"https://route-1.com:8080/metrics",
-			"https://route-2.com:8080/metrics",
-			"https://route-3.com:8080/metrics",
+	It("publishes routes from the target provider", func() {
+		cfg = app.Config{
+			PublishInterval: time.Second,
 		}
 
-		r = app.NewRegistrar(routes, 5*time.Second, fp)
+		r = app.NewDynamicRegistrar(ftp, fp, cfg)
 		go r.Start()
 
-		Eventually(fp.routes).Should(ConsistOf(
-			"https://route-1.com:8080/metrics",
-			"https://route-2.com:8080/metrics",
-			"https://route-3.com:8080/metrics",
-		))
+		Eventually(fp.routes).Should(ConsistOf("https://some-host:8080/metrics"))
 		Expect(fp.publishedToQueue()).To(Equal("metrics.endpoints"))
+		Expect(ftp.timesCalled()).To(Equal(1))
 	})
 
-	It("publishes all the routes on an interval", func() {
-		routes := []string{
-			"https://route-1.com:8080/metrics",
-			"https://route-2.com:8080/metrics",
+	It("publishes routes from the target provider on an interval", func() {
+		cfg = app.Config{
+			PublishInterval: 300 * time.Millisecond,
 		}
 
-		r = app.NewRegistrar(routes, 300 * time.Millisecond, fp)
+		r = app.NewDynamicRegistrar(ftp, fp, cfg)
 		go r.Start()
 
-		Eventually(fp.callsToPublish).Should(BeNumerically(">=", 6))
+		Eventually(ftp.timesCalled).Should(BeNumerically(">=", 4))
+		Expect(len(fp.routes())).To(BeNumerically(">=", 4))
 		Expect(fp.publishedToQueue()).To(Equal("metrics.endpoints"))
 	})
 })
@@ -102,4 +104,23 @@ func (fp *fakePublisher) publishedToQueue() string {
 	return fp.rtQueue
 }
 
+type fakeTargetProvider struct {
+	sync.Mutex
+	called  int
+	targets []string
+}
 
+func (ftp *fakeTargetProvider) GetTargets() []string {
+	ftp.Lock()
+	defer ftp.Unlock()
+
+	ftp.called++
+	return ftp.targets
+}
+
+func (ftp *fakeTargetProvider) timesCalled() int {
+	ftp.Lock()
+	defer ftp.Unlock()
+
+	return ftp.called
+}

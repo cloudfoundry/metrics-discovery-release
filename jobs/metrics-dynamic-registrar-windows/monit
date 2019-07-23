@@ -21,7 +21,7 @@
     "processes" => [
       {
         "name" => "metrics-dynamic-registrar-windows",
-        "executable" => "/var/vcap/packages/metrics-dynamic-registrar-windows/dynamic-registrar.exe",
+        "executable" => "/var/vcap/packages/metrics-discovery-registrar-windows/discovery-registrar.exe",
         "args" => [],
         "env" => env
       }

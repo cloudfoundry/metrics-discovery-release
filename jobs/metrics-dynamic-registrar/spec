@@ -9,7 +9,7 @@ templates:
   bpm.yml.erb: config/bpm.yml
 
 packages:
-  - metrics-dynamic-registrar
+- metrics-discovery-registrar
 
 properties:
   publish_interval:
@@ -17,6 +17,7 @@ properties:
     default: 15s
   routes_glob:
     description: "Files matching the glob are expected to contain routes to Prometheus metrics endpoints"
+    default: "/var/vcap/jobs/**/config/metric_routes.yml"
   route_refresh_interval:
     description: "Interval to refresh the Prometheus endpoint routes"
     default: 15s

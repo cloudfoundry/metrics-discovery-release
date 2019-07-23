@@ -13,7 +13,7 @@
 
 processes:
 - name: metrics-dynamic-registrar
-  executable: /var/vcap/packages/metrics-dynamic-registrar/dynamic-registrar
+  executable: /var/vcap/packages/metrics-discovery-registrar/discovery-registrar
   env:
     PUBLISH_INTERVAL: <%= p("publish_interval") %>
     NATS_HOSTS: "<%= nats_str %>"

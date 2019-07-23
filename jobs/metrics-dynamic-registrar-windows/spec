@@ -9,16 +9,15 @@ templates:
   pre-start.ps1.erb: bin/pre-start.ps1
 
 packages:
-  - metrics-dynamic-registrar-windows
+- metrics-discovery-registrar-windows
 
 properties:
-  routes:
-    description: "A list of metrics endpoints to publish for scraping"
   publish_interval:
     description: "Interval to publish routes"
     default: 15s
   routes_glob:
     description: "Files matching the glob are expected to contain routes to Prometheus metrics endpoints"
+    default: "/var/vcap/jobs/**/config/metric_routes.yml"
   route_refresh_interval:
     description: "Interval to refresh the Prometheus endpoint routes"
     default: 15s

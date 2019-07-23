@@ -1,7 +1,7 @@
 package targetprovider_test
 
 import (
-	"code.cloudfoundry.org/metrics-discovery/cmd/dynamic-registrar/internal/targetprovider"
+	"code.cloudfoundry.org/metrics-discovery/cmd/discovery-registrar/internal/targetprovider"
 	"fmt"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"

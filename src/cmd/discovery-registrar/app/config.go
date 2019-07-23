@@ -7,14 +7,18 @@ import (
 )
 
 type Config struct {
-	Routes          []string      `env:"ROUTES,           required, report"`
-	PublishInterval time.Duration `env:"PUBLISH_INTERVAL,           report"`
-	NatsHosts       []string      `env:"NATS_HOSTS,       required, report"`
+	PublishInterval time.Duration `env:"PUBLISH_INTERVAL,                 report"`
+	NatsHosts       []string      `env:"NATS_HOSTS,             required, report"`
+
+	Routes               []string      `env:"ROUTES,                 report"`
+	RoutesGlob           string        `env:"ROUTES_GLOB,            report"`
+	RouteRefreshInterval time.Duration `env:"ROUTE_REFRESH_INTERVAL, report"`
 }
 
 func LoadConfig(log *log.Logger) Config {
 	cfg := Config{
-		PublishInterval: 15 * time.Second,
+		PublishInterval:      15 * time.Second,
+		RouteRefreshInterval: 15 * time.Second,
 	}
 
 	if err := envstruct.Load(&cfg); err != nil {

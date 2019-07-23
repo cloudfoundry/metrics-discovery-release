@@ -291,9 +291,6 @@ github.com/prometheus/procfs v0.0.0-20190117184657-bf6a532e95b1/go.mod h1:c3At6R
 github.com/prometheus/procfs v0.0.2 h1:6LJUbpNm42llc4HRCuvApCSWB/WfhuNo9K98Q9sNGfs=
 github.com/prometheus/procfs v0.0.2/go.mod h1:TjEm7ze935MbeOT/UhFTIMYKhuLP4wbCsTZCD3I8kEA=
 github.com/prometheus/prometheus v0.0.0-20180315085919-58e2a31db8de/go.mod h1:oAIUtOny2rjMX0OWN5vPR5/q/twIROJvdqnQKDdil/s=
-github.com/prometheus/prometheus v0.0.0-20190710134608-e5b22494857d h1:+89KS5XapfxQ/uKH9S24al72z0gp1N1jrK6HyDbEKWU=
-github.com/prometheus/prometheus v0.0.0-20190710134608-e5b22494857d/go.mod h1:11Mk7Gzjuke9GloQr0K9Rltwvz4fGeuU7/YlzqcHCPE=
-github.com/prometheus/prometheus v2.5.0+incompatible h1:7QPitgO2kOFG8ecuRn9O/4L9+10He72rVRJvMXrE9Hg=
 github.com/prometheus/prometheus v2.11.0+incompatible h1:OdoYcM0NRUqoEJ8Mh8ViqezhBfdw/A9cC4sDaZRuqvg=
 github.com/prometheus/prometheus v2.11.0+incompatible/go.mod h1:11Mk7Gzjuke9GloQr0K9Rltwvz4fGeuU7/YlzqcHCPE=
 github.com/prometheus/tsdb v0.9.1 h1:IWaAmWkYlgG7/S4iw4IpAQt5Y35QaZM6/GsZ7GsjAuk=
