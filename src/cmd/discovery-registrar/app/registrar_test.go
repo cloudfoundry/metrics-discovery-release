@@ -34,7 +34,7 @@ var _ = Describe("Dynamic Registrar", func() {
 			PublishInterval: time.Second,
 		}
 
-		r = app.NewDynamicRegistrar(ftp, fp, cfg)
+		r = app.NewDynamicRegistrar(ftp.GetTargets, fp, cfg)
 		go r.Start()
 
 		Eventually(fp.routes).Should(ConsistOf("https://some-host:8080/metrics"))
@@ -47,7 +47,7 @@ var _ = Describe("Dynamic Registrar", func() {
 			PublishInterval: 300 * time.Millisecond,
 		}
 
-		r = app.NewDynamicRegistrar(ftp, fp, cfg)
+		r = app.NewDynamicRegistrar(ftp.GetTargets, fp, cfg)
 		go r.Start()
 
 		Eventually(ftp.timesCalled).Should(BeNumerically(">=", 4))
