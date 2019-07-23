@@ -9,6 +9,6 @@ require (
 	github.com/onsi/ginkgo v1.8.0
 	github.com/onsi/gomega v1.5.0
 	github.com/prometheus/common v0.4.1
-	github.com/prometheus/prometheus v0.0.0-20190710134608-e5b22494857d
+	github.com/prometheus/prometheus v2.11.0+incompatible
 	gopkg.in/yaml.v2 v2.2.2
 )
