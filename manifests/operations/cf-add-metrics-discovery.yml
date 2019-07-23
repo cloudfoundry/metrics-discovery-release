@@ -1,21 +1,16 @@
 - type: replace
-  path: /addons/name=metrics-discovery?
+  path: /instance_groups/name=doppler/jobs/name=scrape-config-generator-windows?
   value:
-    name: metrics-discovery
-    include:
-      stemcell:
-      - os: ubuntu-xenial
-    exclude:
-      jobs:
-      - name: smoke_tests
-        release: cf-smoke-tests
-    jobs:
-      - name: scrape-config-generator
-        release: metrics-discovery
-      - name: metrics-discovery-registrar
-        release: metrics-discovery
-        properties:
-          routes: "https://lemons.com/actuator/metrics,http://10.0.0.15:8888/metrics"
+    name: scrape-config-generator-windows
+    release: metrics-discovery
+
+- type: replace
+  path: /instance_groups/name=doppler/jobs/name=metrics-discovery-registrar-windows?
+  value:
+    name: metrics-discovery-registrar-windows
+    release: metrics-discovery
+    properties:
+      routes: "https://lemons.com/actuator/metrics,http://10.0.0.15:8888/metrics"
 
 - type: replace
   path: /releases/name=metrics-discovery?
