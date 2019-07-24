@@ -1,6 +1,7 @@
 package main
 
 import (
+	"code.cloudfoundry.org/go-loggregator/metrics"
 	"code.cloudfoundry.org/metrics-discovery/cmd/config-generator/app"
 	"github.com/nats-io/nats.go"
 	"log"
@@ -31,11 +32,19 @@ func main() {
 		logger.Fatalf("Unable to connect to nats servers: %s", err)
 	}
 
+	m := metrics.NewRegistry(logger,
+		metrics.WithDefaultTags(map[string]string{
+			"origin":    "loggregator.config_generator",
+			"source_id": "config_generator",
+		}),
+	)
+
 	generator := app.NewConfigGenerator(
 		natsConn.Subscribe,
 		config.ConfigTimeToLive,
 		config.ConfigExpirationInterval,
 		config.ScrapeConfigFilePath,
+		m,
 		logger,
 	)
 

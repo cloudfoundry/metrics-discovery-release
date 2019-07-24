@@ -1,6 +1,7 @@
 package app
 
 import (
+	"code.cloudfoundry.org/go-loggregator/metrics"
 	"github.com/nats-io/nats.go"
 	"github.com/prometheus/common/model"
 	"github.com/prometheus/prometheus/config"
@@ -15,12 +16,8 @@ import (
 	"time"
 )
 
-type Subscriber func(queue string, callback nats.MsgHandler) (*nats.Subscription, error)
 
-type timestampedScrapeConfig struct {
-	scrapeConfig config.ScrapeConfig
-	ts           time.Time
-}
+type Subscriber func(queue string, callback nats.MsgHandler) (*nats.Subscription, error)
 
 type ConfigGenerator struct {
 	sync.Mutex
@@ -32,6 +29,17 @@ type ConfigGenerator struct {
 	subscriber               Subscriber
 	done                     chan struct{}
 	stop                     chan struct{}
+	delivered                metrics.Counter
+	metrics                  metricsRegistry
+}
+
+type metricsRegistry interface {
+	NewCounter(name string, opts ...metrics.MetricOption) metrics.Counter
+}
+
+type timestampedScrapeConfig struct {
+	scrapeConfig config.ScrapeConfig
+	ts           time.Time
 }
 
 func NewConfigGenerator(
@@ -39,6 +47,7 @@ func NewConfigGenerator(
 	ttl,
 	expirationInterval time.Duration,
 	path string,
+	m metricsRegistry,
 	logger *log.Logger,
 ) *ConfigGenerator {
 	configGenerator := &ConfigGenerator{
@@ -48,6 +57,7 @@ func NewConfigGenerator(
 		configExpirationInterval: expirationInterval,
 		configTTL:                ttl,
 		subscriber:               subscriber,
+		delivered:                m.NewCounter("delivered"),
 		stop:                     make(chan struct{}),
 		done:                     make(chan struct{}),
 	}
@@ -82,6 +92,8 @@ func (cg *ConfigGenerator) Stop() {
 func (cg *ConfigGenerator) generate(message *nats.Msg) {
 	cg.Lock()
 	defer cg.Unlock()
+
+	cg.delivered.Add(float64(1))
 
 	id, scrapeConfig := cg.convertToScrapeConfig(message)
 	cg.scrapeConfigs[id] = timestampedScrapeConfig{

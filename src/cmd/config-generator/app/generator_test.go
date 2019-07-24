@@ -1,6 +1,7 @@
 package app_test
 
 import (
+	"code.cloudfoundry.org/go-loggregator/metrics/testhelpers"
 	"code.cloudfoundry.org/metrics-discovery/cmd/config-generator/app"
 	"github.com/nats-io/nats.go"
 	. "github.com/onsi/ginkgo"
@@ -48,7 +49,13 @@ var _ = Describe("Config generator", func() {
 	It("Generates a config with data from the queue", func() {
 		tc := setup()
 
-		generator := app.NewConfigGenerator(tc.subscriber.Subscribe, time.Hour, time.Hour, tc.configPath, tc.logger)
+		generator := app.NewConfigGenerator(tc.subscriber.Subscribe,
+			time.Hour,
+			time.Hour,
+			tc.configPath,
+			testhelpers.NewMetricsRegistry(),
+			tc.logger,
+		)
 		go generator.Start()
 
 		tc.subscriber.callback(&nats.Msg{
@@ -79,7 +86,13 @@ var _ = Describe("Config generator", func() {
 	It("doesn't duplicate addresses", func() {
 		tc := setup()
 
-		generator := app.NewConfigGenerator(tc.subscriber.Subscribe, time.Hour, time.Hour, tc.configPath, tc.logger)
+		generator := app.NewConfigGenerator(tc.subscriber.Subscribe,
+			time.Hour,
+			time.Hour,
+			tc.configPath,
+			testhelpers.NewMetricsRegistry(),
+			tc.logger,
+		)
 		go generator.Start()
 
 		tc.subscriber.callback(&nats.Msg{
@@ -104,7 +117,14 @@ var _ = Describe("Config generator", func() {
 	It("expires configs after the given interval", func() {
 		tc := setup()
 
-		generator := app.NewConfigGenerator(tc.subscriber.Subscribe, 600*time.Millisecond, 100*time.Millisecond, tc.configPath, tc.logger)
+		generator := app.NewConfigGenerator(
+			tc.subscriber.Subscribe,
+			600*time.Millisecond,
+			100*time.Millisecond,
+			tc.configPath,
+			testhelpers.NewMetricsRegistry(),
+			tc.logger,
+		)
 		go generator.Start()
 
 		tc.subscriber.callback(&nats.Msg{
@@ -148,6 +168,29 @@ var _ = Describe("Config generator", func() {
 				"ServiceDiscoveryConfig": haveTarget("persistent:8080"),
 			}),
 		))
+	})
+
+	It("increments a delivered metric", func() {
+		tc := setup()
+
+		spyMetrics := testhelpers.NewMetricsRegistry()
+		generator := app.NewConfigGenerator(
+			tc.subscriber.Subscribe,
+			600*time.Millisecond,
+			100*time.Millisecond,
+			tc.configPath,
+			spyMetrics,
+			tc.logger,
+		)
+		go generator.Start()
+
+		tc.subscriber.callback(&nats.Msg{
+			Data: []byte("https://ephemeral:8080/something"),
+		})
+
+		Eventually(func() int {
+			return int(spyMetrics.GetMetric("delivered", map[string]string{}).Value())
+		}).Should(Equal(1))
 	})
 })
 

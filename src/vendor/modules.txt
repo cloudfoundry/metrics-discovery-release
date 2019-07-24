@@ -2,6 +2,9 @@
 cloud.google.com/go/compute/metadata
 # code.cloudfoundry.org/go-envstruct v1.4.0
 code.cloudfoundry.org/go-envstruct
+# code.cloudfoundry.org/go-loggregator v7.6.0+incompatible
+code.cloudfoundry.org/go-loggregator/metrics
+code.cloudfoundry.org/go-loggregator/metrics/testhelpers
 # contrib.go.opencensus.io/exporter/ocagent v0.4.12
 contrib.go.opencensus.io/exporter/ocagent
 # github.com/Azure/azure-sdk-for-go v23.2.0+incompatible
@@ -195,6 +198,7 @@ github.com/onsi/gomega/matchers/support/goraph/util
 github.com/pkg/errors
 # github.com/prometheus/client_golang v1.0.0
 github.com/prometheus/client_golang/prometheus
+github.com/prometheus/client_golang/prometheus/promhttp
 github.com/prometheus/client_golang/prometheus/internal
 # github.com/prometheus/client_model v0.0.0-20190129233127-fd36f4220a90
 github.com/prometheus/client_model/go
@@ -328,7 +332,7 @@ google.golang.org/appengine/internal/remote_api
 google.golang.org/genproto/googleapis/rpc/status
 google.golang.org/genproto/googleapis/api/httpbody
 google.golang.org/genproto/protobuf/field_mask
-# google.golang.org/grpc v1.19.1
+# google.golang.org/grpc v1.21.1
 google.golang.org/grpc
 google.golang.org/grpc/naming
 google.golang.org/grpc/balancer
@@ -341,6 +345,7 @@ google.golang.org/grpc/encoding/proto
 google.golang.org/grpc/grpclog
 google.golang.org/grpc/internal
 google.golang.org/grpc/internal/backoff
+google.golang.org/grpc/internal/balancerload
 google.golang.org/grpc/internal/binarylog
 google.golang.org/grpc/internal/channelz
 google.golang.org/grpc/internal/envconfig

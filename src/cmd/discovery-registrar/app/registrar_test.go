@@ -1,6 +1,7 @@
 package app_test
 
 import (
+	"code.cloudfoundry.org/go-loggregator/metrics/testhelpers"
 	"code.cloudfoundry.org/metrics-discovery/cmd/discovery-registrar/app"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -34,7 +35,8 @@ var _ = Describe("Dynamic Registrar", func() {
 			PublishInterval: time.Second,
 		}
 
-		r = app.NewDynamicRegistrar(ftp.GetTargets, fp, cfg)
+		spyMetrics := testhelpers.NewMetricsRegistry()
+		r = app.NewDynamicRegistrar(ftp.GetTargets, fp, spyMetrics, cfg)
 		go r.Start()
 
 		Eventually(fp.routes).Should(ConsistOf("https://some-host:8080/metrics"))
@@ -47,12 +49,27 @@ var _ = Describe("Dynamic Registrar", func() {
 			PublishInterval: 300 * time.Millisecond,
 		}
 
-		r = app.NewDynamicRegistrar(ftp.GetTargets, fp, cfg)
+		spyMetrics := testhelpers.NewMetricsRegistry()
+		r = app.NewDynamicRegistrar(ftp.GetTargets, fp, spyMetrics, cfg)
 		go r.Start()
 
 		Eventually(ftp.timesCalled).Should(BeNumerically(">=", 4))
 		Expect(len(fp.routes())).To(BeNumerically(">=", 4))
 		Expect(fp.publishedToQueue()).To(Equal("metrics.endpoints"))
+	})
+
+	It("increments a delivered metric", func() {
+		cfg = app.Config{
+			PublishInterval: 300 * time.Millisecond,
+		}
+
+		spyMetrics := testhelpers.NewMetricsRegistry()
+		r = app.NewDynamicRegistrar(ftp.GetTargets, fp, spyMetrics, cfg)
+		go r.Start()
+
+		Eventually(func() int {
+			return int(spyMetrics.GetMetric("sent", map[string]string{}).Value())
+		}).Should(BeNumerically(">=", 1))
 	})
 })
 
