@@ -12,7 +12,7 @@ require (
 	github.com/onsi/gomega v1.5.0
 	github.com/prometheus/common v0.5.0 // pinned
 	github.com/prometheus/prometheus v2.11.0+incompatible // pinned
-	golang.org/x/net v0.0.0-20190628185345-da137c7871d7 // indirect
+	golang.org/x/net v0.0.0-20190724013045-ca1201d0de80 // indirect
 	golang.org/x/sync v0.0.0-20190423024810-112230192c58 // indirect
 	golang.org/x/sys v0.0.0-20190712062909-fae7ac547cb7 // indirect
 	golang.org/x/text v0.3.2 // indirect
