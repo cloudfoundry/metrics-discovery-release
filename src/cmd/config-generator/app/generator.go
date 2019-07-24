@@ -11,37 +11,88 @@ import (
 	"log"
 	"net/url"
 	"os"
+	"sync"
+	"time"
 )
 
 type Subscriber func(queue string, callback nats.MsgHandler) (*nats.Subscription, error)
 
-type configGenerator struct {
-	scrapeConfigs map[string]config.ScrapeConfig
-	path          string
-	logger        *log.Logger
+type timestampedScrapeConfig struct {
+	scrapeConfig config.ScrapeConfig
+	ts           time.Time
 }
 
-func StartConfigGeneration(subscriber Subscriber, path string, logger *log.Logger) {
-	configGenerator := &configGenerator{
-		scrapeConfigs: map[string]config.ScrapeConfig{},
-		path:          path,
-		logger:        logger,
+type ConfigGenerator struct {
+	sync.Mutex
+	scrapeConfigs            map[string]timestampedScrapeConfig
+	path                     string
+	logger                   *log.Logger
+	configTTL                time.Duration
+	configExpirationInterval time.Duration
+	subscriber               Subscriber
+	done                     chan struct{}
+	stop                     chan struct{}
+}
+
+func NewConfigGenerator(
+	subscriber Subscriber,
+	ttl,
+	expirationInterval time.Duration,
+	path string,
+	logger *log.Logger,
+) *ConfigGenerator {
+	configGenerator := &ConfigGenerator{
+		scrapeConfigs:            make(map[string]timestampedScrapeConfig),
+		path:                     path,
+		logger:                   logger,
+		configExpirationInterval: expirationInterval,
+		configTTL:                ttl,
+		subscriber:               subscriber,
+		stop:                     make(chan struct{}),
+		done:                     make(chan struct{}),
 	}
 
-	_, err := subscriber("metrics.endpoints", configGenerator.generate)
+	// If this doesn't happen synchronously, it could fail when the subscriber is called
+	_, err := configGenerator.subscriber("metrics.endpoints", configGenerator.generate)
 	if err != nil {
-		logger.Fatalf("failed to subscribe to metrics.endpoints: %s", err)
+		configGenerator.logger.Fatalf("failed to subscribe to metrics.endpoints: %s", err)
+	}
+
+	return configGenerator
+}
+
+func (cg *ConfigGenerator) Start() {
+	t := time.NewTicker(cg.configExpirationInterval)
+	for {
+		select {
+		case <-t.C:
+			cg.expireScrapeConfigs()
+		case <-cg.stop:
+			close(cg.done)
+			return
+		}
 	}
 }
 
-func (cg *configGenerator) generate(message *nats.Msg) {
+func (cg *ConfigGenerator) Stop() {
+	close(cg.stop)
+	<-cg.done
+}
+
+func (cg *ConfigGenerator) generate(message *nats.Msg) {
+	cg.Lock()
+	defer cg.Unlock()
+
 	id, scrapeConfig := cg.convertToScrapeConfig(message)
-	cg.scrapeConfigs[id] = scrapeConfig
+	cg.scrapeConfigs[id] = timestampedScrapeConfig{
+		scrapeConfig: scrapeConfig,
+		ts:           time.Now(),
+	}
 
 	cg.writeConfigToFile()
 }
 
-func (cg *configGenerator) convertToScrapeConfig(message *nats.Msg) (string, config.ScrapeConfig) {
+func (cg *ConfigGenerator) convertToScrapeConfig(message *nats.Msg) (string, config.ScrapeConfig) {
 	target := string(message.Data)
 
 	targetURL, err := url.Parse(target)
@@ -65,10 +116,10 @@ func (cg *configGenerator) convertToScrapeConfig(message *nats.Msg) (string, con
 	return target, scrapeConfig
 }
 
-func (cg *configGenerator) writeConfigToFile() {
+func (cg *ConfigGenerator) writeConfigToFile() {
 	var scrapeConfigs []config.ScrapeConfig
-	for _, scrapeConfig := range cg.scrapeConfigs {
-		scrapeConfigs = append(scrapeConfigs, scrapeConfig)
+	for _, cfg := range cg.scrapeConfigs {
+		scrapeConfigs = append(scrapeConfigs, cfg.scrapeConfig)
 	}
 
 	data, err := yaml.Marshal(scrapeConfigs)
@@ -80,4 +131,17 @@ func (cg *configGenerator) writeConfigToFile() {
 	if err != nil {
 		cg.logger.Printf("failed to write scrape config file: %s\n", err)
 	}
+}
+
+func (cg *ConfigGenerator) expireScrapeConfigs() {
+	cg.Lock()
+	defer cg.Unlock()
+
+	for k, scrapeConfig := range cg.scrapeConfigs {
+		if time.Since(scrapeConfig.ts) >= cg.configTTL {
+			delete(cg.scrapeConfigs, k)
+		}
+	}
+
+	cg.writeConfigToFile()
 }

@@ -14,6 +14,7 @@ import (
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"log"
+	"time"
 )
 
 var _ = Describe("Config generator", func() {
@@ -47,7 +48,9 @@ var _ = Describe("Config generator", func() {
 	It("Generates a config with data from the queue", func() {
 		tc := setup()
 
-		app.StartConfigGeneration(tc.subscriber.Subscribe, tc.configPath, tc.logger)
+		generator := app.NewConfigGenerator(tc.subscriber.Subscribe, time.Hour, time.Hour, tc.configPath, tc.logger)
+		go generator.Start()
+
 		tc.subscriber.callback(&nats.Msg{
 			Data: []byte("https://route-1.com:8080/something"),
 		})
@@ -76,7 +79,9 @@ var _ = Describe("Config generator", func() {
 	It("doesn't duplicate addresses", func() {
 		tc := setup()
 
-		app.StartConfigGeneration(tc.subscriber.Subscribe, tc.configPath, tc.logger)
+		generator := app.NewConfigGenerator(tc.subscriber.Subscribe, time.Hour, time.Hour, tc.configPath, tc.logger)
+		go generator.Start()
+
 		tc.subscriber.callback(&nats.Msg{
 			Data: []byte("https://route-1.com:8080/something"),
 		})
@@ -92,6 +97,55 @@ var _ = Describe("Config generator", func() {
 				"MetricsPath":            Equal("/something"),
 				"Scheme":                 Equal("https"),
 				"ServiceDiscoveryConfig": haveTarget("route-1.com:8080"),
+			}),
+		))
+	})
+
+	It("expires configs after the given interval", func() {
+		tc := setup()
+
+		generator := app.NewConfigGenerator(tc.subscriber.Subscribe, 600*time.Millisecond, 100*time.Millisecond, tc.configPath, tc.logger)
+		go generator.Start()
+
+		tc.subscriber.callback(&nats.Msg{
+			Data: []byte("https://ephemeral:8080/something"),
+		})
+		tc.subscriber.callback(&nats.Msg{
+			Data: []byte("http://persistent:8080/metrics"),
+		})
+
+		go func() {
+			t := time.NewTicker(600 * time.Millisecond)
+			for range t.C {
+				tc.subscriber.callback(&nats.Msg{
+					Data: []byte("http://persistent:8080/metrics"),
+				})
+			}
+		}()
+
+		Expect(readScrapeConfigs(tc)).To(ConsistOf(
+			MatchFields(IgnoreExtras, Fields{
+				"JobName":                Equal("https://ephemeral:8080/something"),
+				"MetricsPath":            Equal("/something"),
+				"Scheme":                 Equal("https"),
+				"ServiceDiscoveryConfig": haveTarget("ephemeral:8080"),
+			}),
+			MatchFields(IgnoreExtras, Fields{
+				"JobName":                Equal("http://persistent:8080/metrics"),
+				"MetricsPath":            Equal("/metrics"),
+				"Scheme":                 Equal("http"),
+				"ServiceDiscoveryConfig": haveTarget("persistent:8080"),
+			}),
+		))
+
+		Eventually(func() []config.ScrapeConfig {
+			return readScrapeConfigs(tc)
+		}).Should(ConsistOf(
+			MatchFields(IgnoreExtras, Fields{
+				"JobName":                Equal("http://persistent:8080/metrics"),
+				"MetricsPath":            Equal("/metrics"),
+				"Scheme":                 Equal("http"),
+				"ServiceDiscoveryConfig": haveTarget("persistent:8080"),
 			}),
 		))
 	})

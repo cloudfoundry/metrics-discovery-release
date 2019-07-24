@@ -16,5 +16,7 @@ processes:
   executable: /var/vcap/packages/scrape-config-generator/scrape-config-generator
   env:
     NATS_HOSTS: "<%= nats_str %>"
-    SCRAPE_CONFIG_FILE_PATH: "/var/vcap/data/scrape-config-generator/scrape-config.yml"
+    SCRAPE_CONFIG_FILE_PATH: "<%= p('scrape_config_file_path') %>"
+    CONFIG_EXPIRATION_INTERVAL: "<%= p('expiration_interval') %>"
+    CONFIG_TTL: "<%= p('config_ttl') %>"
   ephemeral_disk: true

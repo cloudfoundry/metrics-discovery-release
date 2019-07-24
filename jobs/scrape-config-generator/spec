@@ -15,3 +15,11 @@ properties:
   scrape_config_file_path:
     description: "The path to the generated scrape config file"
     default: /var/vcap/data/scrape-config-generator/scrape_configs.yml
+
+  expiration_interval:
+    description: "This interval determines how often scrape endpoints are expired"
+    default: 15s
+
+  config_ttl:
+    description: "This determines how long a scrape config lives before being expired"
+    default: 45s

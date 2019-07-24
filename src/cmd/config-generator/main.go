@@ -5,8 +5,6 @@ import (
 	"github.com/nats-io/nats.go"
 	"log"
 	"os"
-	"os/signal"
-	"syscall"
 	"time"
 )
 
@@ -33,15 +31,16 @@ func main() {
 		logger.Fatalf("Unable to connect to nats servers: %s", err)
 	}
 
-	app.StartConfigGeneration(natsConn.Subscribe, config.ScrapeConfigFilePath, logger)
+	generator := app.NewConfigGenerator(
+		natsConn.Subscribe,
+		config.ConfigTimeToLive,
+		config.ConfigExpirationInterval,
+		config.ScrapeConfigFilePath,
+		logger,
+	)
 
-	waitForTermination()
-}
-
-func waitForTermination() {
-	c := make(chan os.Signal, 1)
-	signal.Notify(c, syscall.SIGTERM, syscall.SIGINT)
-	<-c
+	generator.Start()
+	defer generator.Stop()
 }
 
 func closedCB(log *log.Logger) func(conn *nats.Conn) {
