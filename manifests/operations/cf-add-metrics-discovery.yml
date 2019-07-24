@@ -1,13 +1,13 @@
 - type: replace
-  path: /instance_groups/name=doppler/jobs/name=scrape-config-generator-windows?
+  path: /instance_groups/name=doppler/jobs/name=scrape-config-generator?
   value:
-    name: scrape-config-generator-windows
+    name: scrape-config-generator
     release: metrics-discovery
 
 - type: replace
-  path: /instance_groups/name=doppler/jobs/name=metrics-discovery-registrar-windows?
+  path: /instance_groups/name=doppler/jobs/name=metrics-discovery-registrar?
   value:
-    name: metrics-discovery-registrar-windows
+    name: metrics-discovery-registrar
     release: metrics-discovery
     properties:
       routes: "https://lemons.com/actuator/metrics,http://10.0.0.15:8888/metrics"
