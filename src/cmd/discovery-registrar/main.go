@@ -1,6 +1,7 @@
 package main
 
 import (
+	"code.cloudfoundry.org/go-loggregator/metrics"
 	"code.cloudfoundry.org/metrics-discovery/cmd/discovery-registrar/app"
 	"code.cloudfoundry.org/metrics-discovery/cmd/discovery-registrar/internal/targetprovider"
 	"github.com/nats-io/nats.go"
@@ -43,7 +44,14 @@ func main() {
 		routeProvider = targetProvider.GetTargets
 	}
 
-	registrar := app.NewDynamicRegistrar(routeProvider, natsConn, cfg)
+	m := metrics.NewRegistry(logger,
+		metrics.WithDefaultTags(map[string]string{
+			"origin":    "loggregator.config_generator",
+			"source_id": "config_generator",
+		}),
+	)
+
+	registrar := app.NewDynamicRegistrar(routeProvider, natsConn, m, cfg)
 	go registrar.Start()
 	defer registrar.Stop()
 
