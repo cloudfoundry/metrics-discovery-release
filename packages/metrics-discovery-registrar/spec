@@ -2,8 +2,7 @@
 name: metrics-discovery-registrar
 
 dependencies:
-- golang1.12.7
-
+- golang-1-linux
 files:
 - cmd/discovery-registrar/**/*.go
 - vendor/**/*

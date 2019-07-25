@@ -2,7 +2,7 @@
 name: metrics-discovery-registrar-windows
 
 dependencies:
-- golang1.12.7-windows
+- golang-1-windows
 
 files:
 - exiter.ps1

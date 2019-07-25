@@ -2,8 +2,7 @@
 name: scrape-config-generator
 
 dependencies:
-- golang1.12.7
-
+- golang-1-linux
 files:
 - cmd/config-generator/**/*.go
 - vendor/**/*
