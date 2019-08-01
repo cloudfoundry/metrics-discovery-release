@@ -37,6 +37,7 @@ func main() {
 			"origin":    "loggregator.config_generator",
 			"source_id": "config_generator",
 		}),
+		metrics.WithServer(config.MetricsPort),
 	)
 
 	generator := app.NewConfigGenerator(

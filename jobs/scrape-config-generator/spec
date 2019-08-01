@@ -23,3 +23,7 @@ properties:
   config_ttl:
     description: "This determines how long a scrape config lives before being expired"
     default: 45s
+
+  metrics_port:
+    description: "Port to host metrics endpoint"
+    default: 15822

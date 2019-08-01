@@ -15,6 +15,7 @@
     "SCRAPE_CONFIG_FILE_PATH" => "#{p("scrape_config_file_path")}",
     "CONFIG_EXPIRATION_INTERVAL": "#{p("expiration_interval")}",
     "CONFIG_TTL": "#{p("config_ttl")}",
+    "METRICS_PORT" => "#{p("metrics_port")}",
   }
 
   monit = {

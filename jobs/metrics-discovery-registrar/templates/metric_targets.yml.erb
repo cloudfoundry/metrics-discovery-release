@@ -1,0 +1,14 @@
+<%
+scrape_configs = [{
+  "job_name" => "metrics-discovery-registrar-dns",
+  "dns_sd_configs" => [
+    {
+      "names" => ["q-s0.#{spec.name}.*.*.#{spec.dns_domain_name}"],
+      "type" => "A",
+      "port" => p('metrics_port'),
+    },
+  ],
+}]
+%>
+
+<%= YAML.dump({"scrape_configs" => scrape_configs}) %>

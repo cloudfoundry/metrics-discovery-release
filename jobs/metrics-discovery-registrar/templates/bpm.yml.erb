@@ -12,9 +12,17 @@
 %>
 
 processes:
-  - name: metrics-discovery-registrar
-    executable: /var/vcap/packages/metrics-discovery-registrar/discovery-registrar
-    env:
-      ROUTES: <%= p("routes") %>
-      PUBLISH_INTERVAL: <%= p("publish_interval") %>
-      NATS_HOSTS: "<%= nats_str %>"
+- name: metrics-discovery-registrar
+  executable: /var/vcap/packages/metrics-discovery-registrar/discovery-registrar
+  env:
+    PUBLISH_INTERVAL: <%= p("publish_interval") %>
+    NATS_HOSTS: "<%= nats_str %>"
+    TARGETS_GLOB: <%= p("targets_glob") %>
+    TARGET_REFRESH_INTERVAL: <%= p("target_refresh_interval") %>
+    METRICS_PORT: "<%= p("metrics_port") %>"
+  unsafe:
+    unrestricted_volumes:
+    - path: /var/vcap/jobs
+      mount_only: true
+    - path: /var/vcap/data/jobs
+      mount_only: true

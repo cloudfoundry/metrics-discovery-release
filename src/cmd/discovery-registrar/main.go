@@ -3,7 +3,7 @@ package main
 import (
 	"code.cloudfoundry.org/go-loggregator/metrics"
 	"code.cloudfoundry.org/metrics-discovery/cmd/discovery-registrar/app"
-	"code.cloudfoundry.org/metrics-discovery/cmd/discovery-registrar/internal/targetprovider"
+	"code.cloudfoundry.org/metrics-discovery/internal/target"
 	"github.com/nats-io/nats.go"
 	"log"
 	"os"
@@ -19,6 +19,28 @@ func main() {
 
 	cfg := app.LoadConfig(logger)
 
+	natsConn := connectToNATS(cfg, logger)
+
+	targetProvider := target.NewFileProvider(cfg.TargetsGlob, cfg.TargetRefreshInterval, logger)
+	go targetProvider.Start()
+
+
+	m := metrics.NewRegistry(logger,
+		metrics.WithDefaultTags(map[string]string{
+			"origin":    "loggregator.config_generator",
+			"source_id": "config_generator",
+		}),
+		metrics.WithServer(cfg.MetricsPort),
+	)
+
+	registrar := app.NewDynamicRegistrar(targetProvider.GetTargets, natsConn, cfg.TargetRefreshInterval, m, logger)
+	go registrar.Start()
+	defer registrar.Stop()
+
+	waitForTermination()
+}
+
+func connectToNATS(cfg app.Config, logger *log.Logger) *nats.Conn {
 	opts := nats.Options{
 		Servers:      cfg.NatsHosts,
 		PingInterval: 20 * time.Second,
@@ -35,27 +57,7 @@ func main() {
 	if err != nil {
 		logger.Fatalf("Unable to connect to nats servers: %s", err)
 	}
-
-	routeProvider := func() []string { return cfg.Routes }
-	if cfg.Routes == nil {
-		targetProvider := targetprovider.NewFileProvider(cfg.RoutesGlob, cfg.RouteRefreshInterval)
-		go targetProvider.Start()
-
-		routeProvider = targetProvider.GetTargets
-	}
-
-	m := metrics.NewRegistry(logger,
-		metrics.WithDefaultTags(map[string]string{
-			"origin":    "loggregator.config_generator",
-			"source_id": "config_generator",
-		}),
-	)
-
-	registrar := app.NewDynamicRegistrar(routeProvider, natsConn, m, cfg)
-	go registrar.Start()
-	defer registrar.Stop()
-
-	waitForTermination()
+	return natsConn
 }
 
 func waitForTermination() {

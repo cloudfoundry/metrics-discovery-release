@@ -7,13 +7,21 @@ consumes:
 
 templates:
   bpm.yml.erb: config/bpm.yml
+  metric_targets.yml.erb: config/metric_targets.yml
 
 packages:
-  - metrics-discovery-registrar
+- metrics-discovery-registrar
 
 properties:
-  routes:
-    description: "A comma separated list of metrics endpoints to publish for scraping"
   publish_interval:
-    description: "interval to publish routes"
+    description: "Interval to publish targets"
     default: 15s
+  targets_glob:
+    description: "Files matching the glob are expected to contain targets to Prometheus metrics endpoints"
+    default: "/var/vcap/jobs/**/config/metric_targets.yml"
+  target_refresh_interval:
+    description: "Interval to refresh the Prometheus endpoint targets"
+    default: 15s
+  metrics_port:
+    description: "Port to host metrics endpoint"
+    default: 15821

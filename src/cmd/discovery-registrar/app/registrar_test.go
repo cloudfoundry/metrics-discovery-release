@@ -5,79 +5,90 @@ import (
 	"code.cloudfoundry.org/metrics-discovery/cmd/discovery-registrar/app"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	. "github.com/onsi/gomega/gstruct"
+	"gopkg.in/yaml.v2"
+
+	"github.com/prometheus/prometheus/config"
+	"log"
 	"sync"
 	"time"
 )
 
 var _ = Describe("Dynamic Registrar", func() {
-	var (
-		fp  *fakePublisher
-		r   *app.DynamicRegistrar
-		ftp *fakeTargetProvider
-		cfg app.Config
-	)
+	type testContext struct {
+		publisher      *fakePublisher
+		targetProvider *fakeTargetProvider
+		metrics        *testhelpers.SpyMetricsRegistry
+		logger         *log.Logger
+		registrar      *app.DynamicRegistrar
+	}
 
-	BeforeEach(func() {
-		fp = newFakePublisher()
-		ftp = &fakeTargetProvider{
-			targets: []string{
-				"https://some-host:8080/metrics",
+	var setup = func(publishInterval time.Duration) *testContext {
+		tc := &testContext{
+			publisher: newFakePublisher(),
+			targetProvider: &fakeTargetProvider{
+				targets: []config.ScrapeConfig{{
+					JobName:     "some-job",
+					MetricsPath: "/metrics",
+					Scheme:      "https",
+				}},
 			},
-		}
-	})
-
-	AfterEach(func() {
-		r.Stop()
-	})
-
-	It("publishes routes from the target provider", func() {
-		cfg = app.Config{
-			PublishInterval: time.Second,
+			metrics: testhelpers.NewMetricsRegistry(),
+			logger:  log.New(GinkgoWriter, "", 0),
 		}
 
-		spyMetrics := testhelpers.NewMetricsRegistry()
-		r = app.NewDynamicRegistrar(ftp.GetTargets, fp, spyMetrics, cfg)
-		go r.Start()
+		tc.registrar = app.NewDynamicRegistrar(tc.targetProvider.GetTargets, tc.publisher, publishInterval, tc.metrics, tc.logger)
+		go tc.registrar.Start()
 
-		Eventually(fp.routes).Should(ConsistOf("https://some-host:8080/metrics"))
-		Expect(fp.publishedToQueue()).To(Equal("metrics.endpoints"))
-		Expect(ftp.timesCalled()).To(Equal(1))
+		return tc
+	}
+
+	var teardown = func(tc *testContext) {
+		tc.registrar.Stop()
+	}
+
+	It("publishes targets from the target provider", func() {
+		tc := setup(time.Second)
+		defer teardown(tc)
+
+		Eventually(tc.publisher.targets).Should(HaveLen(1))
+
+		var scrapeConfig config.ScrapeConfig
+		err := yaml.Unmarshal(tc.publisher.targets()[0], &scrapeConfig)
+		Expect(err).ToNot(HaveOccurred())
+		Expect(scrapeConfig).To(MatchFields(IgnoreExtras, Fields{
+			"JobName":     Equal("some-job"),
+			"MetricsPath": Equal("/metrics"),
+			"Scheme":      Equal("https"),
+		}))
+		Expect(tc.publisher.publishedToQueue()).To(Equal("metrics.scrape_targets"))
+		Expect(tc.targetProvider.timesCalled()).To(Equal(1))
 	})
 
-	It("publishes routes from the target provider on an interval", func() {
-		cfg = app.Config{
-			PublishInterval: 300 * time.Millisecond,
-		}
+	It("publishes targets from the target provider on an interval", func() {
+		tc := setup(300 * time.Millisecond)
+		defer teardown(tc)
 
-		spyMetrics := testhelpers.NewMetricsRegistry()
-		r = app.NewDynamicRegistrar(ftp.GetTargets, fp, spyMetrics, cfg)
-		go r.Start()
-
-		Eventually(ftp.timesCalled).Should(BeNumerically(">=", 4))
-		Expect(len(fp.routes())).To(BeNumerically(">=", 4))
-		Expect(fp.publishedToQueue()).To(Equal("metrics.endpoints"))
+		Eventually(tc.targetProvider.timesCalled).Should(BeNumerically(">=", 4))
+		Expect(len(tc.publisher.targets())).To(BeNumerically(">=", 4))
+		Expect(tc.publisher.publishedToQueue()).To(Equal("metrics.scrape_targets"))
 	})
 
 	It("increments a delivered metric", func() {
-		cfg = app.Config{
-			PublishInterval: 300 * time.Millisecond,
-		}
-
-		spyMetrics := testhelpers.NewMetricsRegistry()
-		r = app.NewDynamicRegistrar(ftp.GetTargets, fp, spyMetrics, cfg)
-		go r.Start()
+		tc := setup(300 * time.Millisecond)
+		defer teardown(tc)
 
 		Eventually(func() int {
-			return int(spyMetrics.GetMetric("sent", map[string]string{}).Value())
+			return int(tc.metrics.GetMetric("sent", map[string]string{}).Value())
 		}).Should(BeNumerically(">=", 1))
 	})
 })
 
 type fakePublisher struct {
 	sync.Mutex
-	rts     []string
-	called  int
-	rtQueue string
+	messages [][]byte
+	called   int
+	queue    string
 }
 
 func newFakePublisher() *fakePublisher {
@@ -88,21 +99,21 @@ func (fp *fakePublisher) Publish(queue string, msg []byte) error {
 	fp.Lock()
 	defer fp.Unlock()
 
-	fp.rtQueue = queue
+	fp.queue = queue
 	fp.called++
-	fp.rts = append(fp.rts, string(msg))
+	fp.messages = append(fp.messages, msg)
 
 	return nil
 }
 
 func (fp *fakePublisher) Close() {}
 
-func (fp *fakePublisher) routes() []string {
+func (fp *fakePublisher) targets() [][]byte {
 	fp.Lock()
 	defer fp.Unlock()
 
-	dst := make([]string, len(fp.rts))
-	copy(dst, fp.rts)
+	dst := make([][]byte, len(fp.messages))
+	copy(dst, fp.messages)
 
 	return dst
 }
@@ -118,16 +129,16 @@ func (fp *fakePublisher) publishedToQueue() string {
 	fp.Lock()
 	defer fp.Unlock()
 
-	return fp.rtQueue
+	return fp.queue
 }
 
 type fakeTargetProvider struct {
 	sync.Mutex
 	called  int
-	targets []string
+	targets []config.ScrapeConfig
 }
 
-func (ftp *fakeTargetProvider) GetTargets() []string {
+func (ftp *fakeTargetProvider) GetTargets() []config.ScrapeConfig {
 	ftp.Lock()
 	defer ftp.Unlock()
 

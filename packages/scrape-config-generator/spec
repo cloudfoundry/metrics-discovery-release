@@ -5,6 +5,7 @@ dependencies:
 - golang-1-linux
 files:
 - cmd/config-generator/**/*.go
+- internal/**/*.go
 - vendor/**/*
 - go.mod
 - go.sum

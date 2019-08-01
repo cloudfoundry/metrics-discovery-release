@@ -2,10 +2,14 @@ package app
 
 import (
 	"code.cloudfoundry.org/go-loggregator/metrics"
+	"code.cloudfoundry.org/metrics-discovery/internal/registry"
+	"github.com/prometheus/prometheus/config"
+	"gopkg.in/yaml.v2"
+	"log"
 	"time"
 )
 
-type ScrapeTargetProvider func() []string
+type ScrapeTargetProvider func() []config.ScrapeConfig
 
 type Publisher interface {
 	Publish(queue string, route []byte) error
@@ -16,20 +20,23 @@ type DynamicRegistrar struct {
 	publisher       Publisher
 	targetProvider  ScrapeTargetProvider
 	publishInterval time.Duration
-	stop            chan struct{}
-	done            chan struct{}
-	sent            metrics.Counter
+
+	stop chan struct{}
+	done chan struct{}
+
+	logger *log.Logger
+	sent   metrics.Counter
 }
 
 type metricsRegistry interface {
 	NewCounter(name string, opts ...metrics.MetricOption) metrics.Counter
 }
 
-func NewDynamicRegistrar(tp ScrapeTargetProvider, p Publisher, m metricsRegistry, cfg Config) *DynamicRegistrar {
+func NewDynamicRegistrar(tp ScrapeTargetProvider, p Publisher, publishInterval time.Duration, m metricsRegistry, log *log.Logger) *DynamicRegistrar {
 	return &DynamicRegistrar{
 		targetProvider:  tp,
 		publisher:       p,
-		publishInterval: cfg.PublishInterval,
+		publishInterval: publishInterval,
 		sent:            m.NewCounter("sent"),
 		stop:            make(chan struct{}),
 		done:            make(chan struct{}),
@@ -55,7 +62,17 @@ func (r *DynamicRegistrar) Start() {
 func (r *DynamicRegistrar) publishTargets() {
 	targets := r.targetProvider()
 	for _, t := range targets {
-		r.publisher.Publish("metrics.endpoints", []byte(t))
+		bytes, err := yaml.Marshal(t)
+		if err != nil {
+			r.logger.Printf("unable to marshal target(%s): %s\n", t.JobName, err)
+			continue
+		}
+
+		err = r.publisher.Publish(registry.ScrapeTargetQueueName, bytes)
+		if err != nil {
+			r.logger.Printf("unable to publish target(%s): %s\n", t.JobName, err)
+			continue
+		}
 		r.sent.Add(float64(1))
 	}
 }

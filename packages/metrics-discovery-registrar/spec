@@ -5,6 +5,7 @@ dependencies:
 - golang-1-linux
 files:
 - cmd/discovery-registrar/**/*.go
+- internal/**/*.go
 - vendor/**/*
 - go.mod
 - go.sum

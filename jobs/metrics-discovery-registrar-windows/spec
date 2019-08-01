@@ -7,13 +7,21 @@ consumes:
 
 templates:
   pre-start.ps1.erb: bin/pre-start.ps1
+  metric_targets.yml.erb: config/metric_targets.yml
 
 packages:
-  - metrics-discovery-registrar-windows
+- metrics-discovery-registrar-windows
 
 properties:
-  routes:
-    description: "A list of metrics endpoints to publish for scraping"
   publish_interval:
-    description: "interval to publish routes"
+    description: "Interval to publish targets"
     default: 15s
+  targets_glob:
+    description: "Files matching the glob are expected to contain targets to Prometheus metrics endpoints"
+    default: "/var/vcap/jobs/**/config/metric_targets.yml"
+  target_refresh_interval:
+    description: "Interval to refresh the Prometheus scrape targets"
+    default: 15s
+  metrics_port:
+    description: "Port to host metrics endpoint"
+    default: 15821

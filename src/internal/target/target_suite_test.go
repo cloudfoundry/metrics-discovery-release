@@ -1,4 +1,4 @@
-package targetprovider_test
+package target_test
 
 import (
 	"testing"
@@ -9,5 +9,5 @@ import (
 
 func TestTargetProvider(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "TargetProvider Suite")
+	RunSpecs(t, "Target Suite")
 }

@@ -3,15 +3,12 @@ package app_test
 import (
 	"code.cloudfoundry.org/go-loggregator/metrics/testhelpers"
 	"code.cloudfoundry.org/metrics-discovery/cmd/config-generator/app"
+	"fmt"
 	"github.com/nats-io/nats.go"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	. "github.com/onsi/gomega/gstruct"
-	"github.com/onsi/gomega/types"
-	"github.com/prometheus/common/model"
 	"github.com/prometheus/prometheus/config"
-	sd_config "github.com/prometheus/prometheus/discovery/config"
-	"github.com/prometheus/prometheus/discovery/targetgroup"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"log"
@@ -59,31 +56,27 @@ var _ = Describe("Config generator", func() {
 		go generator.Start()
 
 		tc.subscriber.callback(&nats.Msg{
-			Data: []byte("https://route-1.com:8080/something"),
+			Data: target("route1", "path1"),
 		})
 		tc.subscriber.callback(&nats.Msg{
-			Data: []byte("http://route-2.com:8080/metrics"),
+			Data: target("route2", "path2"),
 		})
 
 		scrapeConfigs := readScrapeConfigs(tc)
 
 		Expect(scrapeConfigs).To(ConsistOf(
 			MatchFields(IgnoreExtras, Fields{
-				"JobName":                Equal("https://route-1.com:8080/something"),
-				"MetricsPath":            Equal("/something"),
-				"Scheme":                 Equal("https"),
-				"ServiceDiscoveryConfig": haveTarget("route-1.com:8080"),
+				"JobName":                Equal("route1"),
+				"MetricsPath":            Equal("path1"),
 			}),
 			MatchFields(IgnoreExtras, Fields{
-				"JobName":                Equal("http://route-2.com:8080/metrics"),
-				"MetricsPath":            Equal("/metrics"),
-				"Scheme":                 Equal("http"),
-				"ServiceDiscoveryConfig": haveTarget("route-2.com:8080"),
+				"JobName":                Equal("route2"),
+				"MetricsPath":            Equal("path2"),
 			}),
 		))
 	})
 
-	It("doesn't duplicate addresses", func() {
+	It("doesn't duplicate jobs", func() {
 		tc := setup()
 
 		generator := app.NewConfigGenerator(tc.subscriber.Subscribe,
@@ -96,20 +89,18 @@ var _ = Describe("Config generator", func() {
 		go generator.Start()
 
 		tc.subscriber.callback(&nats.Msg{
-			Data: []byte("https://route-1.com:8080/something"),
+			Data: target("route1", "path1"),
 		})
 		tc.subscriber.callback(&nats.Msg{
-			Data: []byte("https://route-1.com:8080/something"),
+			Data: target("route1", "path1"),
 		})
 
 		scrapeConfigs := readScrapeConfigs(tc)
 
 		Expect(scrapeConfigs).To(ConsistOf(
 			MatchFields(IgnoreExtras, Fields{
-				"JobName":                Equal("https://route-1.com:8080/something"),
-				"MetricsPath":            Equal("/something"),
-				"Scheme":                 Equal("https"),
-				"ServiceDiscoveryConfig": haveTarget("route-1.com:8080"),
+				"JobName":                Equal("route1"),
+				"MetricsPath":            Equal("path1"),
 			}),
 		))
 	})
@@ -128,33 +119,29 @@ var _ = Describe("Config generator", func() {
 		go generator.Start()
 
 		tc.subscriber.callback(&nats.Msg{
-			Data: []byte("https://ephemeral:8080/something"),
+			Data: target("ephemeral", "ephemeral"),
 		})
 		tc.subscriber.callback(&nats.Msg{
-			Data: []byte("http://persistent:8080/metrics"),
+			Data: target("persistent", "persistent"),
 		})
 
 		go func() {
 			t := time.NewTicker(600 * time.Millisecond)
 			for range t.C {
 				tc.subscriber.callback(&nats.Msg{
-					Data: []byte("http://persistent:8080/metrics"),
+					Data: target("persistent", "persistent"),
 				})
 			}
 		}()
 
 		Expect(readScrapeConfigs(tc)).To(ConsistOf(
 			MatchFields(IgnoreExtras, Fields{
-				"JobName":                Equal("https://ephemeral:8080/something"),
-				"MetricsPath":            Equal("/something"),
-				"Scheme":                 Equal("https"),
-				"ServiceDiscoveryConfig": haveTarget("ephemeral:8080"),
+				"JobName":                Equal("ephemeral"),
+				"MetricsPath":            Equal("ephemeral"),
 			}),
 			MatchFields(IgnoreExtras, Fields{
-				"JobName":                Equal("http://persistent:8080/metrics"),
-				"MetricsPath":            Equal("/metrics"),
-				"Scheme":                 Equal("http"),
-				"ServiceDiscoveryConfig": haveTarget("persistent:8080"),
+				"JobName":                Equal("persistent"),
+				"MetricsPath":            Equal("persistent"),
 			}),
 		))
 
@@ -162,10 +149,8 @@ var _ = Describe("Config generator", func() {
 			return readScrapeConfigs(tc)
 		}).Should(ConsistOf(
 			MatchFields(IgnoreExtras, Fields{
-				"JobName":                Equal("http://persistent:8080/metrics"),
-				"MetricsPath":            Equal("/metrics"),
-				"Scheme":                 Equal("http"),
-				"ServiceDiscoveryConfig": haveTarget("persistent:8080"),
+				"JobName":                Equal("persistent"),
+				"MetricsPath":            Equal("persistent"),
 			}),
 		))
 	})
@@ -185,7 +170,7 @@ var _ = Describe("Config generator", func() {
 		go generator.Start()
 
 		tc.subscriber.callback(&nats.Msg{
-			Data: []byte("https://ephemeral:8080/something"),
+			Data: target("ephemeral", "ephemeral"),
 		})
 
 		Eventually(func() int {
@@ -194,18 +179,8 @@ var _ = Describe("Config generator", func() {
 	})
 })
 
-func haveTarget(target string) types.GomegaMatcher {
-	return WithTransform(
-		func(sdConfig sd_config.ServiceDiscoveryConfig) []*targetgroup.Group {
-			return sdConfig.StaticConfigs
-		}, ConsistOf(
-			&targetgroup.Group{
-				Targets: []model.LabelSet{
-					{"__address__": model.LabelValue(target)},
-				},
-				Source: "0",
-			},
-		))
+func target(jobName, path string) []byte {
+	return []byte(fmt.Sprintf(targetTemplate, jobName, path))
 }
 
 type fakeSubscriber struct {
@@ -223,3 +198,9 @@ func (fs *fakeSubscriber) Subscribe(queue string, callback nats.MsgHandler) (*na
 
 	return nil, nil
 }
+
+
+var targetTemplate = `
+  job_name: "%s"
+  metrics_path: "%s"
+`
