@@ -1,0 +1,9 @@
+scrape_configs:
+- job_name: example_job
+  metrics_path: /metrics    # default
+  scheme: http              # default
+  dns_sd_configs:
+  - names:
+    - scrape-endpoint
+      type: A
+      port: 6066
