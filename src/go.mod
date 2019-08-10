@@ -3,7 +3,7 @@ module code.cloudfoundry.org/metrics-discovery
 go 1.12
 
 require (
-	code.cloudfoundry.org/go-envstruct v1.4.0
+	code.cloudfoundry.org/go-envstruct v1.5.0
 	code.cloudfoundry.org/go-loggregator v7.6.0+incompatible // pinned
 	github.com/nats-io/jwt v0.2.12 // indirect
 	github.com/nats-io/nats-server/v2 v2.0.2 // indirect

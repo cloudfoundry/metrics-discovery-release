@@ -1,6 +1,6 @@
 # cloud.google.com/go v0.34.0
 cloud.google.com/go/compute/metadata
-# code.cloudfoundry.org/go-envstruct v1.4.0
+# code.cloudfoundry.org/go-envstruct v1.5.0
 code.cloudfoundry.org/go-envstruct
 # code.cloudfoundry.org/go-loggregator v7.6.0+incompatible
 code.cloudfoundry.org/go-loggregator/metrics
