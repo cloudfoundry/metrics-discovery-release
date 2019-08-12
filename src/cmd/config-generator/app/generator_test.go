@@ -8,6 +8,7 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	. "github.com/onsi/gomega/gstruct"
+	common_config "github.com/prometheus/common/config"
 	"github.com/prometheus/prometheus/config"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
@@ -37,8 +38,12 @@ var _ = Describe("Config generator", func() {
 		fileData, err := ioutil.ReadFile(tc.configPath)
 		Expect(err).ToNot(HaveOccurred())
 
+		var cfg config.Config
+		Expect(yaml.Unmarshal(fileData, &cfg)).To(Succeed())
 		var scrapeConfigs []config.ScrapeConfig
-		Expect(yaml.Unmarshal(fileData, &scrapeConfigs)).To(Succeed())
+		for _, sc := range cfg.ScrapeConfigs {
+			scrapeConfigs = append(scrapeConfigs, *sc)
+		}
 
 		return scrapeConfigs
 	}
@@ -50,6 +55,7 @@ var _ = Describe("Config generator", func() {
 			time.Hour,
 			time.Hour,
 			tc.configPath,
+			app.CertFilePaths{},
 			testhelpers.NewMetricsRegistry(),
 			tc.logger,
 		)
@@ -66,14 +72,80 @@ var _ = Describe("Config generator", func() {
 
 		Expect(scrapeConfigs).To(ConsistOf(
 			MatchFields(IgnoreExtras, Fields{
-				"JobName":                Equal("route1"),
-				"MetricsPath":            Equal("path1"),
+				"JobName":     Equal("route1"),
+				"MetricsPath": Equal("path1"),
 			}),
 			MatchFields(IgnoreExtras, Fields{
-				"JobName":                Equal("route2"),
-				"MetricsPath":            Equal("path2"),
+				"JobName":     Equal("route2"),
+				"MetricsPath": Equal("path2"),
 			}),
 		))
+	})
+
+	It("includes tls config for https targets", func() {
+		tc := setup()
+
+		generator := app.NewConfigGenerator(
+			tc.subscriber.Subscribe,
+			time.Hour,
+			time.Hour,
+			tc.configPath,
+			app.CertFilePaths{
+				CA:   "ca-path",
+				Cert: "cert-path",
+				Key:  "key-path",
+			},
+			testhelpers.NewMetricsRegistry(),
+			tc.logger,
+		)
+		go generator.Start()
+
+		tc.subscriber.callback(&nats.Msg{
+			Data: []byte(httpsJob),
+		})
+
+		scrapeConfigs := readScrapeConfigs(tc)
+		Expect(scrapeConfigs).To(HaveLen(1))
+		Expect(scrapeConfigs[0].HTTPClientConfig.TLSConfig).To(
+			Equal(common_config.TLSConfig{
+				CAFile:   "ca-path",
+				CertFile: "cert-path",
+				KeyFile:  "key-path",
+			}))
+	})
+
+	It("doesn't override server name or skip ssl validation", func() {
+		tc := setup()
+
+		generator := app.NewConfigGenerator(
+			tc.subscriber.Subscribe,
+			time.Hour,
+			time.Hour,
+			tc.configPath,
+			app.CertFilePaths{
+				CA:   "ca-path",
+				Cert: "cert-path",
+				Key:  "key-path",
+			},
+			testhelpers.NewMetricsRegistry(),
+			tc.logger,
+		)
+		go generator.Start()
+
+		tc.subscriber.callback(&nats.Msg{
+			Data: []byte(tlsJob),
+		})
+
+		scrapeConfigs := readScrapeConfigs(tc)
+		Expect(scrapeConfigs).To(HaveLen(1))
+		Expect(scrapeConfigs[0].HTTPClientConfig.TLSConfig).To(
+			Equal(common_config.TLSConfig{
+				CAFile:             "ca-path",
+				CertFile:           "cert-path",
+				KeyFile:            "key-path",
+				ServerName:         "some-server-name",
+				InsecureSkipVerify: true,
+			}))
 	})
 
 	It("doesn't duplicate jobs", func() {
@@ -83,6 +155,7 @@ var _ = Describe("Config generator", func() {
 			time.Hour,
 			time.Hour,
 			tc.configPath,
+			app.CertFilePaths{},
 			testhelpers.NewMetricsRegistry(),
 			tc.logger,
 		)
@@ -99,8 +172,8 @@ var _ = Describe("Config generator", func() {
 
 		Expect(scrapeConfigs).To(ConsistOf(
 			MatchFields(IgnoreExtras, Fields{
-				"JobName":                Equal("route1"),
-				"MetricsPath":            Equal("path1"),
+				"JobName":     Equal("route1"),
+				"MetricsPath": Equal("path1"),
 			}),
 		))
 	})
@@ -113,6 +186,7 @@ var _ = Describe("Config generator", func() {
 			600*time.Millisecond,
 			100*time.Millisecond,
 			tc.configPath,
+			app.CertFilePaths{},
 			testhelpers.NewMetricsRegistry(),
 			tc.logger,
 		)
@@ -136,12 +210,12 @@ var _ = Describe("Config generator", func() {
 
 		Expect(readScrapeConfigs(tc)).To(ConsistOf(
 			MatchFields(IgnoreExtras, Fields{
-				"JobName":                Equal("ephemeral"),
-				"MetricsPath":            Equal("ephemeral"),
+				"JobName":     Equal("ephemeral"),
+				"MetricsPath": Equal("ephemeral"),
 			}),
 			MatchFields(IgnoreExtras, Fields{
-				"JobName":                Equal("persistent"),
-				"MetricsPath":            Equal("persistent"),
+				"JobName":     Equal("persistent"),
+				"MetricsPath": Equal("persistent"),
 			}),
 		))
 
@@ -149,8 +223,8 @@ var _ = Describe("Config generator", func() {
 			return readScrapeConfigs(tc)
 		}).Should(ConsistOf(
 			MatchFields(IgnoreExtras, Fields{
-				"JobName":                Equal("persistent"),
-				"MetricsPath":            Equal("persistent"),
+				"JobName":     Equal("persistent"),
+				"MetricsPath": Equal("persistent"),
 			}),
 		))
 	})
@@ -164,6 +238,7 @@ var _ = Describe("Config generator", func() {
 			600*time.Millisecond,
 			100*time.Millisecond,
 			tc.configPath,
+			app.CertFilePaths{},
 			spyMetrics,
 			tc.logger,
 		)
@@ -199,8 +274,20 @@ func (fs *fakeSubscriber) Subscribe(queue string, callback nats.MsgHandler) (*na
 	return nil, nil
 }
 
-
 var targetTemplate = `
   job_name: "%s"
   metrics_path: "%s"
+`
+
+var httpsJob = `
+  job_name: "https_job"
+  scheme: "https"
+`
+
+var tlsJob = `
+  job_name: "tls_job"
+  scheme: "https"
+  tls_config:
+    server_name: "some-server-name"
+    insecure_skip_verify: true
 `

@@ -13,22 +13,29 @@ import (
 	"time"
 )
 
+type CertFilePaths struct {
+	CA   string
+	Cert string
+	Key  string
+}
 
 type Subscriber func(queue string, callback nats.MsgHandler) (*nats.Subscription, error)
 
 type ConfigGenerator struct {
 	sync.Mutex
 	path                     string
-	logger                   *log.Logger
 	configTTL                time.Duration
 	configExpirationInterval time.Duration
-	subscriber               Subscriber
-	done                     chan struct{}
-	stop                     chan struct{}
-	delivered                metrics.Counter
-	metrics                  metricsRegistry
+	certFilePaths            CertFilePaths
 
-	scrapeConfigs            map[string]timestampedScrapeConfig
+	subscriber Subscriber
+	done       chan struct{}
+	stop       chan struct{}
+	delivered  metrics.Counter
+	metrics    metricsRegistry
+	logger     *log.Logger
+
+	scrapeConfigs map[string]timestampedScrapeConfig
 }
 
 type metricsRegistry interface {
@@ -36,7 +43,7 @@ type metricsRegistry interface {
 }
 
 type timestampedScrapeConfig struct {
-	scrapeConfig config.ScrapeConfig
+	scrapeConfig *config.ScrapeConfig
 	ts           time.Time
 }
 
@@ -45,19 +52,22 @@ func NewConfigGenerator(
 	ttl,
 	expirationInterval time.Duration,
 	path string,
+	certFilePaths CertFilePaths,
 	m metricsRegistry,
 	logger *log.Logger,
 ) *ConfigGenerator {
 	configGenerator := &ConfigGenerator{
 		scrapeConfigs:            make(map[string]timestampedScrapeConfig),
 		path:                     path,
-		logger:                   logger,
-		configExpirationInterval: expirationInterval,
 		configTTL:                ttl,
-		subscriber:               subscriber,
-		delivered:                m.NewCounter("delivered"),
-		stop:                     make(chan struct{}),
-		done:                     make(chan struct{}),
+		configExpirationInterval: expirationInterval,
+		certFilePaths:            certFilePaths,
+
+		logger:     logger,
+		subscriber: subscriber,
+		delivered:  m.NewCounter("delivered"),
+		stop:       make(chan struct{}),
+		done:       make(chan struct{}),
 	}
 
 	// If this doesn't happen synchronously, it could fail when the subscriber is called
@@ -98,8 +108,14 @@ func (cg *ConfigGenerator) generate(message *nats.Msg) {
 		return
 	}
 
+	if scrapeConfig.Scheme == "https" {
+		scrapeConfig.HTTPClientConfig.TLSConfig.CAFile = cg.certFilePaths.CA
+		scrapeConfig.HTTPClientConfig.TLSConfig.CertFile = cg.certFilePaths.Cert
+		scrapeConfig.HTTPClientConfig.TLSConfig.KeyFile = cg.certFilePaths.Key
+	}
+
 	cg.scrapeConfigs[scrapeConfig.JobName] = timestampedScrapeConfig{
-		scrapeConfig: scrapeConfig,
+		scrapeConfig: &scrapeConfig,
 		ts:           time.Now(),
 	}
 
@@ -118,12 +134,16 @@ func (cg *ConfigGenerator) unmarshalScrapeConfig(message *nats.Msg) (config.Scra
 }
 
 func (cg *ConfigGenerator) writeConfigToFile() {
-	var scrapeConfigs []config.ScrapeConfig
+	var scrapeConfigs []*config.ScrapeConfig
 	for _, cfg := range cg.scrapeConfigs {
 		scrapeConfigs = append(scrapeConfigs, cfg.scrapeConfig)
 	}
 
-	data, err := yaml.Marshal(scrapeConfigs)
+	promConfig := config.Config{
+		ScrapeConfigs: scrapeConfigs,
+	}
+
+	data, err := yaml.Marshal(promConfig)
 	if err != nil {
 		cg.logger.Printf("failed to marshal scrape configs: %s\n", err)
 		return

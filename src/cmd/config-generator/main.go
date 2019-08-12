@@ -40,11 +40,17 @@ func main() {
 		metrics.WithServer(config.MetricsPort),
 	)
 
+	certsFilePath := app.CertFilePaths{
+		CA:   config.ScrapeCAPath,
+		Cert: config.ScrapeCertPath,
+		Key:  config.ScrapeKeyPath,
+	}
 	generator := app.NewConfigGenerator(
 		natsConn.Subscribe,
 		config.ConfigTimeToLive,
 		config.ConfigExpirationInterval,
 		config.ScrapeConfigFilePath,
+		certsFilePath,
 		m,
 		logger,
 	)

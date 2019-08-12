@@ -11,6 +11,9 @@ type Config struct {
 	ScrapeConfigFilePath     string        `env:"SCRAPE_CONFIG_FILE_PATH, required, report"`
 	ConfigExpirationInterval time.Duration `env:"CONFIG_EXPIRATION_INTERVAL,        report"`
 	ConfigTimeToLive         time.Duration `env:"CONFIG_TTL,                        report"`
+	ScrapeCAPath             string        `env:"SCRAPE_CA_PATH"`
+	ScrapeCertPath           string        `env:"SCRAPE_CERT_PATH"`
+	ScrapeKeyPath            string        `env:"SCRAPE_KEY_PATH"`
 
 	MetricsPort int `env:"METRICS_PORT, report"`
 }

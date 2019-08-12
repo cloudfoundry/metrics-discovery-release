@@ -18,6 +18,9 @@ processes:
     NATS_HOSTS: "<%= nats_str %>"
     SCRAPE_CONFIG_FILE_PATH: "<%= p('scrape_config_file_path') %>"
     CONFIG_EXPIRATION_INTERVAL: "<%= p('expiration_interval') %>"
+    SCRAPE_CA_PATH: "/var/vcap/jobs/scrape-config-generator/config/certs/scrape_ca.crt"
+    SCRAPE_CERT_PATH: "/var/vcap/jobs/scrape-config-generator/config/certs/scrape.crt"
+    SCRAPE_KEY_PATH: "/var/vcap/jobs/scrape-config-generator/config/certs/scrape.key"
     CONFIG_TTL: "<%= p('config_ttl') %>"
     METRICS_PORT: "<%= p("metrics_port") %>"
   ephemeral_disk: true
