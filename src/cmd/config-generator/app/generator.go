@@ -108,6 +108,11 @@ func (cg *ConfigGenerator) generate(message *nats.Msg) {
 		return
 	}
 
+	tlsConfig := scrapeConfig.HTTPClientConfig.TLSConfig
+	if tlsConfig.CAFile != "" || tlsConfig.CertFile != "" || tlsConfig.KeyFile != "" {
+		cg.logger.Println("failed to use provided tls_config cert file paths: certs are provided by the scrape-config-generator job")
+	}
+
 	if scrapeConfig.Scheme == "https" {
 		scrapeConfig.HTTPClientConfig.TLSConfig.CAFile = cg.certFilePaths.CA
 		scrapeConfig.HTTPClientConfig.TLSConfig.CertFile = cg.certFilePaths.Cert
