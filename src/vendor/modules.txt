@@ -280,10 +280,10 @@ golang.org/x/oauth2/jws
 golang.org/x/oauth2/jwt
 # golang.org/x/sync v0.0.0-20190423024810-112230192c58
 golang.org/x/sync/semaphore
-# golang.org/x/sys v0.0.0-20190812073006-9eafafc0a87e
+# golang.org/x/sys v0.0.0-20190812172437-4e8604ab3aff
 golang.org/x/sys/windows
 golang.org/x/sys/unix
-# golang.org/x/text v0.3.1-0.20180805044716-cb6730876b98
+# golang.org/x/text v0.3.2
 golang.org/x/text/encoding
 golang.org/x/text/encoding/charmap
 golang.org/x/text/encoding/htmlindex

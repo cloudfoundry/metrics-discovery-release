@@ -14,6 +14,7 @@ require (
 	github.com/prometheus/prometheus v2.11.0+incompatible // pinned
 	golang.org/x/net v0.0.0-20190724013045-ca1201d0de80 // indirect
 	golang.org/x/sync v0.0.0-20190423024810-112230192c58 // indirect
-	golang.org/x/sys v0.0.0-20190812073006-9eafafc0a87e // indirect
+	golang.org/x/sys v0.0.0-20190812172437-4e8604ab3aff // indirect
+	golang.org/x/text v0.3.2 // indirect
 	gopkg.in/yaml.v2 v2.2.2
 )
