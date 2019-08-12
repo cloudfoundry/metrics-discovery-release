@@ -9,9 +9,35 @@
   value:
     name: metrics-discovery-registrar
     release: metrics-discovery
+    properties:
+      metrics:
+        ca_cert: "((metrics_discovery_agent_tls.ca))"
+        cert: "((metrics_discovery_agent_tls.certificate))"
+        key: "((metrics_discovery_agent_tls.private_key))"
 
 - type: replace
   path: /releases/name=metrics-discovery?
   value:
     name: metrics-discovery
     version: latest
+
+- type: replace
+  path: /variables/name=metris_discovery_agent_ca?
+  value:
+    name: metric_discovery_agent_ca
+    type: certificate
+    options:
+      is_ca: true
+      common_name: metricsDiscoveryAgentCA
+
+- type: replace
+  path: /variables/name=metrics_discovery_agent_tls?
+  value:
+    name: metrics_discovery_agent_tls
+    type: certificate
+    options:
+      ca: metric_discovery_agent_ca
+      common_name: metrics_discovery_agent
+      extended_key_usage:
+        - server_auth
+        - client_auth

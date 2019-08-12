@@ -8,6 +8,18 @@ scrape_configs = [{
       "port" => p('metrics_port'),
     },
   ],
+  "relabel_configs" => [
+    {
+      "source_labels"=> ['__address__'], # always there (added by Prometheus)
+      "target_label" => 'source_id',
+      "replacement" => 'metrics_discovery_registrar'
+    },
+    {
+      "source_labels"=> ['__address__'], # always there (added by Prometheus)
+      "target_label" => 'origin',
+      "replacement" => 'loggregator_metrics_discovery_registrar'
+    }
+  ],
 }]
 %>
 

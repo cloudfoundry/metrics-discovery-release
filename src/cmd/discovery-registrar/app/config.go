@@ -13,6 +13,10 @@ type Config struct {
 	TargetsGlob           string        `env:"TARGETS_GLOB,            report"`
 	TargetRefreshInterval time.Duration `env:"TARGET_REFRESH_INTERVAL, report"`
 
+	CAFile               string            `env:"METRICS_CA_FILE_PATH, required, report"`
+	CertFile             string            `env:"METRICS_CERT_FILE_PATH, required, report"`
+	KeyFile              string            `env:"METRICS_KEY_FILE_PATH, required, report"`
+
 	MetricsPort int `env:"METRICS_PORT, report"`
 }
 
