@@ -21,7 +21,7 @@ require (
 	github.com/prometheus/client_model v0.0.0-20190812154241-14fe0d1b01d4 // indirect
 	github.com/prometheus/common v0.6.0
 	github.com/prometheus/prometheus v2.11.0+incompatible // pinned
-	golang.org/x/net v0.0.0-20190724013045-ca1201d0de80 // indirect
+	golang.org/x/net v0.0.0-20190813141303-74dc4d7220e7 // indirect
 	golang.org/x/sys v0.0.0-20190813064441-fde4db37ae7a // indirect
 	google.golang.org/grpc v1.22.2 // indirect
 	gopkg.in/yaml.v2 v2.2.2
