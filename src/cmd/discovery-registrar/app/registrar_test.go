@@ -70,7 +70,9 @@ var _ = Describe("Dynamic Registrar", func() {
 		defer teardown(tc)
 
 		Eventually(tc.targetProvider.timesCalled).Should(BeNumerically(">=", 4))
-		Expect(len(tc.publisher.targets())).To(BeNumerically(">=", 4))
+		Eventually(func() int {
+			return len(tc.publisher.targets())
+		}).Should(BeNumerically(">=", 4))
 		Expect(tc.publisher.publishedToQueue()).To(Equal("metrics.scrape_targets"))
 	})
 
