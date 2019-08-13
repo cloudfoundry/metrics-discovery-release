@@ -23,7 +23,7 @@ require (
 	github.com/prometheus/prometheus v2.11.0+incompatible // pinned
 	golang.org/x/net v0.0.0-20190813141303-74dc4d7220e7 // indirect
 	golang.org/x/sys v0.0.0-20190813064441-fde4db37ae7a // indirect
-	google.golang.org/grpc v1.22.2 // indirect
+	google.golang.org/grpc v1.23.0 // indirect
 	gopkg.in/yaml.v2 v2.2.2
 )
 
