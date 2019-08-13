@@ -8,3 +8,4 @@
         ca_cert: "((metrics_discovery_metrics_tls.ca))"
         cert: "((metrics_discovery_metrics_tls.certificate))"
         key: "((metrics_discovery_metrics_tls.private_key))"
+        server_name: metrics_discovery_metrics
