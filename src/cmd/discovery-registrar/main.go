@@ -26,11 +26,7 @@ func main() {
 
 
 	m := metrics.NewRegistry(logger,
-		metrics.WithDefaultTags(map[string]string{
-			"origin":    "loggregator.config_generator",
-			"source_id": "config_generator",
-		}),
-		metrics.WithServer(cfg.MetricsPort),
+		metrics.WithTLSServer(cfg.MetricsPort, cfg.MetricsCertPath, cfg.MetricsKeyPath, cfg.MetricsCAPath),
 	)
 
 	registrar := app.NewDynamicRegistrar(targetProvider.GetTargets, natsConn, cfg.TargetRefreshInterval, m, logger)

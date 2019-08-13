@@ -8,12 +8,23 @@
         ca_cert: "((metrics_discovery_tls.ca))"
         cert: "((metrics_discovery_tls.certificate))"
         key: "((metrics_discovery_tls.private_key))"
+      metrics:
+        ca_cert: "((scrape_config_generator_metrics_tls.ca))"
+        cert: "((scrape_config_generator_metrics_tls.certificate))"
+        key: "((scrape_config_generator_metrics_tls.private_key))"
+        server_name: scrape_config_generator_metrics
 
 - type: replace
   path: /instance_groups/name=doppler/jobs/name=metrics-discovery-registrar?
   value:
     name: metrics-discovery-registrar
     release: metrics-discovery
+    properties:
+      metrics:
+        ca_cert: "((metrics_discovery_metrics_tls.ca))"
+        cert: "((metrics_discovery_metrics_tls.certificate))"
+        key: "((metrics_discovery_metrics_tls.private_key))"
+        server_name: metrics_discovery_metrics
 
 - type: replace
   path: /releases/name=metrics-discovery?
@@ -40,3 +51,25 @@
       common_name: metrics_discovery
       extended_key_usage:
       - client_auth
+
+- type: replace
+  path: /variables/name=metrics_discovery_metrics_tls?
+  value:
+    name: metrics_discovery_metrics_tls
+    type: certificate
+    options:
+      ca: metric_scraper_ca
+      common_name: metrics_discovery_metrics
+      extended_key_usage:
+      - server_auth
+
+- type: replace
+  path: /variables/name=scrape_config_generator_metrics_tls?
+  value:
+    name: scrape_config_generator_metrics_tls
+    type: certificate
+    options:
+      ca: metric_scraper_ca
+      common_name: scrape_config_generator_metrics
+      extended_key_usage:
+      - server_auth

@@ -1,6 +1,6 @@
 <%
 scrape_configs = [{
-  "job_name" => "metrics_discovery_registrar",
+  "job_name" => "scrape_config_generator",
   "scheme" => "https",
   "dns_sd_configs" => [
     {
@@ -13,12 +13,12 @@ scrape_configs = [{
     {
       "source_labels"=> ['__address__'], # always there (added by Prometheus)
       "target_label" => 'source_id',
-      "replacement" => 'metrics_discovery_registrar'
+      "replacement" => 'scrape_config_generator'
     },
     {
       "source_labels"=> ['__address__'], # always there (added by Prometheus)
       "target_label" => 'origin',
-      "replacement" => 'loggregator_metrics_discovery_registrar'
+      "replacement" => 'loggregator_scrape_config_generator'
     }
   ],
   "tls_config" => {

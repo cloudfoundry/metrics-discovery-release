@@ -7,6 +7,9 @@ consumes:
 
 templates:
   bpm.yml.erb: config/bpm.yml
+  metrics_ca.crt.erb: config/certs/metrics_ca.crt
+  metrics.crt.erb: config/certs/metrics.crt
+  metrics.key.erb: config/certs/metrics.key
   metric_targets.yml.erb: config/metric_targets.yml
 
 packages:
@@ -22,6 +25,15 @@ properties:
   target_refresh_interval:
     description: "Interval to refresh the Prometheus endpoint targets"
     default: 15s
-  metrics_port:
+
+  metrics.ca_cert:
+    description: "TLS CA cert to verify requests to metrics endpoint."
+  metrics.cert:
+    description: "TLS certificate for metrics server signed by the metrics CA"
+  metrics.key:
+    description: "TLS private key for metrics server signed by the metrics CA"
+  metrics.server_name:
+    description: "The server name used in the scrape configuration for the metrics endpoint"
+  metrics.port:
     description: "Port to host metrics endpoint"
     default: 15821

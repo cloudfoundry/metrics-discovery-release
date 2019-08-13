@@ -10,6 +10,10 @@ templates:
   scrape_ca.crt.erb: config/certs/scrape_ca.crt
   scrape.crt.erb: config/certs/scrape.crt
   scrape.key.erb: config/certs/scrape.key
+  metrics_ca.crt.erb: config/certs/metrics_ca.crt
+  metrics.crt.erb: config/certs/metrics.crt
+  metrics.key.erb: config/certs/metrics.key
+  metric_targets.yml.erb: config/metric_targets.yml
 
 packages:
 - scrape-config-generator
@@ -34,6 +38,14 @@ properties:
   scrape.key:
     description: "TLS private key to use for scraping"
 
-  metrics_port:
+  metrics.ca_cert:
+    description: "TLS CA cert to verify requests to metrics endpoint."
+  metrics.cert:
+    description: "TLS certificate for metrics server signed by the metrics CA"
+  metrics.key:
+    description: "TLS private key for metrics server signed by the metrics CA"
+  metrics.server_name:
+    description: "The server name used in the scrape configuration for the metrics endpoint"
+  metrics.port:
     description: "Port to host metrics endpoint"
     default: 15822
