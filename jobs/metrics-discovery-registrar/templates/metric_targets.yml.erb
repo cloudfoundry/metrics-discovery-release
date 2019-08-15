@@ -1,6 +1,6 @@
 <%
 scrape_configs = [{
-  "job_name" => "metrics_discovery_registrar",
+  "job_name" => "metrics_discovery_registrar_#{spec.name}",
   "scheme" => "https",
   "dns_sd_configs" => [
     {
