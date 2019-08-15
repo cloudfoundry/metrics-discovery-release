@@ -12,8 +12,7 @@ require (
 	github.com/hashicorp/golang-lru v0.5.3 // indirect
 	github.com/jpillora/backoff v0.0.0-20180909062703-3050d21c67d7 // indirect
 	github.com/mwitkow/go-conntrack v0.0.0-20190716064945-2f068394615f // indirect
-	github.com/nats-io/jwt v0.2.14 // indirect
-	github.com/nats-io/nats-server/v2 v2.0.2 // indirect
+	github.com/nats-io/nats-server/v2 v2.0.4 // indirect
 	github.com/nats-io/nats.go v1.8.1
 	github.com/onsi/ginkgo v1.8.0
 	github.com/onsi/gomega v1.5.0
