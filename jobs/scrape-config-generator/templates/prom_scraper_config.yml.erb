@@ -1,0 +1,6 @@
+---
+port: <%= p("metrics.port") %>
+source_id: "scrape_config_generator"
+instance_id: <%= spec.id || spec.index.to_s %>
+scheme: https
+server_name: <%= p('metrics.server_name') %>
