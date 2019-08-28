@@ -33,10 +33,6 @@ func main() {
 	}
 
 	m := metrics.NewRegistry(logger,
-		metrics.WithDefaultTags(map[string]string{
-			"origin":    "loggregator.config_generator", //TODO
-			"source_id": "config_generator",
-		}),
 		metrics.WithTLSServer(config.MetricsPort, config.MetricsCertPath, config.MetricsKeyPath, config.MetricsCAPath),
 	)
 
