@@ -65,7 +65,7 @@ func NewConfigGenerator(
 
 		logger:     logger,
 		subscriber: subscriber,
-		delivered:  m.NewCounter("delivered"),
+		delivered:  m.NewCounter("delivered", metrics.WithHelpText("Total number of messages successfully delivered from NATs.")),
 		stop:       make(chan struct{}),
 		done:       make(chan struct{}),
 	}

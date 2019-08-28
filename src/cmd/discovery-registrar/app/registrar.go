@@ -37,7 +37,7 @@ func NewDynamicRegistrar(tp ScrapeTargetProvider, p Publisher, publishInterval t
 		targetProvider:  tp,
 		publisher:       p,
 		publishInterval: publishInterval,
-		sent:            m.NewCounter("sent"),
+		sent:            m.NewCounter("sent", metrics.WithHelpText("Total number of messages successfully sent to NATs.")),
 		stop:            make(chan struct{}),
 		done:            make(chan struct{}),
 	}
