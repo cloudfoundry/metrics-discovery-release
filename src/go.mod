@@ -17,7 +17,7 @@ require (
 	github.com/mwitkow/go-conntrack v0.0.0-20190716064945-2f068394615f // indirect
 	github.com/nats-io/nats-server/v2 v2.0.4 // indirect
 	github.com/nats-io/nats.go v1.8.1
-	github.com/onsi/ginkgo v1.9.0
+	github.com/onsi/ginkgo v1.10.0
 	github.com/onsi/gomega v1.7.0
 	github.com/prometheus/client_golang v1.1.0
 	github.com/prometheus/client_model v0.0.0-20190812154241-14fe0d1b01d4
