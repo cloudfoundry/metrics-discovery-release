@@ -1,9 +1,11 @@
 ---
-name: metrics-agent
+name: metrics-agent-windows
 
 dependencies:
-- golang-1-linux
+- golang-1-windows
+
 files:
+- exiter.ps1
 - cmd/metrics-agent/**/*.go
 - vendor/**/*
 - go.mod

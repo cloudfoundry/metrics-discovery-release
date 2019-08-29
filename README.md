@@ -30,6 +30,9 @@ to the path defined by the `scrape_config_file_path` property -- by default `/va
 The scrape config will be modified as metric targets come and go. Interested metric scrapers should watch the scrape config file
 for changes.
 
+### Metrics agent
+A simple agent that receives metrics from the Forwarder Agent and exposes them on a prometheus-scrapable endpoint.
+More information can be found in the [docs][metrics-agent]
 
 ### Pivotal Tracker
 
@@ -42,5 +45,6 @@ Items marked as "In Flight" on the Roadmap are tracked as new Features in
 [ci-badge]:            https://loggregator.ci.cf-app.com/api/v1/pipelines/products/jobs/metrics-discovery-tests-with-bumped-modules/badge
 [ci-pipeline]:         https://loggregator.ci.cf-app.com/teams/main/pipelines/loggregator
 
+[metrics-agent]:        docs/metrics-agent.md
 [architecture]:         docs/metrics_discovery_release_architecture.png
 [target-example]:       docs/metric_targets.yml
