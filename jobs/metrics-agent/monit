@@ -1,0 +1,5 @@
+check process metrics-agent
+  with pidfile /var/vcap/sys/run/bpm/metrics-agent/metrics-agent.pid
+  start program "/var/vcap/jobs/bpm/bin/bpm start metrics-agent"
+  stop program "/var/vcap/jobs/bpm/bin/bpm stop metrics-agent"
+  group vcap

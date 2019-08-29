@@ -1,5 +1,5 @@
 ---
-name: loggr-metrics-agent-windows
+name: metrics-agent-windows
 
 templates:
   pre-start.ps1.erb: bin/pre-start.ps1

@@ -1,5 +1,5 @@
 ---
-name: loggr-metrics-agent
+name: metrics-agent
 
 templates:
   bpm.yml.erb: config/bpm.yml

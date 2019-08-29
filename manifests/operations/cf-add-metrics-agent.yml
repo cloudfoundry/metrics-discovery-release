@@ -1,7 +1,7 @@
 - type: replace
-  path: /addons/name=loggr-metrics-agent?
+  path: /addons/name=metrics-agent?
   value:
-    name: loggr-metrics-agent
+    name: metrics-agent
     include:
       stemcell:
       - os: ubuntu-xenial
@@ -10,7 +10,7 @@
       - name: smoke_tests
         release: cf-smoke-tests
     jobs:
-    - name: loggr-metrics-agent
+    - name: metrics-agent
       release: metrics-discovery
       properties:
         grpc:

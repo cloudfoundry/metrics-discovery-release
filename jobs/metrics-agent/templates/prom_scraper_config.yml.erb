@@ -1,6 +1,6 @@
 ---
 port: <%= p("metrics.port") %>
-source_id: "loggr-metrics-agent"
+source_id: "metrics-agent"
 instance_id: <%= spec.id || spec.index.to_s %>
 scheme: https
 server_name: <%= p('metrics.server_name') %>

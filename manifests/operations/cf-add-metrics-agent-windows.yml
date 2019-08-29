@@ -1,8 +1,8 @@
 ---
 - type: replace
-  path: /instance_groups/name=windows1803-cell/jobs/name=loggr-metrics-agent-windows?
+  path: /instance_groups/name=windows1803-cell/jobs/name=metrics-agent-windows?
   value:
-    name: loggr-metrics-agent-windows
+    name: metrics-agent-windows
     release: metrics-discovery
     properties:
       grpc:
