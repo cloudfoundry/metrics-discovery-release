@@ -4,9 +4,9 @@ import (
 	gendiodes "code.cloudfoundry.org/go-diodes"
 	"code.cloudfoundry.org/go-loggregator/metrics"
 	"code.cloudfoundry.org/loggregator-agent/pkg/diodes"
-	"code.cloudfoundry.org/loggregator-agent/pkg/egress/prom"
 	egress_v2 "code.cloudfoundry.org/loggregator-agent/pkg/egress/v2"
 	v2 "code.cloudfoundry.org/loggregator-agent/pkg/ingress/v2"
+	"code.cloudfoundry.org/metrics-discovery/internal/collector"
 	"code.cloudfoundry.org/tlsconfig"
 	"context"
 	"crypto/tls"
@@ -47,10 +47,10 @@ func (m *MetricsAgent) Run() {
 	envelopeBuffer := m.envelopeDiode()
 	go m.startIngressServer(envelopeBuffer)
 
-	promCollector := prom.NewCollector(
+	promCollector := collector.NewEnvelopeCollector(
 		m.metrics,
-		prom.WithSourceIDExpiration(m.cfg.MetricsExporter.TimeToLive, m.cfg.MetricsExporter.ExpirationInterval),
-		prom.WithDefaultTags(m.cfg.MetricsExporter.DefaultTags),
+		collector.WithSourceIDExpiration(m.cfg.MetricsExporter.TimeToLive, m.cfg.MetricsExporter.ExpirationInterval),
+		collector.WithDefaultTags(m.cfg.MetricsExporter.DefaultTags),
 	)
 	go m.startEnvelopeCollection(promCollector, envelopeBuffer)
 
@@ -103,7 +103,7 @@ func (m *MetricsAgent) generateServerTLSConfig(certFile, keyFile, caFile string)
 	return tlsConfig
 }
 
-func (m *MetricsAgent) startEnvelopeCollection(promCollector *prom.Collector, diode *diodes.ManyToOneEnvelopeV2) {
+func (m *MetricsAgent) startEnvelopeCollection(promCollector *collector.EnvelopeCollector, diode *diodes.ManyToOneEnvelopeV2) {
 	tagger := egress_v2.NewTagger(m.cfg.Tags).TagEnvelope
 	timerTagFilterer := egress_v2.NewTimerTagFilterer(m.cfg.MetricsExporter.WhitelistedTimerTags, tagger).Filter
 	envelopeWriter := egress_v2.NewEnvelopeWriter(
@@ -126,7 +126,7 @@ func (m *MetricsAgent) startEnvelopeCollection(promCollector *prom.Collector, di
 	}
 }
 
-func (m *MetricsAgent) startMetricsServer(promCollector *prom.Collector) {
+func (m *MetricsAgent) startMetricsServer(promCollector *collector.EnvelopeCollector) {
 	registry := prometheus.NewRegistry()
 	registry.MustRegister(promCollector)
 
