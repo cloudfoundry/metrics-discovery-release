@@ -21,21 +21,25 @@ import (
 )
 
 type MetricsAgent struct {
-	cfg           Config
-	log           *log.Logger
-	metrics       Metrics
-	metricsServer *http.Server
+	cfg                 Config
+	log                 *log.Logger
+	metrics             Metrics
+	metricsServer       *http.Server
+	sourceIdBlacklister SourceIDProvider
 }
+
+type SourceIDProvider func() []string
 
 type Metrics interface {
 	NewCounter(name string, options ...metrics.MetricOption) metrics.Counter
 }
 
-func NewMetricsAgent(cfg Config, metrics Metrics, log *log.Logger) *MetricsAgent {
+func NewMetricsAgent(cfg Config, sourceIdBlacklister SourceIDProvider, metrics Metrics, log *log.Logger) *MetricsAgent {
 	return &MetricsAgent{
-		cfg:     cfg,
-		log:     log,
-		metrics: metrics,
+		cfg:                 cfg,
+		log:                 log,
+		metrics:             metrics,
+		sourceIdBlacklister: sourceIdBlacklister,
 	}
 }
 
@@ -110,7 +114,12 @@ func (m *MetricsAgent) startEnvelopeCollection(promCollector *prom.Collector, di
 	)
 
 	for {
-		err := envelopeWriter.Write(diode.Next())
+		next := diode.Next()
+		if m.blacklistedSourceID(next.GetSourceId()) {
+			continue
+		}
+
+		err := envelopeWriter.Write(next)
 		if err != nil {
 			log.Printf("unable to write envelope: %s", err)
 		}
@@ -152,4 +161,14 @@ func (m *MetricsAgent) Stop() {
 	}()
 
 	<-ctx.Done()
+}
+
+func (m *MetricsAgent) blacklistedSourceID(sourceID string) bool {
+	for _, blacklistedSourceID := range m.sourceIdBlacklister() {
+		if blacklistedSourceID == sourceID {
+			return true
+		}
+	}
+
+	return false
 }

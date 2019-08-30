@@ -2,10 +2,12 @@ package main
 
 import (
 	"code.cloudfoundry.org/go-loggregator/metrics"
+	"code.cloudfoundry.org/loggregator-agent/pkg/scraper"
 	"code.cloudfoundry.org/metrics-discovery/cmd/metrics-agent/app"
 	"log"
 	_ "net/http/pprof"
 	"os"
+	"time"
 )
 
 func main() {
@@ -24,5 +26,21 @@ func main() {
 			cfg.MetricsServer.CAFile,
 		),
 	)
-	app.NewMetricsAgent(cfg, m, logger).Run()
+
+	scrapeConfigProvider := scraper.NewConfigProvider(cfg.ConfigGlobs, time.Second, logger)
+
+	sourceIDProvider := func() []string {
+		scrapeConfigs, err := scrapeConfigProvider.Configs()
+		if err != nil {
+			logger.Printf("unable to read scrape configs in order to blacklist source IDs: %s", err)
+		}
+
+		var sourceIDs []string
+		for _, sc := range scrapeConfigs {
+			sourceIDs = append(sourceIDs, sc.SourceID)
+		}
+		return sourceIDs
+	}
+
+	app.NewMetricsAgent(cfg, sourceIDProvider, m, logger).Run()
 }

@@ -2,8 +2,8 @@ package app_test
 
 import (
 	"code.cloudfoundry.org/go-loggregator"
-	"code.cloudfoundry.org/loggregator-agent/cmd/metrics-agent/app"
 	"code.cloudfoundry.org/loggregator-agent/pkg/config"
+	"code.cloudfoundry.org/metrics-discovery/cmd/metrics-agent/app"
 	"code.cloudfoundry.org/metrics-discovery/internal/testhelpers"
 	"code.cloudfoundry.org/tlsconfig"
 	"context"
@@ -27,7 +27,8 @@ var _ = Describe("MetricsAgent", func() {
 		metricsPort  uint16
 		testCerts    *testhelpers.TestCerts
 
-		ingressClient *loggregator.IngressClient
+		ingressClient        *loggregator.IngressClient
+		fakeSourceIDProvider app.SourceIDProvider
 	)
 
 	BeforeEach(func() {
@@ -61,8 +62,12 @@ var _ = Describe("MetricsAgent", func() {
 
 		ingressClient = newTestingIngressClient(int(grpcPort), testCerts)
 
+		fakeSourceIDProvider = func() []string {
+			return []string{"source_id_scraped"}
+		}
+
 		testLogger := log.New(GinkgoWriter, "", log.LstdFlags)
-		metricsAgent = app.NewMetricsAgent(cfg, testhelpers.NewMetricClient(), testLogger)
+		metricsAgent = app.NewMetricsAgent(cfg, fakeSourceIDProvider, testhelpers.NewMetricClient(), testLogger)
 		go metricsAgent.Run()
 		waitForMetricsEndpoint(metricsPort, testCerts)
 	})
@@ -128,6 +133,24 @@ var _ = Describe("MetricsAgent", func() {
 			&dto.LabelPair{Name: proto.String("source_id"), Value: proto.String("source-id-from-source-info")},
 			&dto.LabelPair{Name: proto.String("instance_id"), Value: proto.String("instance-id-from-source-info")},
 		))
+	})
+
+	It("filters out blacklisted source_ids", func() {
+		cancel := doUntilCancelled(func() {
+			ingressClient.EmitCounter("prom_scraped",
+				loggregator.WithTotal(22),
+				loggregator.WithCounterSourceInfo("source_id_scraped", "some-instance-id"),
+			)
+
+			ingressClient.EmitCounter("non_prom_scraped",
+				loggregator.WithTotal(22),
+				loggregator.WithCounterSourceInfo("source_id_non_scraped", "some-instance-id"),
+			)
+		})
+		defer cancel()
+
+		Eventually(getMetricFamilies(metricsPort, testCerts), 3).Should(HaveKey("non_prom_scraped"))
+		Consistently(getMetricFamilies(metricsPort, testCerts), 3).Should(Not(HaveKey("prom_scraped")))
 	})
 
 	It("aggregates delta counters", func() {

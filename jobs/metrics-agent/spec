@@ -50,3 +50,7 @@ properties:
   metrics.whitelisted_timer_tags:
     description: "A list of tags allowed for aggregating timer metrics into histograms"
     default: "source_id,deployment,job,index,ip"
+
+  config_globs:
+    description: "Files matching the globs are expected to contain information to scrape a Prometheus metrics endpoint on localhost."
+    default: [/var/vcap/jobs/*/config/prom_scraper_config.yml, /var/vcap/jobs/*/config/metric_port.yml]

@@ -19,6 +19,7 @@
     "AGENT_CERT_FILE_PATH" => "/var/vcap/jobs/metrics-agent-windows/config/certs/grpc.crt",
     "AGENT_KEY_FILE_PATH" => "/var/vcap/jobs/metrics-agent-windows/config/certs/grpc.key",
     "AGENT_TAGS" => tag_str,
+    "CONFIG_GLOBS" => "#{p('config_globs').join(',')}",
     "METRICS_EXPORTER_PORT" => "#{p("metrics_exporter_port")}",
     "METRICS_PORT" => "#{p("metrics.port")}",
     "METRICS_CA_FILE_PATH" => "/var/vcap/jobs/metrics-agent-windows/config/certs/metrics_ca.crt",

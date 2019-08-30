@@ -32,6 +32,7 @@ type Config struct {
 	MetricsExporter MetricsExporterConfig
 	MetricsServer   config.MetricsServer
 	GRPC            GRPCConfig
+	ConfigGlobs     []string          `env:"CONFIG_GLOBS, report"`
 	Tags            map[string]string `env:"AGENT_TAGS"`
 }
 
