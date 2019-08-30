@@ -8,17 +8,17 @@ code.cloudfoundry.org/go-diodes
 code.cloudfoundry.org/go-envstruct
 # code.cloudfoundry.org/go-loggregator v0.0.0-20190809213911-969cb33bee6a
 code.cloudfoundry.org/go-loggregator/metrics
+code.cloudfoundry.org/go-loggregator/rpc/loggregator_v2
 code.cloudfoundry.org/go-loggregator/metrics/testhelpers
 code.cloudfoundry.org/go-loggregator
-code.cloudfoundry.org/go-loggregator/rpc/loggregator_v2
 # code.cloudfoundry.org/loggregator-agent v0.0.0-20190531203354-322071cc6807 => code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20190828205358-fd77eb91324d
 code.cloudfoundry.org/loggregator-agent/pkg/scraper
 code.cloudfoundry.org/loggregator-agent/pkg/config
 code.cloudfoundry.org/loggregator-agent/pkg/diodes
-code.cloudfoundry.org/loggregator-agent/pkg/egress/prom
 code.cloudfoundry.org/loggregator-agent/pkg/egress/v2
 code.cloudfoundry.org/loggregator-agent/pkg/ingress/v2
 code.cloudfoundry.org/loggregator-agent/pkg/plumbing/batching
+code.cloudfoundry.org/loggregator-agent/pkg/egress/prom
 # code.cloudfoundry.org/rfc5424 v0.0.0-20180905210152-236a6d29298a
 code.cloudfoundry.org/rfc5424
 # code.cloudfoundry.org/tlsconfig v0.0.0-20190710180242-462f72de1106
