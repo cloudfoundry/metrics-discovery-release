@@ -3,7 +3,7 @@ module code.cloudfoundry.org/metrics-discovery
 go 1.12
 
 require (
-	cloud.google.com/go v0.44.3 // indirect
+	cloud.google.com/go v0.45.0 // indirect
 	code.cloudfoundry.org/go-diodes v0.0.0-20190809170250-f77fb823c7ee
 	code.cloudfoundry.org/go-envstruct v1.5.0
 	code.cloudfoundry.org/go-loggregator v0.0.0-20190809213911-969cb33bee6a // pinned
@@ -12,6 +12,7 @@ require (
 	github.com/go-kit/kit v0.9.0 // indirect
 	github.com/go-stack/stack v1.8.0 // indirect
 	github.com/gogo/protobuf v1.3.0
+	github.com/google/btree v1.0.0 // indirect
 	github.com/hashicorp/golang-lru v0.5.3 // indirect
 	github.com/jpillora/backoff v0.0.0-20180909062703-3050d21c67d7 // indirect
 	github.com/mwitkow/go-conntrack v0.0.0-20190716064945-2f068394615f // indirect
@@ -24,8 +25,7 @@ require (
 	github.com/prometheus/common v0.6.0
 	github.com/prometheus/prometheus v2.11.0+incompatible // pinned
 	golang.org/x/crypto v0.0.0-20190829043050-9756ffdc2472 // indirect
-	golang.org/x/sys v0.0.0-20190902133755-9109b7679e13 // indirect
-	google.golang.org/api v0.9.0 // indirect
+	golang.org/x/sys v0.0.0-20190904154756-749cb33beabd // indirect
 	google.golang.org/appengine v1.6.2 // indirect
 	google.golang.org/grpc v1.23.0
 	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect
