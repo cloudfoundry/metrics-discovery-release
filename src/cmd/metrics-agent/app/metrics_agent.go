@@ -6,7 +6,9 @@ import (
 	"code.cloudfoundry.org/loggregator-agent/pkg/diodes"
 	egress_v2 "code.cloudfoundry.org/loggregator-agent/pkg/egress/v2"
 	v2 "code.cloudfoundry.org/loggregator-agent/pkg/ingress/v2"
+	"code.cloudfoundry.org/loggregator-agent/pkg/scraper"
 	"code.cloudfoundry.org/metrics-discovery/internal/collector"
+	"code.cloudfoundry.org/metrics-discovery/internal/gatherer"
 	"code.cloudfoundry.org/tlsconfig"
 	"context"
 	"crypto/tls"
@@ -21,26 +23,37 @@ import (
 )
 
 type MetricsAgent struct {
-	cfg                 Config
-	log                 *log.Logger
-	metrics             Metrics
-	metricsServer       *http.Server
-	sourceIdBlacklister SourceIDProvider
+	cfg           Config
+	log           *log.Logger
+	metrics       Metrics
+	metricsServer *http.Server
+	scrapeConfigs map[string]scraper.PromScraperConfig
 }
 
-type SourceIDProvider func() []string
+type ScrapeConfigProvider func() ([]scraper.PromScraperConfig, error)
 
 type Metrics interface {
 	NewCounter(name string, options ...metrics.MetricOption) metrics.Counter
 }
 
-func NewMetricsAgent(cfg Config, sourceIdBlacklister SourceIDProvider, metrics Metrics, log *log.Logger) *MetricsAgent {
-	return &MetricsAgent{
-		cfg:                 cfg,
-		log:                 log,
-		metrics:             metrics,
-		sourceIdBlacklister: sourceIdBlacklister,
+func NewMetricsAgent(cfg Config, scrapeConfigProvider ScrapeConfigProvider, metrics Metrics, log *log.Logger) *MetricsAgent {
+	scrapeConfigs, err := scrapeConfigProvider()
+	if err != nil {
+		log.Printf("error getting scrape config: %s", err)
 	}
+
+	ma := &MetricsAgent{
+		cfg:                  cfg,
+		log:                  log,
+		metrics:              metrics,
+		scrapeConfigs: make(map[string]scraper.PromScraperConfig, len(scrapeConfigs)),
+	}
+
+	for _, sc := range scrapeConfigs {
+		ma.scrapeConfigs[sc.SourceID] = sc
+	}
+
+	return ma
 }
 
 func (m *MetricsAgent) Run() {
@@ -115,7 +128,7 @@ func (m *MetricsAgent) startEnvelopeCollection(promCollector *collector.Envelope
 
 	for {
 		next := diode.Next()
-		if m.blacklistedSourceID(next.GetSourceId()) {
+		if m.hasScrapeConfig(next.GetSourceId()) {
 			continue
 		}
 
@@ -126,12 +139,11 @@ func (m *MetricsAgent) startEnvelopeCollection(promCollector *collector.Envelope
 	}
 }
 
-func (m *MetricsAgent) startMetricsServer(promCollector *collector.EnvelopeCollector) {
-	registry := prometheus.NewRegistry()
-	registry.MustRegister(promCollector)
+func (m *MetricsAgent) startMetricsServer(envelopeCollector *collector.EnvelopeCollector) {
+	gatherer := m.buildGatherer(envelopeCollector)
 
 	router := http.NewServeMux()
-	router.Handle("/metrics", promhttp.HandlerFor(registry, promhttp.HandlerOpts{ErrorHandling: promhttp.ContinueOnError}))
+	router.Handle("/metrics", promhttp.HandlerFor(gatherer, promhttp.HandlerOpts{ErrorHandling: promhttp.ContinueOnError}))
 
 	tlsConfig := m.generateServerTLSConfig(
 		m.cfg.MetricsServer.CertFile,
@@ -149,6 +161,30 @@ func (m *MetricsAgent) startMetricsServer(promCollector *collector.EnvelopeColle
 	log.Printf("Metrics server closing: %s", m.metricsServer.ListenAndServeTLS("", ""))
 }
 
+func (m *MetricsAgent) buildGatherer(envelopeCollector *collector.EnvelopeCollector) gatherer.Aggregate {
+	envelopeGatherer := prometheus.NewRegistry()
+	envelopeGatherer.MustRegister(envelopeCollector)
+
+	var scrapeConfigs []scraper.PromScraperConfig
+	for _, v := range m.scrapeConfigs {
+		scrapeConfigs = append(scrapeConfigs, v)
+	}
+
+	proxyGatherer := gatherer.NewProxyGatherer(
+		scrapeConfigs,
+		m.cfg.ScrapeCertPath,
+		m.cfg.ScrapeKeyPath,
+		m.cfg.ScrapeCACertPath,
+		m.metrics,
+		m.log,
+	)
+
+	return gatherer.Aggregate{
+		Gatherers: []prometheus.Gatherer{proxyGatherer, envelopeGatherer},
+		Logger:    m.log,
+	}
+}
+
 func (m *MetricsAgent) Stop() {
 	ctx, cancelFunc := context.WithDeadline(context.Background(), time.Now().Add(15*time.Second))
 
@@ -163,12 +199,7 @@ func (m *MetricsAgent) Stop() {
 	<-ctx.Done()
 }
 
-func (m *MetricsAgent) blacklistedSourceID(sourceID string) bool {
-	for _, blacklistedSourceID := range m.sourceIdBlacklister() {
-		if blacklistedSourceID == sourceID {
-			return true
-		}
-	}
-
-	return false
+func (m *MetricsAgent) hasScrapeConfig(sourceID string) bool {
+	_, ok := m.scrapeConfigs[sourceID]
+	return ok
 }

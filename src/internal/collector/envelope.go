@@ -99,11 +99,11 @@ func (c *EnvelopeCollector) expireMetrics() {
 	}
 }
 
-// Describe implements prometheus.EnvelopeCollector
+// Describe implements prometheus.Collector
 // Unimplemented because metric descriptors should not be checked against other collectors
 func (c *EnvelopeCollector) Describe(ch chan<- *prometheus.Desc) {}
 
-// Collect implements prometheus.EnvelopeCollector
+// Collect implements prometheus.Collector
 func (c *EnvelopeCollector) Collect(ch chan<- prometheus.Metric) {
 	c.RLock()
 	defer c.RUnlock()

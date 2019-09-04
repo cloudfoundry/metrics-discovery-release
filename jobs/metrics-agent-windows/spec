@@ -10,6 +10,9 @@ templates:
   metrics.crt.erb: config/certs/metrics.crt
   metrics.key.erb: config/certs/metrics.key
   metric_targets.yml.erb: config/metric_targets.yml
+  scrape.crt.erb: config/certs/scrape.crt
+  scrape.key.erb: config/certs/scrape.key
+  scrape_ca.crt.erb: config/certs/scrape_ca.crt
 
 packages:
 - metrics-agent-windows

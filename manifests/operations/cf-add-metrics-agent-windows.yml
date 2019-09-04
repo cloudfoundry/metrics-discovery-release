@@ -14,9 +14,25 @@
         cert: "((metrics_agent_tls.certificate))"
         key: "((metrics_agent_tls.private_key))"
         server_name: metrics_agent
+      scrape:
+        tls:
+          ca_cert: "((prom_scraper_scrape_tls.ca))"
+          cert: "((prom_scraper_scrape_tls.certificate))"
+          key: "((prom_scraper_scrape_tls.private_key))"
 
 - type: replace
   path: /releases/name=metrics-discovery?
   value:
     name: metrics-discovery
     version: latest
+
+- type: replace
+  path: /variables/name=prom_scraper_scrape_tls?
+  value:
+    name: prom_scraper_scrape_tls
+    type: certificate
+    options:
+      ca: metric_scraper_ca
+      common_name: prom_scraper
+      extended_key_usage:
+      - client_auth

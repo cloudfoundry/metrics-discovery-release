@@ -3,6 +3,7 @@ package app_test
 import (
 	"code.cloudfoundry.org/go-loggregator"
 	"code.cloudfoundry.org/loggregator-agent/pkg/config"
+	"code.cloudfoundry.org/loggregator-agent/pkg/scraper"
 	"code.cloudfoundry.org/metrics-discovery/cmd/metrics-agent/app"
 	"code.cloudfoundry.org/metrics-discovery/internal/testhelpers"
 	"code.cloudfoundry.org/tlsconfig"
@@ -16,6 +17,8 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"net/http/httptest"
+	"strings"
 	"sync"
 	"time"
 )
@@ -27,8 +30,8 @@ var _ = Describe("MetricsAgent", func() {
 		metricsPort  uint16
 		testCerts    *testhelpers.TestCerts
 
-		ingressClient        *loggregator.IngressClient
-		fakeSourceIDProvider app.SourceIDProvider
+		ingressClient            *loggregator.IngressClient
+		fakeScrapeConfigProvider app.ScrapeConfigProvider
 	)
 
 	BeforeEach(func() {
@@ -62,12 +65,19 @@ var _ = Describe("MetricsAgent", func() {
 
 		ingressClient = newTestingIngressClient(int(grpcPort), testCerts)
 
-		fakeSourceIDProvider = func() []string {
-			return []string{"source_id_scraped"}
+		stubPromServer := newStubPromServer()
+		stubPromServer.resp = promOutput
+		fakeScrapeConfigProvider = func() ([]scraper.PromScraperConfig, error) {
+			return []scraper.PromScraperConfig{{
+				Port:           stubPromServer.port,
+				SourceID:       "source_id_scraped",
+				Scheme:         "http",
+				Path:           "metrics",
+			}}, nil
 		}
 
 		testLogger := log.New(GinkgoWriter, "", log.LstdFlags)
-		metricsAgent = app.NewMetricsAgent(cfg, fakeSourceIDProvider, testhelpers.NewMetricClient(), testLogger)
+		metricsAgent = app.NewMetricsAgent(cfg, fakeScrapeConfigProvider, testhelpers.NewMetricClient(), testLogger)
 		go metricsAgent.Run()
 		waitForMetricsEndpoint(metricsPort, testCerts)
 	})
@@ -135,7 +145,7 @@ var _ = Describe("MetricsAgent", func() {
 		))
 	})
 
-	It("filters out blacklisted source_ids", func() {
+	It("filters out blacklisted source id envelopes", func() {
 		cancel := doUntilCancelled(func() {
 			ingressClient.EmitCounter("prom_scraped",
 				loggregator.WithTotal(22),
@@ -151,6 +161,10 @@ var _ = Describe("MetricsAgent", func() {
 
 		Eventually(getMetricFamilies(metricsPort, testCerts), 3).Should(HaveKey("non_prom_scraped"))
 		Consistently(getMetricFamilies(metricsPort, testCerts), 3).Should(Not(HaveKey("prom_scraped")))
+	})
+
+	It("proxies to prom endpoints", func() {
+		Eventually(getMetricFamilies(metricsPort, testCerts), 3).Should(HaveKey("proxyMetric"))
 	})
 
 	It("aggregates delta counters", func() {
@@ -270,3 +284,38 @@ func getFreePort() uint16 {
 	defer l.Close()
 	return uint16(l.Addr().(*net.TCPAddr).Port)
 }
+
+type stubPromServer struct {
+	resp string
+	port string
+
+	requestHeaders chan http.Header
+	requestPaths   chan string
+}
+
+func newStubPromServer() *stubPromServer {
+	s := &stubPromServer{
+		requestHeaders: make(chan http.Header, 100),
+		requestPaths:   make(chan string, 100),
+	}
+
+	server := httptest.NewServer(s)
+
+	addr := server.URL
+	tokens := strings.Split(addr, ":")
+	s.port = tokens[len(tokens)-1]
+
+	return s
+}
+
+func (s *stubPromServer) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+	s.requestHeaders <- req.Header
+	s.requestPaths <- req.URL.Path
+	w.Write([]byte(s.resp))
+}
+
+const promOutput = `
+# HELP proxyMetric The first counter.
+# TYPE proxyMetric counter
+proxyMetric 1
+`

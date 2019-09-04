@@ -39,6 +39,12 @@
     }
   }
 
+  if_p('scrape.tls.ca_cert') {
+    process["env"]["SCRAPE_CA_CERT_PATH"] = "#{certs_dir}/scrape_ca.crt"
+    process["env"]["SCRAPE_CERT_PATH"] = "#{certs_dir}/scrape.crt"
+    process["env"]["SCRAPE_KEY_PATH"] = "#{certs_dir}/scrape.key"
+  }
+
   bpm = {"processes" => [process] }
 %>
 

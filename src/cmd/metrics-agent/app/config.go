@@ -32,6 +32,12 @@ type Config struct {
 	MetricsExporter MetricsExporterConfig
 	MetricsServer   config.MetricsServer
 	GRPC            GRPCConfig
+
+	// Scraper Certs
+	ScrapeKeyPath    string `env:"SCRAPE_KEY_PATH, report"`
+	ScrapeCertPath   string `env:"SCRAPE_CERT_PATH, report"`
+	ScrapeCACertPath string `env:"SCRAPE_CA_CERT_PATH, report"`
+
 	ConfigGlobs     []string          `env:"CONFIG_GLOBS, report"`
 	Tags            map[string]string `env:"AGENT_TAGS"`
 }

@@ -18,7 +18,6 @@ code.cloudfoundry.org/loggregator-agent/pkg/diodes
 code.cloudfoundry.org/loggregator-agent/pkg/egress/v2
 code.cloudfoundry.org/loggregator-agent/pkg/ingress/v2
 code.cloudfoundry.org/loggregator-agent/pkg/plumbing/batching
-code.cloudfoundry.org/loggregator-agent/pkg/egress/prom
 # code.cloudfoundry.org/rfc5424 v0.0.0-20180905210152-236a6d29298a
 code.cloudfoundry.org/rfc5424
 # code.cloudfoundry.org/tlsconfig v0.0.0-20190710180242-462f72de1106
@@ -228,9 +227,9 @@ github.com/prometheus/client_golang/prometheus/internal
 # github.com/prometheus/client_model v0.0.0-20190812154241-14fe0d1b01d4
 github.com/prometheus/client_model/go
 # github.com/prometheus/common v0.6.0 => github.com/prometheus/common v0.5.0
+github.com/prometheus/common/expfmt
 github.com/prometheus/common/config
 github.com/prometheus/common/model
-github.com/prometheus/common/expfmt
 github.com/prometheus/common/internal/bitbucket.org/ww/goautoneg
 # github.com/prometheus/procfs v0.0.4
 github.com/prometheus/procfs
