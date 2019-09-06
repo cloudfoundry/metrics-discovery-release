@@ -13,6 +13,7 @@ require (
 	github.com/go-stack/stack v1.8.0 // indirect
 	github.com/gogo/protobuf v1.3.0
 	github.com/google/btree v1.0.0 // indirect
+	github.com/gopherjs/gopherjs v0.0.0-20190812055157-5d271430af9f // indirect
 	github.com/hashicorp/golang-lru v0.5.3 // indirect
 	github.com/jpillora/backoff v0.0.0-20180909062703-3050d21c67d7 // indirect
 	github.com/mwitkow/go-conntrack v0.0.0-20190716064945-2f068394615f // indirect
@@ -24,7 +25,8 @@ require (
 	github.com/prometheus/client_model v0.0.0-20190812154241-14fe0d1b01d4
 	github.com/prometheus/common v0.6.0
 	github.com/prometheus/prometheus v2.11.0+incompatible // pinned
-	github.com/smartystreets/goconvey v0.0.0-20190330032615-68dc04aab96a // indirect
+	github.com/smartystreets/assertions v1.0.1 // indirect
+	github.com/smartystreets/goconvey v0.0.0-20190731233626-505e41936337 // indirect
 	go.opencensus.io v0.22.1 // indirect
 	golang.org/x/crypto v0.0.0-20190829043050-9756ffdc2472 // indirect
 	golang.org/x/sys v0.0.0-20190904154756-749cb33beabd // indirect
