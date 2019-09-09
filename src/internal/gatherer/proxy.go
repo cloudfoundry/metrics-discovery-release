@@ -34,16 +34,20 @@ func NewProxyGatherer(
 	metrics metricsRegistry,
 	loggr *log.Logger,
 ) *ProxyGatherer {
+	pg := &ProxyGatherer{
+		scrapeConfigs: scrapeConfigs,
+		metrics:       metrics,
+	}
+
 	httpDoers := map[string]func(*http.Request) (*http.Response, error){}
 	for _, sc := range scrapeConfigs {
 		httpDoers[sc.SourceID] = buildHttpClient(certPath, keyPath, caPath, sc.ServerName, loggr).Do
+		pg.newFailedScrapeMetric(sc.SourceID)
 	}
 
-	return &ProxyGatherer{
-		scrapeConfigs: scrapeConfigs,
-		httpDoers:     httpDoers,
-		metrics:       metrics,
-	}
+	pg.httpDoers = httpDoers
+
+	return pg
 }
 
 func buildHttpClient(certPath, keyPath, caPath, serverName string, loggr *log.Logger) *http.Client {
@@ -101,13 +105,17 @@ func (c *ProxyGatherer) Gather() ([]*io_prometheus_client.MetricFamily, error) {
 }
 
 func (c *ProxyGatherer) incFailedScrapes(sourceID string) {
-	c.metrics.NewCounter(
+	c.newFailedScrapeMetric(sourceID).Add(1)
+}
+
+func (c *ProxyGatherer) newFailedScrapeMetric(sourceID string) metrics.Counter {
+	return c.metrics.NewCounter(
 		"failed_scrapes",
 		metrics.WithHelpText("Total failures when scraping target."),
 		metrics.WithMetricTags(map[string]string{
 			"scrape_source_id": sourceID,
 		}),
-	).Add(1)
+	)
 }
 
 func (c *ProxyGatherer) scrape(scrapeConfig scraper.PromScraperConfig) ([]*io_prometheus_client.MetricFamily, error) {
