@@ -7,9 +7,6 @@ consumes:
 
 templates:
   bpm.yml.erb: config/bpm.yml
-  scrape_ca.crt.erb: config/certs/scrape_ca.crt
-  scrape.crt.erb: config/certs/scrape.crt
-  scrape.key.erb: config/certs/scrape.key
   metrics_ca.crt.erb: config/certs/metrics_ca.crt
   metrics.crt.erb: config/certs/metrics.crt
   metrics.key.erb: config/certs/metrics.key
@@ -21,7 +18,7 @@ packages:
 properties:
   scrape_config_file_path:
     description: "The path to the generated scrape config file"
-    default: /var/vcap/data/scrape-config-generator/scrape_configs.yml
+    default: /var/vcap/data/scrape-config-generator/scrape_targets.json
 
   expiration_interval:
     description: "This interval determines how often scrape endpoints are expired"
@@ -30,13 +27,6 @@ properties:
   config_ttl:
     description: "This determines how long a scrape config lives before being expired"
     default: 45s
-
-  scrape.ca_cert:
-    description: "TLS CA cert to use for scraping"
-  scrape.cert:
-    description: "TLS certificate to use for scraping"
-  scrape.key:
-    description: "TLS private key to use for scraping"
 
   metrics.ca_cert:
     description: "TLS CA cert to verify requests to metrics endpoint."

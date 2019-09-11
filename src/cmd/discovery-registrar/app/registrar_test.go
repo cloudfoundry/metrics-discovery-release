@@ -3,12 +3,11 @@ package app_test
 import (
 	"code.cloudfoundry.org/go-loggregator/metrics/testhelpers"
 	"code.cloudfoundry.org/metrics-discovery/cmd/discovery-registrar/app"
+	"code.cloudfoundry.org/metrics-discovery/internal/target"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	. "github.com/onsi/gomega/gstruct"
 	"gopkg.in/yaml.v2"
 
-	"github.com/prometheus/prometheus/config"
 	"log"
 	"sync"
 	"time"
@@ -27,11 +26,11 @@ var _ = Describe("Dynamic Registrar", func() {
 		tc := &testContext{
 			publisher: newFakePublisher(),
 			targetProvider: &fakeTargetProvider{
-				targets: []config.ScrapeConfig{{
-					JobName:     "some-job",
-					MetricsPath: "/metrics",
-					Scheme:      "https",
-				}},
+				targets: []*target.Target{
+					{
+						Targets: []string{"10.0.0.1:8080"},
+					},
+				},
 			},
 			metrics: testhelpers.NewMetricsRegistry(),
 			logger:  log.New(GinkgoWriter, "", 0),
@@ -53,14 +52,10 @@ var _ = Describe("Dynamic Registrar", func() {
 
 		Eventually(tc.publisher.targets).Should(HaveLen(1))
 
-		var scrapeConfig config.ScrapeConfig
-		err := yaml.Unmarshal(tc.publisher.targets()[0], &scrapeConfig)
+		var target target.Target
+		err := yaml.Unmarshal(tc.publisher.targets()[0], &target)
 		Expect(err).ToNot(HaveOccurred())
-		Expect(scrapeConfig).To(MatchFields(IgnoreExtras, Fields{
-			"JobName":     Equal("some-job"),
-			"MetricsPath": Equal("/metrics"),
-			"Scheme":      Equal("https"),
-		}))
+		Expect(target.Targets).To(ConsistOf("10.0.0.1:8080"))
 		Expect(tc.publisher.publishedToQueue()).To(Equal("metrics.scrape_targets"))
 		Expect(tc.targetProvider.timesCalled()).To(Equal(1))
 	})
@@ -137,10 +132,10 @@ func (fp *fakePublisher) publishedToQueue() string {
 type fakeTargetProvider struct {
 	sync.Mutex
 	called  int
-	targets []config.ScrapeConfig
+	targets []*target.Target
 }
 
-func (ftp *fakeTargetProvider) GetTargets() []config.ScrapeConfig {
+func (ftp *fakeTargetProvider) GetTargets() []*target.Target {
 	ftp.Lock()
 	defer ftp.Unlock()
 

@@ -1,7 +1,6 @@
 package target
 
 import (
-	"github.com/prometheus/prometheus/config"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"log"
@@ -10,15 +9,11 @@ import (
 	"time"
 )
 
-type targetsConfig struct {
-	ScrapeConfigs []config.ScrapeConfig `yaml:"scrape_configs"`
-}
-
 type fileProvider struct {
 	sync.Mutex
 	configGlob      string
 	refreshInterval time.Duration
-	targets         []config.ScrapeConfig
+	targets         []*Target
 
 	logger *log.Logger
 }
@@ -44,7 +39,7 @@ func (fp *fileProvider) populateTargets() {
 	fp.Lock()
 	defer fp.Unlock()
 
-	fp.targets = make([]config.ScrapeConfig, 0)
+	fp.targets = make([]*Target, 0)
 	files, err := filepath.Glob(fp.configGlob)
 	if err != nil {
 		fp.logger.Println("Unable to read downstream port location")
@@ -58,23 +53,27 @@ func (fp *fileProvider) populateTargets() {
 			continue
 		}
 
-		var t targetsConfig
-
+		var t Target
 		err = yaml.Unmarshal(yamlFile, &t)
 		if err != nil {
 			fp.logger.Printf("Unmarshal: %v", err)
 			continue
 		}
 
-		fp.targets = append(fp.targets, t.ScrapeConfigs...)
+		if t.Source == "" {
+			fp.logger.Printf("Target from %s is missing source", f)
+			continue
+		}
+
+		fp.targets = append(fp.targets, &t)
 	}
 }
 
-func (fp *fileProvider) GetTargets() []config.ScrapeConfig {
+func (fp *fileProvider) GetTargets() []*Target {
 	fp.Lock()
 	defer fp.Unlock()
 
-	dst := make([]config.ScrapeConfig, len(fp.targets))
+	dst := make([]*Target, len(fp.targets))
 	copy(dst, fp.targets)
 
 	return dst

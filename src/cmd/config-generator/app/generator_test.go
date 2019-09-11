@@ -4,13 +4,10 @@ import (
 	"code.cloudfoundry.org/go-loggregator/metrics/testhelpers"
 	"code.cloudfoundry.org/metrics-discovery/cmd/config-generator/app"
 	"fmt"
+	. "github.com/benjamintf1/unmarshalledmatchers"
 	"github.com/nats-io/nats.go"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	. "github.com/onsi/gomega/gstruct"
-	common_config "github.com/prometheus/common/config"
-	"github.com/prometheus/prometheus/config"
-	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"log"
 	"time"
@@ -29,23 +26,16 @@ var _ = Describe("Config generator", func() {
 
 		return &testContext{
 			subscriber: newFakeSubscriber(),
-			configPath: tmpDir + "/prom_config.yml",
+			configPath: tmpDir + "/scrape_targets.json",
 			logger:     log.New(GinkgoWriter, "", 0),
 		}
 	}
 
-	var readScrapeConfigs = func(tc *testContext) []config.ScrapeConfig {
+	var readTargets = func(tc *testContext) string {
 		fileData, err := ioutil.ReadFile(tc.configPath)
 		Expect(err).ToNot(HaveOccurred())
 
-		var cfg config.Config
-		Expect(yaml.Unmarshal(fileData, &cfg)).To(Succeed())
-		var scrapeConfigs []config.ScrapeConfig
-		for _, sc := range cfg.ScrapeConfigs {
-			scrapeConfigs = append(scrapeConfigs, *sc)
-		}
-
-		return scrapeConfigs
+		return string(fileData)
 	}
 
 	It("Generates a config with data from the queue", func() {
@@ -55,97 +45,37 @@ var _ = Describe("Config generator", func() {
 			time.Hour,
 			time.Hour,
 			tc.configPath,
-			app.CertFilePaths{},
 			testhelpers.NewMetricsRegistry(),
 			tc.logger,
 		)
 		go generator.Start()
 
 		tc.subscriber.callback(&nats.Msg{
-			Data: target("route1", "path1"),
+			Data: target("job1"),
 		})
 		tc.subscriber.callback(&nats.Msg{
-			Data: target("route2", "path2"),
+			Data: target("job2"),
 		})
 
-		scrapeConfigs := readScrapeConfigs(tc)
-
-		Expect(scrapeConfigs).To(ConsistOf(
-			MatchFields(IgnoreExtras, Fields{
-				"JobName":     Equal("route1"),
-				"MetricsPath": Equal("path1"),
-			}),
-			MatchFields(IgnoreExtras, Fields{
-				"JobName":     Equal("route2"),
-				"MetricsPath": Equal("path2"),
-			}),
-		))
-	})
-
-	It("includes tls config for https targets", func() {
-		tc := setup()
-
-		generator := app.NewConfigGenerator(
-			tc.subscriber.Subscribe,
-			time.Hour,
-			time.Hour,
-			tc.configPath,
-			app.CertFilePaths{
-				CA:   "ca-path",
-				Cert: "cert-path",
-				Key:  "key-path",
+		targets := readTargets(tc)
+		Expect(targets).To(MatchUnorderedJSON(`[
+			{
+				"targets": [
+				  "localhost:8080"
+				],
+				"labels": {
+				  "job": "job1"
+				}
 			},
-			testhelpers.NewMetricsRegistry(),
-			tc.logger,
-		)
-		go generator.Start()
-
-		tc.subscriber.callback(&nats.Msg{
-			Data: []byte(httpsJob),
-		})
-
-		scrapeConfigs := readScrapeConfigs(tc)
-		Expect(scrapeConfigs).To(HaveLen(1))
-		Expect(scrapeConfigs[0].HTTPClientConfig.TLSConfig).To(
-			Equal(common_config.TLSConfig{
-				CAFile:   "ca-path",
-				CertFile: "cert-path",
-				KeyFile:  "key-path",
-			}))
-	})
-
-	It("doesn't override server name or skip ssl validation", func() {
-		tc := setup()
-
-		generator := app.NewConfigGenerator(
-			tc.subscriber.Subscribe,
-			time.Hour,
-			time.Hour,
-			tc.configPath,
-			app.CertFilePaths{
-				CA:   "ca-path",
-				Cert: "cert-path",
-				Key:  "key-path",
-			},
-			testhelpers.NewMetricsRegistry(),
-			tc.logger,
-		)
-		go generator.Start()
-
-		tc.subscriber.callback(&nats.Msg{
-			Data: []byte(tlsJob),
-		})
-
-		scrapeConfigs := readScrapeConfigs(tc)
-		Expect(scrapeConfigs).To(HaveLen(1))
-		Expect(scrapeConfigs[0].HTTPClientConfig.TLSConfig).To(
-			Equal(common_config.TLSConfig{
-				CAFile:             "ca-path",
-				CertFile:           "cert-path",
-				KeyFile:            "key-path",
-				ServerName:         "some-server-name",
-				InsecureSkipVerify: true,
-			}))
+			{
+				"targets": [
+				  "localhost:8080"
+				],
+				"labels": {
+				  "job": "job2"
+				}
+			}
+		]`))
 	})
 
 	It("doesn't duplicate jobs", func() {
@@ -155,27 +85,31 @@ var _ = Describe("Config generator", func() {
 			time.Hour,
 			time.Hour,
 			tc.configPath,
-			app.CertFilePaths{},
 			testhelpers.NewMetricsRegistry(),
 			tc.logger,
 		)
 		go generator.Start()
 
 		tc.subscriber.callback(&nats.Msg{
-			Data: target("route1", "path1"),
+			Data: target("job1"),
 		})
 		tc.subscriber.callback(&nats.Msg{
-			Data: target("route1", "path1"),
+			Data: target("job1", "localhost:8081"),
 		})
 
-		scrapeConfigs := readScrapeConfigs(tc)
+		targets := readTargets(tc)
 
-		Expect(scrapeConfigs).To(ConsistOf(
-			MatchFields(IgnoreExtras, Fields{
-				"JobName":     Equal("route1"),
-				"MetricsPath": Equal("path1"),
-			}),
-		))
+		Expect(targets).To(MatchJSON(`[
+			{
+				"targets": [
+				  "localhost:8080",
+				  "localhost:8081"
+				],
+				"labels": {
+				  "job": "job1"
+				}
+			}
+		]`))
 	})
 
 	It("expires configs after the given interval", func() {
@@ -186,47 +120,60 @@ var _ = Describe("Config generator", func() {
 			600*time.Millisecond,
 			100*time.Millisecond,
 			tc.configPath,
-			app.CertFilePaths{},
 			testhelpers.NewMetricsRegistry(),
 			tc.logger,
 		)
 		go generator.Start()
 
 		tc.subscriber.callback(&nats.Msg{
-			Data: target("ephemeral", "ephemeral"),
+			Data: target("ephemeral"),
 		})
 		tc.subscriber.callback(&nats.Msg{
-			Data: target("persistent", "persistent"),
+			Data: target("persistent"),
 		})
 
 		go func() {
 			t := time.NewTicker(600 * time.Millisecond)
 			for range t.C {
 				tc.subscriber.callback(&nats.Msg{
-					Data: target("persistent", "persistent"),
+					Data: target("persistent"),
 				})
 			}
 		}()
 
-		Expect(readScrapeConfigs(tc)).To(ConsistOf(
-			MatchFields(IgnoreExtras, Fields{
-				"JobName":     Equal("ephemeral"),
-				"MetricsPath": Equal("ephemeral"),
-			}),
-			MatchFields(IgnoreExtras, Fields{
-				"JobName":     Equal("persistent"),
-				"MetricsPath": Equal("persistent"),
-			}),
-		))
+		targets := readTargets(tc)
 
-		Eventually(func() []config.ScrapeConfig {
-			return readScrapeConfigs(tc)
-		}).Should(ConsistOf(
-			MatchFields(IgnoreExtras, Fields{
-				"JobName":     Equal("persistent"),
-				"MetricsPath": Equal("persistent"),
-			}),
-		))
+		Expect(targets).To(MatchUnorderedJSON(`[
+			{
+				"targets": [
+				  "localhost:8080"
+				],
+				"labels": {
+				  "job": "ephemeral"
+				}
+			},
+			{
+				"targets": [
+				  "localhost:8080"
+				],
+				"labels": {
+				  "job": "persistent"
+				}
+			}
+		]`))
+
+		Eventually(func() string {
+			return readTargets(tc)
+		}).Should(MatchUnorderedJSON(`[
+			{
+				"targets": [
+				  "localhost:8080"
+				],
+				"labels": {
+				  "job": "persistent"
+				}
+			}
+		]`))
 	})
 
 	It("increments a delivered metric", func() {
@@ -238,14 +185,13 @@ var _ = Describe("Config generator", func() {
 			600*time.Millisecond,
 			100*time.Millisecond,
 			tc.configPath,
-			app.CertFilePaths{},
 			spyMetrics,
 			tc.logger,
 		)
 		go generator.Start()
 
 		tc.subscriber.callback(&nats.Msg{
-			Data: target("ephemeral", "ephemeral"),
+			Data: target("ephemeral"),
 		})
 
 		Eventually(func() int {
@@ -254,8 +200,13 @@ var _ = Describe("Config generator", func() {
 	})
 })
 
-func target(jobName, path string) []byte {
-	return []byte(fmt.Sprintf(targetTemplate, jobName, path))
+func target(source string, additionalTargets ...string) []byte {
+	additionalTargetString := ""
+	for _, t := range additionalTargets {
+		additionalTargetString += fmt.Sprintf("  - %s\n", t)
+	}
+
+	return []byte(fmt.Sprintf(targetTemplate, additionalTargetString, source, source))
 }
 
 type fakeSubscriber struct {
@@ -274,20 +225,11 @@ func (fs *fakeSubscriber) Subscribe(queue string, callback nats.MsgHandler) (*na
 	return nil, nil
 }
 
-var targetTemplate = `
-  job_name: "%s"
-  metrics_path: "%s"
-`
-
-var httpsJob = `
-  job_name: "https_job"
-  scheme: "https"
-`
-
-var tlsJob = `
-  job_name: "tls_job"
-  scheme: "https"
-  tls_config:
-    server_name: "some-server-name"
-    insecure_skip_verify: true
+var targetTemplate = `---
+targets:
+  - "localhost:8080"
+%s
+labels:
+  job: %s
+source: %s
 `

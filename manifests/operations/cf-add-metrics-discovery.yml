@@ -4,10 +4,6 @@
     name: scrape-config-generator
     release: metrics-discovery
     properties:
-      scrape:
-        ca_cert: "((metrics_discovery_tls.ca))"
-        cert: "((metrics_discovery_tls.certificate))"
-        key: "((metrics_discovery_tls.private_key))"
       metrics:
         ca_cert: "((scrape_config_generator_metrics_tls.ca))"
         cert: "((scrape_config_generator_metrics_tls.certificate))"
@@ -50,17 +46,6 @@
     options:
       is_ca: true
       common_name: metricScraperCA
-
-- type: replace
-  path: /variables/name=metrics_discovery_tls?
-  value:
-    name: metrics_discovery_tls
-    type: certificate
-    options:
-      ca: metric_scraper_ca
-      common_name: metrics_discovery
-      extended_key_usage:
-      - client_auth
 
 - type: replace
   path: /variables/name=metrics_discovery_metrics_tls?
