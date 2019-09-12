@@ -5,6 +5,7 @@ import (
 	"code.cloudfoundry.org/loggregator-agent/pkg/scraper"
 	"code.cloudfoundry.org/tlsconfig"
 	"fmt"
+	"github.com/gogo/protobuf/proto"
 	io_prometheus_client "github.com/prometheus/client_model/go"
 	"github.com/prometheus/common/expfmt"
 	"io"
@@ -20,6 +21,7 @@ type ProxyGatherer struct {
 	scrapeConfigs []scraper.PromScraperConfig
 	httpDoers     map[string]func(*http.Request) (*http.Response, error)
 	metrics       metricsRegistry
+	defaultLabels map[string]string
 }
 
 type metricsRegistry interface {
@@ -28,6 +30,7 @@ type metricsRegistry interface {
 
 func NewProxyGatherer(
 	scrapeConfigs []scraper.PromScraperConfig,
+	defaultLabels map[string]string,
 	certPath,
 	keyPath,
 	caPath string,
@@ -36,6 +39,7 @@ func NewProxyGatherer(
 ) *ProxyGatherer {
 	pg := &ProxyGatherer{
 		scrapeConfigs: scrapeConfigs,
+		defaultLabels: defaultLabels,
 		metrics:       metrics,
 	}
 
@@ -52,7 +56,7 @@ func NewProxyGatherer(
 
 func buildHttpClient(certPath, keyPath, caPath, serverName string, loggr *log.Logger) *http.Client {
 	tlsOptions := []tlsconfig.TLSOption{tlsconfig.WithInternalServiceDefaults()}
-	clientOptions := []tlsconfig.ClientOption{}
+	var clientOptions []tlsconfig.ClientOption
 
 	if certPath != "" && keyPath != "" {
 		tlsOptions = append(tlsOptions, tlsconfig.WithIdentityFromFile(certPath, keyPath))
@@ -150,6 +154,7 @@ func (c *ProxyGatherer) scrape(scrapeConfig scraper.PromScraperConfig) ([]*io_pr
 		families = append(families, family)
 	}
 
+	c.addDefaultLabels(families, scrapeConfig)
 	return families, err
 }
 
@@ -168,4 +173,42 @@ func (c *ProxyGatherer) scrapeRequest(scrapeConfig scraper.PromScraperConfig) (*
 	req.Header = requestHeader
 
 	return req, nil
+}
+
+func (c *ProxyGatherer) addDefaultLabels(families []*io_prometheus_client.MetricFamily, scrapeConfig scraper.PromScraperConfig) {
+	for _, f := range families {
+		for _, m := range f.GetMetric() {
+			labels := copyInto(c.defaultLabels, map[string]string{})
+			labels = copyInto(scrapeConfig.Labels, labels)
+
+			if scrapeConfig.SourceID != "" {
+				labels["source_id"] = scrapeConfig.SourceID
+			}
+			for _, l := range m.GetLabel() {
+				labels[l.GetName()] = l.GetValue()
+			}
+
+			m.Label = labelPairs(labels)
+		}
+	}
+}
+
+func copyInto(source, dest map[string]string) map[string]string {
+	for k, v := range source {
+		dest[k] = v
+	}
+
+	return dest
+}
+
+func labelPairs(labels map[string]string) []*io_prometheus_client.LabelPair {
+	var labelPairs []*io_prometheus_client.LabelPair
+	for k, v := range labels {
+		labelPairs = append(labelPairs, &io_prometheus_client.LabelPair{
+			Name:  proto.String(k),
+			Value: proto.String(v),
+		})
+	}
+
+	return labelPairs
 }

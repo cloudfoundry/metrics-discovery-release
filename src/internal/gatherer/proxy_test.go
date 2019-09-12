@@ -54,15 +54,20 @@ var _ = Describe("Proxy", func() {
 		}
 	}
 
-	var buildProxyCollector = func(tc *testContext) *gatherer.ProxyGatherer {
+	var buildProxyCollectorWithDefaultLabels = func(tc *testContext, defaultLabels map[string]string) *gatherer.ProxyGatherer {
 		return gatherer.NewProxyGatherer(
 			tc.scrapeConfigs,
+			defaultLabels,
 			tc.scrapeCerts.Cert("client"),
 			tc.scrapeCerts.Key("client"),
 			tc.scrapeCerts.CA(),
 			tc.metrics,
 			tc.loggr,
 		)
+	}
+
+	var buildProxyCollector = func(tc *testContext) *gatherer.ProxyGatherer {
+		return buildProxyCollectorWithDefaultLabels(tc, nil)
 	}
 
 	It("collects metrics from prom targets", func() {
@@ -83,6 +88,100 @@ var _ = Describe("Proxy", func() {
 				),
 			),
 		))
+	})
+
+	Context("labels", func() {
+		It("adds global default labels to metrics", func() {
+			tc := setup("http", "metrics", nil)
+			proxyCollector := buildProxyCollectorWithDefaultLabels(tc, map[string]string{
+				"default_label": "foo",
+			})
+
+			mfs, err := proxyCollector.Gather()
+			Expect(err).ToNot(HaveOccurred())
+
+			Expect(mfs).To(ConsistOf(
+				And(
+					haveFamilyName("metric1"),
+					haveMetrics(
+						counterWith(1, map[string]string{"default_label": "foo"}),
+					),
+				),
+				And(
+					haveFamilyName("metric2"),
+					haveMetrics(
+						gaugeWith(2, map[string]string{"default_label": "foo"}),
+					),
+				),
+				And(
+					haveFamilyName("metric3"),
+					haveMetrics(
+						gaugeWith(11, map[string]string{"direction": "ingress", "default_label": "foo"}),
+						gaugeWith(22, map[string]string{"direction": "egress", "default_label": "foo"}),
+					),
+				),
+			))
+		})
+
+		It("adds target default labels to metrics", func() {
+			tc := setup("http", "metrics", nil)
+			tc.scrapeConfigs[0].Labels = map[string]string{
+				"default_label": "target",
+			}
+			tc.scrapeConfigs[0].SourceID = "source-id"
+
+			proxyCollector := buildProxyCollectorWithDefaultLabels(tc, map[string]string{
+				"default_label": "global",
+			})
+
+			mfs, err := proxyCollector.Gather()
+			Expect(err).ToNot(HaveOccurred())
+
+			Expect(getMetricsForFamily("metric3", mfs)).To(ConsistOf(
+				gaugeWith(11, map[string]string{
+					"direction":     "ingress",
+					"default_label": "target",
+					"source_id":     "source-id",
+				}),
+				gaugeWith(22, map[string]string{
+					"direction":     "egress",
+					"default_label": "target",
+					"source_id":     "source-id",
+				}),
+			))
+		})
+
+		It("doesn't overwrite the label if it exists", func() {
+			tc := setup("http", "metrics", nil)
+			proxyCollector := buildProxyCollectorWithDefaultLabels(tc, map[string]string{
+				"direction": "rotating",
+			})
+
+			mfs, err := proxyCollector.Gather()
+			Expect(err).ToNot(HaveOccurred())
+
+			Expect(mfs).To(ConsistOf(
+				And(
+					haveFamilyName("metric1"),
+					haveMetrics(
+						counterWith(1, map[string]string{"direction": "rotating"}),
+					),
+				),
+				And(
+					haveFamilyName("metric2"),
+					haveMetrics(
+						gaugeWith(2, map[string]string{"direction": "rotating"}),
+					),
+				),
+				And(
+					haveFamilyName("metric3"),
+					haveMetrics(
+						gaugeWith(11, map[string]string{"direction": "ingress"}),
+						gaugeWith(22, map[string]string{"direction": "egress"}),
+					),
+				),
+			))
+		})
 	})
 
 	It("scrapes multiple targets", func() {
@@ -284,6 +383,7 @@ func gaugeWith(value float64, labels map[string]string) types.GomegaMatcher {
 			Expect(gauge).ToNot(BeNil())
 			return gauge.GetValue()
 		}, Equal(value)),
+
 		WithTransform(func(m *io_prometheus_client.Metric) map[string]string {
 			labels := map[string]string{}
 			for _, labelPair := range m.GetLabel() {
@@ -293,6 +393,34 @@ func gaugeWith(value float64, labels map[string]string) types.GomegaMatcher {
 			return labels
 		}, Equal(labels)),
 	)
+}
+
+func counterWith(value float64, labels map[string]string) types.GomegaMatcher {
+	return And(
+		WithTransform(func(m *io_prometheus_client.Metric) float64 {
+			counter := m.GetCounter()
+			Expect(counter).ToNot(BeNil())
+			return counter.GetValue()
+		}, Equal(value)),
+		WithTransform(func(m *io_prometheus_client.Metric) map[string]string {
+			labels := map[string]string{}
+			for _, labelPair := range m.GetLabel() {
+				labels[labelPair.GetName()] = labelPair.GetValue()
+			}
+
+			return labels
+		}, Equal(labels)),
+	)
+}
+
+func getMetricsForFamily(name string, mfs []*io_prometheus_client.MetricFamily) []*io_prometheus_client.Metric {
+	for _, mf := range mfs {
+		if mf.GetName() == name {
+			return mf.Metric
+		}
+	}
+
+	return nil
 }
 
 const promOutput = `

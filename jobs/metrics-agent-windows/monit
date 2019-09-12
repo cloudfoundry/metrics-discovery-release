@@ -1,13 +1,12 @@
 <%
-  job_name = spec.job.name || name
+  instance_group = spec.job.name || name
   instance_id = spec.id || spec.index.to_s
   deployment = spec.deployment
 
   tags = {
       deployment: deployment,
-      job: job_name,
+      instance_group: instance_group,
       index: instance_id,
-      ip: spec.ip,
   }
   tags.merge!(p("tags"))
 

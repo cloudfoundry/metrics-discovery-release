@@ -21,7 +21,7 @@ type GRPCConfig struct {
 type MetricsExporterConfig struct {
 	Port                 uint16            `env:"METRICS_EXPORTER_PORT, required, report"`
 	WhitelistedTimerTags []string          `env:"WHITELISTED_TIMER_TAGS, required, report"`
-	DefaultTags          map[string]string `env:"AGENT_TAGS"`
+	DefaultLabels        map[string]string `env:"AGENT_TAGS"`
 
 	ExpirationInterval time.Duration `env:"EXPIRATION_INTERVAL, report"`
 	TimeToLive         time.Duration `env:"TTL, report"`

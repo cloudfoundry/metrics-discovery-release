@@ -63,7 +63,7 @@ func (m *MetricsAgent) Run() {
 	promCollector := collector.NewEnvelopeCollector(
 		m.metrics,
 		collector.WithSourceIDExpiration(m.cfg.MetricsExporter.TimeToLive, m.cfg.MetricsExporter.ExpirationInterval),
-		collector.WithDefaultTags(m.cfg.MetricsExporter.DefaultTags),
+		collector.WithDefaultTags(m.cfg.MetricsExporter.DefaultLabels),
 	)
 	go m.startEnvelopeCollection(promCollector, envelopeBuffer)
 
@@ -172,6 +172,7 @@ func (m *MetricsAgent) buildGatherer(envelopeCollector *collector.EnvelopeCollec
 
 	proxyGatherer := gatherer.NewProxyGatherer(
 		scrapeConfigs,
+		m.cfg.MetricsExporter.DefaultLabels,
 		m.cfg.ScrapeCertPath,
 		m.cfg.ScrapeKeyPath,
 		m.cfg.ScrapeCACertPath,
