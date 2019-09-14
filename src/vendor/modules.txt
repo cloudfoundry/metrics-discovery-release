@@ -1,4 +1,4 @@
-# cloud.google.com/go v0.45.1
+# cloud.google.com/go v0.46.2
 cloud.google.com/go/compute/metadata
 # code.cloudfoundry.org/go-batching v0.0.0-20171020220229-924d2a9b48ac
 code.cloudfoundry.org/go-batching
