@@ -117,7 +117,7 @@ var _ = Describe("Config generator", func() {
 
 		generator := app.NewConfigGenerator(
 			tc.subscriber.Subscribe,
-			600*time.Millisecond,
+			200*time.Millisecond,
 			100*time.Millisecond,
 			tc.configPath,
 			testhelpers.NewMetricsRegistry(),
@@ -133,7 +133,7 @@ var _ = Describe("Config generator", func() {
 		})
 
 		go func() {
-			t := time.NewTicker(600 * time.Millisecond)
+			t := time.NewTicker(100 * time.Millisecond)
 			for range t.C {
 				tc.subscriber.callback(&nats.Msg{
 					Data: target("persistent"),
