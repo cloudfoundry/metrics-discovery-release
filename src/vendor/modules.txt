@@ -1,4 +1,4 @@
-# cloud.google.com/go v0.46.2
+# cloud.google.com/go v0.46.3
 cloud.google.com/go/compute/metadata
 # code.cloudfoundry.org/go-batching v0.0.0-20171020220229-924d2a9b48ac
 code.cloudfoundry.org/go-batching
@@ -304,7 +304,7 @@ golang.org/x/oauth2/jws
 golang.org/x/oauth2/jwt
 # golang.org/x/sync v0.0.0-20190911185100-cd5d95a43a6e
 golang.org/x/sync/semaphore
-# golang.org/x/sys v0.0.0-20190916141854-1a3b71a79e4a
+# golang.org/x/sys v0.0.0-20190916202348-b4ddaad3f8a3
 golang.org/x/sys/windows
 golang.org/x/sys/unix
 # golang.org/x/text v0.3.2
@@ -352,7 +352,7 @@ google.golang.org/appengine/internal/base
 google.golang.org/appengine/internal/datastore
 google.golang.org/appengine/internal/log
 google.golang.org/appengine/internal/remote_api
-# google.golang.org/genproto v0.0.0-20190911173649-1774047e7e51
+# google.golang.org/genproto v0.0.0-20190916214212-f660b8655731
 google.golang.org/genproto/googleapis/rpc/status
 google.golang.org/genproto/googleapis/api/httpbody
 google.golang.org/genproto/protobuf/field_mask
