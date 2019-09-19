@@ -11,7 +11,7 @@ code.cloudfoundry.org/go-loggregator/metrics
 code.cloudfoundry.org/go-loggregator/rpc/loggregator_v2
 code.cloudfoundry.org/go-loggregator/metrics/testhelpers
 code.cloudfoundry.org/go-loggregator
-# code.cloudfoundry.org/loggregator-agent v0.0.0-20190531203354-322071cc6807 => code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20190828205358-fd77eb91324d
+# code.cloudfoundry.org/loggregator-agent v0.0.0-20190918193342-14308cf69de1 => code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20190828205358-fd77eb91324d
 code.cloudfoundry.org/loggregator-agent/pkg/scraper
 code.cloudfoundry.org/loggregator-agent/pkg/config
 code.cloudfoundry.org/loggregator-agent/pkg/diodes
@@ -304,7 +304,7 @@ golang.org/x/oauth2/jws
 golang.org/x/oauth2/jwt
 # golang.org/x/sync v0.0.0-20190911185100-cd5d95a43a6e
 golang.org/x/sync/semaphore
-# golang.org/x/sys v0.0.0-20190916202348-b4ddaad3f8a3
+# golang.org/x/sys v0.0.0-20190919044723-0c1ff786ef13
 golang.org/x/sys/windows
 golang.org/x/sys/unix
 # golang.org/x/text v0.3.2
