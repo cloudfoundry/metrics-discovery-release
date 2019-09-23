@@ -43,9 +43,9 @@ func NewMetricsAgent(cfg Config, scrapeConfigProvider ScrapeConfigProvider, metr
 	}
 
 	ma := &MetricsAgent{
-		cfg:                  cfg,
-		log:                  log,
-		metrics:              metrics,
+		cfg:           cfg,
+		log:           log,
+		metrics:       metrics,
 		scrapeConfigs: make(map[string]scraper.PromScraperConfig, len(scrapeConfigs)),
 	}
 
@@ -140,10 +140,11 @@ func (m *MetricsAgent) startEnvelopeCollection(promCollector *collector.Envelope
 }
 
 func (m *MetricsAgent) startMetricsServer(envelopeCollector *collector.EnvelopeCollector) {
-	gatherer := m.buildGatherer(envelopeCollector)
-
 	router := http.NewServeMux()
-	router.Handle("/metrics", promhttp.HandlerFor(gatherer, promhttp.HandlerOpts{ErrorHandling: promhttp.ContinueOnError}))
+	router.Handle(
+		"/metrics",
+		m.buildMetricHandler(envelopeCollector),
+	)
 
 	tlsConfig := m.generateServerTLSConfig(
 		m.cfg.MetricsServer.CertFile,
@@ -161,29 +162,53 @@ func (m *MetricsAgent) startMetricsServer(envelopeCollector *collector.EnvelopeC
 	log.Printf("Metrics server closing: %s", m.metricsServer.ListenAndServeTLS("", ""))
 }
 
-func (m *MetricsAgent) buildGatherer(envelopeCollector *collector.EnvelopeCollector) gatherer.Aggregate {
+func (m *MetricsAgent) buildMetricHandler(envelopeCollector *collector.EnvelopeCollector) http.Handler {
+	envelopeHandler := m.envelopeHandler(envelopeCollector)
+	proxyHandlers := m.proxyHandlers()
+
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		id := r.URL.Query().Get("id")
+		if id == "" {
+			envelopeHandler.ServeHTTP(w, r)
+			return
+		}
+
+		handler, ok := proxyHandlers[id]
+		if !ok {
+			w.WriteHeader(http.StatusNotFound)
+			return
+		}
+
+		handler.ServeHTTP(w, r)
+	})
+}
+
+func (m *MetricsAgent) envelopeHandler(envelopeCollector *collector.EnvelopeCollector) http.Handler {
 	envelopeGatherer := prometheus.NewRegistry()
 	envelopeGatherer.MustRegister(envelopeCollector)
-
-	var scrapeConfigs []scraper.PromScraperConfig
-	for _, v := range m.scrapeConfigs {
-		scrapeConfigs = append(scrapeConfigs, v)
-	}
-
-	proxyGatherer := gatherer.NewProxyGatherer(
-		scrapeConfigs,
-		m.cfg.MetricsExporter.DefaultLabels,
-		m.cfg.ScrapeCertPath,
-		m.cfg.ScrapeKeyPath,
-		m.cfg.ScrapeCACertPath,
-		m.metrics,
-		m.log,
+	envelopeHandler := promhttp.HandlerFor(
+		envelopeGatherer,
+		promhttp.HandlerOpts{ErrorHandling: promhttp.ContinueOnError},
 	)
+	return envelopeHandler
+}
 
-	return gatherer.Aggregate{
-		Gatherers: []prometheus.Gatherer{proxyGatherer, envelopeGatherer},
-		Logger:    m.log,
+func (m *MetricsAgent) proxyHandlers() map[string]http.Handler {
+	metricHandlers := make(map[string]http.Handler, len(m.scrapeConfigs))
+	for sourceId, sc := range m.scrapeConfigs {
+		proxyGatherer := gatherer.NewProxyGatherer(
+			[]scraper.PromScraperConfig{sc},
+			m.cfg.MetricsExporter.DefaultLabels,
+			m.cfg.ScrapeCertPath,
+			m.cfg.ScrapeKeyPath,
+			m.cfg.ScrapeCACertPath,
+			m.metrics,
+			m.log,
+		)
+
+		metricHandlers[sourceId] = promhttp.HandlerFor(proxyGatherer, promhttp.HandlerOpts{ErrorHandling: promhttp.ContinueOnError})
 	}
+	return metricHandlers
 }
 
 func (m *MetricsAgent) Stop() {

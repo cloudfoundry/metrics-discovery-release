@@ -93,7 +93,7 @@ var _ = Describe("MetricsAgent", func() {
 		})
 		defer cancel()
 
-		Eventually(getMetricFamilies(metricsPort, testCerts), 3).Should(HaveKey("total_counter"))
+		Eventually(getMetricFamilies(metricsPort, "", testCerts), 3).Should(HaveKey("total_counter"))
 
 		metric := getMetric("total_counter", metricsPort, testCerts)
 		Expect(metric.GetCounter().GetValue()).To(BeNumerically("==", 22))
@@ -108,7 +108,7 @@ var _ = Describe("MetricsAgent", func() {
 		})
 		defer cancel()
 
-		Eventually(getMetricFamilies(metricsPort, testCerts), 3).Should(HaveKey("total_counter"))
+		Eventually(getMetricFamilies(metricsPort, "", testCerts), 3).Should(HaveKey("total_counter"))
 
 		metric := getMetric("total_counter", metricsPort, testCerts)
 		Expect(metric.GetLabel()).To(ConsistOf(
@@ -133,7 +133,7 @@ var _ = Describe("MetricsAgent", func() {
 		})
 		defer cancel()
 
-		Eventually(getMetricFamilies(metricsPort, testCerts), 3).Should(HaveKey("timer_seconds"))
+		Eventually(getMetricFamilies(metricsPort, "", testCerts), 3).Should(HaveKey("timer_seconds"))
 
 		metric := getMetric("timer_seconds", metricsPort, testCerts)
 		Expect(metric.GetLabel()).To(ConsistOf(
@@ -160,12 +160,36 @@ var _ = Describe("MetricsAgent", func() {
 		})
 		defer cancel()
 
-		Eventually(getMetricFamilies(metricsPort, testCerts), 3).Should(HaveKey("non_prom_scraped"))
-		Consistently(getMetricFamilies(metricsPort, testCerts), 3).Should(Not(HaveKey("prom_scraped")))
+		Eventually(getMetricFamilies(metricsPort, "", testCerts), 3).Should(HaveKey("non_prom_scraped"))
+		Consistently(getMetricFamilies(metricsPort, "", testCerts), 3).Should(Not(HaveKey("prom_scraped")))
 	})
 
 	It("proxies to prom endpoints", func() {
-		Eventually(getMetricFamilies(metricsPort, testCerts), 3).Should(HaveKey("proxyMetric"))
+		Eventually(getMetricFamilies(metricsPort, "source_id_scraped", testCerts), 3).Should(HaveKey("proxyMetric"))
+	})
+
+	It("only returns the metrics for the given ID", func() {
+		cancel := doUntilCancelled(func() {
+			ingressClient.EmitCounter("total_counter", loggregator.WithTotal(22))
+		})
+		defer cancel()
+
+		Eventually(getMetricFamilies(metricsPort, "", testCerts), 3).Should(HaveLen(1))
+		metric := getMetric("total_counter", metricsPort, testCerts)
+		Expect(metric.GetCounter().GetValue()).To(BeNumerically("==", 22))
+
+		Eventually(getMetricFamilies(metricsPort, "source_id_scraped", testCerts), 3).Should(HaveKey("proxyMetric"))
+		Expect(getMetricFamilies(metricsPort, "source_id_scraped", testCerts)()).To(HaveLen(1))
+	})
+
+	It("returns a 404 for unknown IDs", func() {
+		cancel := doUntilCancelled(func() {
+			ingressClient.EmitCounter("total_counter", loggregator.WithTotal(22))
+		})
+		defer cancel()
+
+		_, err := getMetricsResponse(metricsPort, "foobarbaz", testCerts)
+		Expect(err).To(MatchError("unexpected status code 404"))
 	})
 
 	It("aggregates delta counters", func() {
@@ -174,7 +198,7 @@ var _ = Describe("MetricsAgent", func() {
 		})
 		defer cancel()
 
-		Eventually(getMetricFamilies(metricsPort, testCerts), 3).Should(HaveKey("delta_counter"))
+		Eventually(getMetricFamilies(metricsPort, "", testCerts), 3).Should(HaveKey("delta_counter"))
 
 		originialValue := getMetric("delta_counter", metricsPort, testCerts).GetCounter().GetValue()
 
@@ -211,12 +235,12 @@ func doUntilCancelled(f func()) context.CancelFunc {
 
 func waitForMetricsEndpoint(port uint16, testCerts *testhelpers.TestCerts) {
 	Eventually(func() error {
-		_, err := getMetricsResponse(port, testCerts)
+		_, err := getMetricsResponse(port, "", testCerts)
 		return err
 	}).Should(Succeed())
 }
 
-func getMetricsResponse(port uint16, testCerts *testhelpers.TestCerts) (*http.Response, error) {
+func getMetricsResponse(port uint16, id string, testCerts *testhelpers.TestCerts) (*http.Response, error) {
 	tlsConfig, err := tlsconfig.Build(tlsconfig.WithIdentityFromFile(testCerts.Cert("client"), testCerts.Key("client"))).
 		Client(tlsconfig.WithAuthorityFromFile(testCerts.CA()))
 	if err != nil {
@@ -227,7 +251,7 @@ func getMetricsResponse(port uint16, testCerts *testhelpers.TestCerts) (*http.Re
 		Transport: &http.Transport{TLSClientConfig: tlsConfig},
 	}
 
-	url := fmt.Sprintf("https://127.0.0.1:%d/metrics", port)
+	url := fmt.Sprintf("https://127.0.0.1:%d/metrics?id=%s", port, id)
 	resp, err := client.Get(url)
 	if err == nil && resp.StatusCode != http.StatusOK {
 		return resp, fmt.Errorf("unexpected status code %d", resp.StatusCode)
@@ -236,9 +260,9 @@ func getMetricsResponse(port uint16, testCerts *testhelpers.TestCerts) (*http.Re
 	return resp, err
 }
 
-func getMetricFamilies(port uint16, testCerts *testhelpers.TestCerts) func() map[string]*dto.MetricFamily {
+func getMetricFamilies(port uint16, id string, testCerts *testhelpers.TestCerts) func() map[string]*dto.MetricFamily {
 	return func() map[string]*dto.MetricFamily {
-		resp, err := getMetricsResponse(port, testCerts)
+		resp, err := getMetricsResponse(port, id, testCerts)
 
 		metricFamilies, err := new(expfmt.TextParser).TextToMetricFamilies(resp.Body)
 		if err != nil {
@@ -250,7 +274,7 @@ func getMetricFamilies(port uint16, testCerts *testhelpers.TestCerts) func() map
 }
 
 func getMetric(metricName string, port uint16, testCerts *testhelpers.TestCerts) *dto.Metric {
-	families := getMetricFamilies(port, testCerts)()
+	families := getMetricFamilies(port, "", testCerts)()
 	family, ok := families[metricName]
 	if !ok {
 		return nil
