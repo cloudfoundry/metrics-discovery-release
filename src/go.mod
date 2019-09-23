@@ -32,7 +32,7 @@ require (
 	github.com/square/certstrap v1.2.0 // indirect
 	go.opencensus.io v0.22.1 // indirect
 	golang.org/x/crypto v0.0.0-20190923035154-9ee001bba392 // indirect
-	golang.org/x/net v0.0.0-20190921015927-1a5e07d1ff72 // indirect
+	golang.org/x/net v0.0.0-20190923162816-aa69164e4478 // indirect
 	golang.org/x/sync v0.0.0-20190911185100-cd5d95a43a6e // indirect
 	golang.org/x/time v0.0.0-20190921001708-c4c64cad1fd0 // indirect
 	google.golang.org/api v0.10.0 // indirect
