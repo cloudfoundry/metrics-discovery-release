@@ -18,11 +18,11 @@ import (
 
 var _ = Describe("Proxy", func() {
 	type testContext struct {
-		promServer    *stubPromServer
-		scrapeCerts   *testhelpers.TestCerts
-		scrapeConfigs []scraper.PromScraperConfig
-		metrics       *metrichelpers.SpyMetricsRegistry
-		loggr         *log.Logger
+		promServer   *stubPromServer
+		scrapeCerts  *testhelpers.TestCerts
+		scrapeConfig scraper.PromScraperConfig
+		metrics      *metrichelpers.SpyMetricsRegistry
+		loggr        *log.Logger
 	}
 
 	var setup = func(scheme, scrapePath string, scrapeHeaders map[string]string) *testContext {
@@ -38,26 +38,26 @@ var _ = Describe("Proxy", func() {
 		}
 		promServer.resp = promOutput
 
-		scrapeConfigs := []scraper.PromScraperConfig{{
+		scrapeConfig := scraper.PromScraperConfig{
 			Port:       promServer.port,
 			Scheme:     scheme,
 			Path:       scrapePath,
 			ServerName: serverName,
 			Headers:    scrapeHeaders,
-		}}
+		}
 
 		return &testContext{
-			promServer:    promServer,
-			scrapeCerts:   scrapeCerts,
-			scrapeConfigs: scrapeConfigs,
-			metrics:       metrichelpers.NewMetricsRegistry(),
-			loggr:         log.New(GinkgoWriter, "", 0),
+			promServer:   promServer,
+			scrapeCerts:  scrapeCerts,
+			scrapeConfig: scrapeConfig,
+			metrics:      metrichelpers.NewMetricsRegistry(),
+			loggr:        log.New(GinkgoWriter, "", 0),
 		}
 	}
 
 	var buildProxyCollectorWithDefaultLabels = func(tc *testContext, defaultLabels map[string]string) *gatherer.ProxyGatherer {
 		return gatherer.NewProxyGatherer(
-			tc.scrapeConfigs,
+			tc.scrapeConfig,
 			defaultLabels,
 			tc.scrapeCerts.Cert("client"),
 			tc.scrapeCerts.Key("client"),
@@ -71,7 +71,7 @@ var _ = Describe("Proxy", func() {
 		return buildProxyCollectorWithDefaultLabels(tc, nil)
 	}
 
-	It("collects metrics from prom targets", func() {
+	It("collects metrics from a prom target", func() {
 		tc := setup("http", "metrics", nil)
 		proxyCollector := buildProxyCollector(tc)
 
@@ -126,10 +126,10 @@ var _ = Describe("Proxy", func() {
 
 		It("adds target default labels to metrics", func() {
 			tc := setup("http", "metrics", nil)
-			tc.scrapeConfigs[0].Labels = map[string]string{
+			tc.scrapeConfig.Labels = map[string]string{
 				"default_label": "target",
 			}
-			tc.scrapeConfigs[0].SourceID = "source-id"
+			tc.scrapeConfig.SourceID = "source-id"
 
 			proxyCollector := buildProxyCollectorWithDefaultLabels(tc, map[string]string{
 				"default_label": "global",
@@ -183,36 +183,6 @@ var _ = Describe("Proxy", func() {
 				),
 			))
 		})
-	})
-
-	It("scrapes multiple targets", func() {
-		tc := setup("http", "metrics", nil)
-		promServer2 := newStubPromServer()
-		promServer2.resp = promOutput2
-
-		tc.scrapeConfigs = append(tc.scrapeConfigs, scraper.PromScraperConfig{
-			Port:   promServer2.port,
-			Scheme: "http",
-			Path:   "metrics",
-		})
-
-		proxyCollector := buildProxyCollector(tc)
-
-		mfs, err := proxyCollector.Gather()
-		Expect(err).ToNot(HaveOccurred())
-
-		Expect(mfs).To(ConsistOf(
-			haveFamilyName("second_prom_server"),
-			haveFamilyName("metric1"),
-			haveFamilyName("metric2"),
-			And(
-				haveFamilyName("metric3"),
-				haveMetrics(
-					gaugeWith(11, map[string]string{"direction": "ingress"}),
-					gaugeWith(22, map[string]string{"direction": "egress"}),
-				),
-			),
-		))
 	})
 
 	It("can scrape with mTLS", func() {
@@ -281,29 +251,17 @@ var _ = Describe("Proxy", func() {
 
 	It("gracefully handles failed scrapes", func() {
 		tc := setup("http", "metrics", nil)
-		tc.scrapeConfigs = append(tc.scrapeConfigs, scraper.PromScraperConfig{
+		tc.scrapeConfig = scraper.PromScraperConfig{
 			Port:     "9091",
 			Scheme:   "http",
 			Path:     "this_server_does_not_exist",
 			SourceID: "failed_scrape_id",
-		})
+		}
 
 		proxyCollector := buildProxyCollector(tc)
 
-		mfs, err := proxyCollector.Gather()
+		_, err := proxyCollector.Gather()
 		Expect(err).ToNot(HaveOccurred())
-
-		Expect(mfs).To(ConsistOf(
-			haveFamilyName("metric1"),
-			haveFamilyName("metric2"),
-			And(
-				haveFamilyName("metric3"),
-				haveMetrics(
-					gaugeWith(11, map[string]string{"direction": "ingress"}),
-					gaugeWith(22, map[string]string{"direction": "egress"}),
-				),
-			),
-		))
 
 		Expect(tc.metrics.GetMetric(
 			"failed_scrapes",

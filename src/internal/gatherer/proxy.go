@@ -13,13 +13,12 @@ import (
 	"log"
 	"net/http"
 	"strings"
-	"sync"
 	"time"
 )
 
 type ProxyGatherer struct {
-	scrapeConfigs []scraper.PromScraperConfig
-	httpDoers     map[string]func(*http.Request) (*http.Response, error)
+	scrapeConfig  scraper.PromScraperConfig
+	httpDoer      func(*http.Request) (*http.Response, error)
 	metrics       metricsRegistry
 	defaultLabels map[string]string
 }
@@ -29,7 +28,7 @@ type metricsRegistry interface {
 }
 
 func NewProxyGatherer(
-	scrapeConfigs []scraper.PromScraperConfig,
+	scrapeConfig scraper.PromScraperConfig,
 	defaultLabels map[string]string,
 	certPath,
 	keyPath,
@@ -38,18 +37,13 @@ func NewProxyGatherer(
 	loggr *log.Logger,
 ) *ProxyGatherer {
 	pg := &ProxyGatherer{
-		scrapeConfigs: scrapeConfigs,
+		scrapeConfig:  scrapeConfig,
 		defaultLabels: defaultLabels,
 		metrics:       metrics,
+		httpDoer:      buildHttpClient(certPath, keyPath, caPath, scrapeConfig.ServerName, loggr).Do,
 	}
 
-	httpDoers := map[string]func(*http.Request) (*http.Response, error){}
-	for _, sc := range scrapeConfigs {
-		httpDoers[sc.SourceID] = buildHttpClient(certPath, keyPath, caPath, sc.ServerName, loggr).Do
-		pg.newFailedScrapeMetric(sc.SourceID)
-	}
-
-	pg.httpDoers = httpDoers
+	pg.newFailedScrapeMetric(scrapeConfig.SourceID)
 
 	return pg
 }
@@ -82,30 +76,12 @@ func buildHttpClient(certPath, keyPath, caPath, serverName string, loggr *log.Lo
 
 // Gather implements prometheus.Gatherer
 func (c *ProxyGatherer) Gather() ([]*io_prometheus_client.MetricFamily, error) {
-	var mfs []*io_prometheus_client.MetricFamily
-
-	wg := sync.WaitGroup{}
-	mfsLock := sync.Mutex{}
-
-	for _, sc := range c.scrapeConfigs {
-		wg.Add(1)
-		go func(sc scraper.PromScraperConfig) {
-			defer wg.Done()
-
-			scrapeResults, err := c.scrape(sc)
-			if err != nil {
-				c.incFailedScrapes(sc.SourceID)
-				return
-			}
-
-			mfsLock.Lock()
-			mfs = append(mfs, scrapeResults...)
-			mfsLock.Unlock()
-		}(sc)
+	scrapeResults, err := c.scrape(c.scrapeConfig)
+	if err != nil {
+		c.incFailedScrapes(c.scrapeConfig.SourceID)
 	}
 
-	wg.Wait()
-	return mfs, nil
+	return scrapeResults, nil
 }
 
 func (c *ProxyGatherer) incFailedScrapes(sourceID string) {
@@ -128,7 +104,7 @@ func (c *ProxyGatherer) scrape(scrapeConfig scraper.PromScraperConfig) ([]*io_pr
 		return nil, err
 	}
 
-	resp, err := c.httpDoers[scrapeConfig.SourceID](req)
+	resp, err := c.httpDoer(req)
 	if err != nil {
 		return nil, err
 	}
