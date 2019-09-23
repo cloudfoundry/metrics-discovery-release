@@ -1,31 +1,38 @@
 <%
-    nats_ips = link('nats').instances.map { |instance| instance.address }
-    nats_port = link('nats').p("nats.port")
-    nats_user = link('nats').p("nats.user")
-    nats_password = link('nats').p("nats.password")
+  nats_ips = link('nats').instances.map { |instance| instance.address }
+  nats_port = link('nats').p("nats.port")
+  nats_user = link('nats').p("nats.user")
+  nats_password = link('nats').p("nats.password")
 
-    nats_hosts = nats_ips.map do |h|
-      "nats://#{nats_user}:#{nats_password}@#{h}:#{nats_port}"
-    end
+  nats_hosts = nats_ips.map do |h|
+    "nats://#{nats_user}:#{nats_password}@#{h}:#{nats_port}"
+  end
 
-    nats_str = nats_hosts.join(",")
+  nats_str = nats_hosts.join(",")
+
+  certs_dir="/var/vcap/jobs/metrics-discovery-registrar/config/certs"
+
+  process = {
+    "name" => "metrics-discovery-registrar",
+    "executable" => "/var/vcap/packages/metrics-discovery-registrar/discovery-registrar",
+    "unsafe" => {
+      "unrestricted_volumes" => [
+        { "path" => p("targets_glob"), "mount_only" => true },
+      ],
+    },
+    "env" => {
+      "PUBLISH_INTERVAL" => "#{p("publish_interval")}",
+      "NATS_HOSTS" => nats_str,
+      "TARGETS_GLOB" => p("targets_glob"),
+      "TARGET_REFRESH_INTERVAL" => "#{p("target_refresh_interval")}",
+      "METRICS_CA_PATH" => "#{certs_dir}/metrics_ca.crt",
+      "METRICS_CERT_PATH" => "#{certs_dir}/metrics.crt",
+      "METRICS_KEY_PATH" => "#{certs_dir}/metrics.key",
+      "METRICS_PORT" => "#{p("metrics.port")}",
+    }
+  }
+
+  bpm = {"processes" => [process] }
 %>
 
-processes:
-- name: metrics-discovery-registrar
-  executable: /var/vcap/packages/metrics-discovery-registrar/discovery-registrar
-  env:
-    PUBLISH_INTERVAL: <%= p("publish_interval") %>
-    NATS_HOSTS: "<%= nats_str %>"
-    TARGETS_GLOB: <%= p("targets_glob") %>
-    TARGET_REFRESH_INTERVAL: <%= p("target_refresh_interval") %>
-    METRICS_CA_PATH: "/var/vcap/jobs/metrics-discovery-registrar/config/certs/metrics_ca.crt"
-    METRICS_CERT_PATH: "/var/vcap/jobs/metrics-discovery-registrar/config/certs/metrics.crt"
-    METRICS_KEY_PATH: "/var/vcap/jobs/metrics-discovery-registrar/config/certs/metrics.key"
-    METRICS_PORT: "<%= p("metrics.port") %>"
-  unsafe:
-    unrestricted_volumes:
-    - path: /var/vcap/jobs
-      mount_only: true
-    - path: /var/vcap/data/jobs
-      mount_only: true
+<%= YAML.dump(bpm) %>

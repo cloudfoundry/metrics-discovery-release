@@ -13,14 +13,18 @@
   tag_str = tags.map { |k, v| "#{k}:#{v}" }.join(",")
   certs_dir = "/var/vcap/jobs/metrics-agent/config/certs"
 
+  config_volumes = Array.new
+  if_p('config_globs') { |config_globs|
+    config_volumes = config_globs.map { |glob|
+      { "path" => glob, "mount_only" => true }
+    }
+  }
+
   process = {
     "name" => "metrics-agent",
     "executable" => "/var/vcap/packages/metrics-agent/metrics-agent",
     "unsafe" => {
-      "unrestricted_volumes" => [
-        { "path" => "/var/vcap/jobs", "mount_only" => true },
-        { "path" => "/var/vcap/data/jobs", "mount_only" => true },
-      ],
+      "unrestricted_volumes" => config_volumes,
     },
     "env" => {
       "AGENT_PORT" => "#{p("port")}",
