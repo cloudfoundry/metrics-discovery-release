@@ -46,4 +46,5 @@ require (
 replace (
 	code.cloudfoundry.org/loggregator-agent => code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20190828205358-fd77eb91324d
 	github.com/prometheus/common => github.com/prometheus/common v0.5.0
+	golang.org/x/sys => golang.org/x/sys v0.0.0-20190801041406-cbf593c0f2f3
 )
