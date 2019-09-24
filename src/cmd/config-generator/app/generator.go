@@ -1,7 +1,7 @@
 package app
 
 import (
-	"code.cloudfoundry.org/go-loggregator/metrics"
+	metrics "code.cloudfoundry.org/go-metric-registry"
 	"code.cloudfoundry.org/metrics-discovery/internal/registry"
 	"code.cloudfoundry.org/metrics-discovery/internal/target"
 	"encoding/json"
@@ -33,7 +33,7 @@ type ConfigGenerator struct {
 }
 
 type metricsRegistry interface {
-	NewCounter(name string, opts ...metrics.MetricOption) metrics.Counter
+	NewCounter(name, helpText string, opts ...metrics.MetricOption) metrics.Counter
 }
 
 type timestampedTarget struct {
@@ -57,7 +57,7 @@ func NewConfigGenerator(
 
 		logger:     logger,
 		subscriber: subscriber,
-		delivered:  m.NewCounter("delivered", metrics.WithHelpText("Total number of messages successfully delivered from NATs.")),
+		delivered:  m.NewCounter("delivered", "Total number of messages successfully delivered from NATs."),
 		stop:       make(chan struct{}),
 		done:       make(chan struct{}),
 	}

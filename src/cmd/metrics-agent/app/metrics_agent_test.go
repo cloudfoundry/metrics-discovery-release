@@ -6,6 +6,7 @@ import (
 	"code.cloudfoundry.org/loggregator-agent/pkg/scraper"
 	"code.cloudfoundry.org/metrics-discovery/cmd/metrics-agent/app"
 	"code.cloudfoundry.org/metrics-discovery/internal/testhelpers"
+	metrichelpers "code.cloudfoundry.org/go-metric-registry/testhelpers"
 	"code.cloudfoundry.org/tlsconfig"
 	"context"
 	"fmt"
@@ -69,15 +70,15 @@ var _ = Describe("MetricsAgent", func() {
 		stubPromServer.resp = promOutput
 		fakeScrapeConfigProvider = func() ([]scraper.PromScraperConfig, error) {
 			return []scraper.PromScraperConfig{{
-				Port:           stubPromServer.port,
-				SourceID:       "source_id_scraped",
-				Scheme:         "http",
-				Path:           "metrics",
+				Port:     stubPromServer.port,
+				SourceID: "source_id_scraped",
+				Scheme:   "http",
+				Path:     "metrics",
 			}}, nil
 		}
 
 		testLogger := log.New(GinkgoWriter, "", log.LstdFlags)
-		metricsAgent = app.NewMetricsAgent(cfg, fakeScrapeConfigProvider, testhelpers.NewMetricClient(), testLogger)
+		metricsAgent = app.NewMetricsAgent(cfg, fakeScrapeConfigProvider, metrichelpers.NewMetricsRegistry(), testLogger)
 		go metricsAgent.Run()
 		waitForMetricsEndpoint(metricsPort, testCerts)
 	})

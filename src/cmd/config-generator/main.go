@@ -1,7 +1,7 @@
 package main
 
 import (
-	"code.cloudfoundry.org/go-loggregator/metrics"
+	metrics "code.cloudfoundry.org/go-metric-registry"
 	"code.cloudfoundry.org/metrics-discovery/cmd/config-generator/app"
 	"github.com/nats-io/nats.go"
 	"log"

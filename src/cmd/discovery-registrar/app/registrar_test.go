@@ -1,7 +1,7 @@
 package app_test
 
 import (
-	"code.cloudfoundry.org/go-loggregator/metrics/testhelpers"
+	"code.cloudfoundry.org/go-metric-registry/testhelpers"
 	"code.cloudfoundry.org/metrics-discovery/cmd/discovery-registrar/app"
 	"code.cloudfoundry.org/metrics-discovery/internal/target"
 	. "github.com/onsi/ginkgo"

@@ -2,7 +2,7 @@ package app
 
 import (
 	gendiodes "code.cloudfoundry.org/go-diodes"
-	"code.cloudfoundry.org/go-loggregator/metrics"
+	metrics "code.cloudfoundry.org/go-metric-registry"
 	"code.cloudfoundry.org/loggregator-agent/pkg/diodes"
 	egress_v2 "code.cloudfoundry.org/loggregator-agent/pkg/egress/v2"
 	v2 "code.cloudfoundry.org/loggregator-agent/pkg/ingress/v2"
@@ -33,7 +33,7 @@ type MetricsAgent struct {
 type ScrapeConfigProvider func() ([]scraper.PromScraperConfig, error)
 
 type Metrics interface {
-	NewCounter(name string, options ...metrics.MetricOption) metrics.Counter
+	NewCounter(name, helpText string, options ...metrics.MetricOption) metrics.Counter
 }
 
 func NewMetricsAgent(cfg Config, scrapeConfigProvider ScrapeConfigProvider, metrics Metrics, log *log.Logger) *MetricsAgent {
@@ -73,8 +73,8 @@ func (m *MetricsAgent) Run() {
 func (m *MetricsAgent) envelopeDiode() *diodes.ManyToOneEnvelopeV2 {
 	ingressDropped := m.metrics.NewCounter(
 		"dropped",
-		metrics.WithHelpText("Total number of dropped envelopes."),
-		metrics.WithMetricTags(map[string]string{"direction": "ingress"}),
+		"Total number of dropped envelopes.",
+		metrics.WithMetricLabels(map[string]string{"direction": "ingress"}),
 	)
 	return diodes.NewManyToOneEnvelopeV2(10000, gendiodes.AlertFunc(func(missed int) {
 		ingressDropped.Add(float64(missed))
@@ -84,11 +84,11 @@ func (m *MetricsAgent) envelopeDiode() *diodes.ManyToOneEnvelopeV2 {
 func (m *MetricsAgent) startIngressServer(diode *diodes.ManyToOneEnvelopeV2) {
 	ingressMetric := m.metrics.NewCounter(
 		"ingress",
-		metrics.WithHelpText("Total number of envelopes ingressed by the agent."),
+		"Total number of envelopes ingressed by the agent.",
 	)
 	originMetric := m.metrics.NewCounter(
 		"origin_mappings",
-		metrics.WithHelpText("Total number of envelopes where the origin tag is used as the source_id."),
+		"Total number of envelopes where the origin tag is used as the source_id.",
 	)
 
 	receiver := v2.NewReceiver(diode, ingressMetric, originMetric)

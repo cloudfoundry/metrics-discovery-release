@@ -1,7 +1,7 @@
 package app
 
 import (
-	"code.cloudfoundry.org/go-loggregator/metrics"
+	metrics "code.cloudfoundry.org/go-metric-registry"
 	"code.cloudfoundry.org/metrics-discovery/internal/registry"
 	"code.cloudfoundry.org/metrics-discovery/internal/target"
 	"gopkg.in/yaml.v2"
@@ -29,7 +29,7 @@ type DynamicRegistrar struct {
 }
 
 type metricsRegistry interface {
-	NewCounter(name string, opts ...metrics.MetricOption) metrics.Counter
+	NewCounter(name, helpText string, opts ...metrics.MetricOption) metrics.Counter
 }
 
 func NewDynamicRegistrar(tp TargetProvider, p Publisher, publishInterval time.Duration, m metricsRegistry, log *log.Logger) *DynamicRegistrar {
@@ -37,7 +37,7 @@ func NewDynamicRegistrar(tp TargetProvider, p Publisher, publishInterval time.Du
 		targetProvider:  tp,
 		publisher:       p,
 		publishInterval: publishInterval,
-		sent:            m.NewCounter("sent", metrics.WithHelpText("Total number of messages successfully sent to NATs.")),
+		sent:            m.NewCounter("sent", "Total number of messages successfully sent to NATs."),
 		stop:            make(chan struct{}),
 		done:            make(chan struct{}),
 	}

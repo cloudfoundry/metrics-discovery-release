@@ -1,8 +1,8 @@
 package collector_test
 
 import (
-	"code.cloudfoundry.org/go-loggregator/metrics/testhelpers"
 	"code.cloudfoundry.org/go-loggregator/rpc/loggregator_v2"
+	"code.cloudfoundry.org/go-metric-registry/testhelpers"
 	"code.cloudfoundry.org/metrics-discovery/internal/collector"
 	"fmt"
 	"github.com/gogo/protobuf/proto"

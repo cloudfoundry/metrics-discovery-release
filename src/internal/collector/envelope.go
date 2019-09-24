@@ -1,8 +1,8 @@
 package collector
 
 import (
-	"code.cloudfoundry.org/go-loggregator/metrics"
 	"code.cloudfoundry.org/go-loggregator/rpc/loggregator_v2"
+	metrics "code.cloudfoundry.org/go-metric-registry"
 	v2 "code.cloudfoundry.org/loggregator-agent/pkg/egress/v2"
 	"fmt"
 	"github.com/prometheus/client_golang/prometheus"
@@ -51,7 +51,7 @@ type EnvelopeCollector struct {
 type EnvelopeCollectorOption func(*EnvelopeCollector)
 
 type debugMetrics interface {
-	NewCounter(name string, opts ...metrics.MetricOption) metrics.Counter
+	NewCounter(name, helpText string, opts ...metrics.MetricOption) metrics.Counter
 }
 
 func NewEnvelopeCollector(m debugMetrics, opts ...EnvelopeCollectorOption) *EnvelopeCollector {
@@ -314,7 +314,8 @@ func (c *EnvelopeCollector) toLabels(sourceID string, tags map[string]string) ([
 func (c *EnvelopeCollector) incrementCounter(metricName, originatingSourceID string) {
 	c.metrics.NewCounter(
 		metricName,
-		metrics.WithMetricTags(map[string]string{"originating_source_id": originatingSourceID}),
+		fmt.Sprintf("Total number of %s for the originating source id from the envelope", metricName),
+		metrics.WithMetricLabels(map[string]string{"originating_source_id": originatingSourceID}),
 	).Add(1)
 }
 

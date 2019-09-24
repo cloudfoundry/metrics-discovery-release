@@ -1,7 +1,7 @@
 package app_test
 
 import (
-	"code.cloudfoundry.org/go-loggregator/metrics/testhelpers"
+	"code.cloudfoundry.org/go-metric-registry/testhelpers"
 	"code.cloudfoundry.org/metrics-discovery/cmd/config-generator/app"
 	"fmt"
 	. "github.com/benjamintf1/unmarshalledmatchers"

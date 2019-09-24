@@ -1,7 +1,7 @@
 package gatherer
 
 import (
-	"code.cloudfoundry.org/go-loggregator/metrics"
+	metrics "code.cloudfoundry.org/go-metric-registry"
 	"code.cloudfoundry.org/loggregator-agent/pkg/scraper"
 	"code.cloudfoundry.org/tlsconfig"
 	"fmt"
@@ -25,7 +25,7 @@ type ProxyGatherer struct {
 }
 
 type metricsRegistry interface {
-	NewCounter(string, ...metrics.MetricOption) metrics.Counter
+	NewCounter(string, string, ...metrics.MetricOption) metrics.Counter
 }
 
 func NewProxyGatherer(
@@ -115,8 +115,8 @@ func (c *ProxyGatherer) incFailedScrapes(sourceID string) {
 func (c *ProxyGatherer) newFailedScrapeMetric(sourceID string) metrics.Counter {
 	return c.metrics.NewCounter(
 		"failed_scrapes",
-		metrics.WithHelpText("Total failures when scraping target."),
-		metrics.WithMetricTags(map[string]string{
+		"Total failures when scraping target.",
+		metrics.WithMetricLabels(map[string]string{
 			"scrape_source_id": sourceID,
 		}),
 	)

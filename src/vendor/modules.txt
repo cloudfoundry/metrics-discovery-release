@@ -11,6 +11,9 @@ code.cloudfoundry.org/go-loggregator/metrics
 code.cloudfoundry.org/go-loggregator/rpc/loggregator_v2
 code.cloudfoundry.org/go-loggregator/metrics/testhelpers
 code.cloudfoundry.org/go-loggregator
+# code.cloudfoundry.org/go-metric-registry v0.0.0-20190924175840-9981b8ca099e
+code.cloudfoundry.org/go-metric-registry
+code.cloudfoundry.org/go-metric-registry/testhelpers
 # code.cloudfoundry.org/loggregator-agent v0.0.0-20190918193342-14308cf69de1 => code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20190828205358-fd77eb91324d
 code.cloudfoundry.org/loggregator-agent/pkg/scraper
 code.cloudfoundry.org/loggregator-agent/pkg/config

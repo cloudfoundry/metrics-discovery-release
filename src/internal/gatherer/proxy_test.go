@@ -1,6 +1,7 @@
 package gatherer_test
 
 import (
+	metrichelpers "code.cloudfoundry.org/go-metric-registry/testhelpers"
 	"code.cloudfoundry.org/loggregator-agent/pkg/scraper"
 	"code.cloudfoundry.org/metrics-discovery/internal/gatherer"
 	"code.cloudfoundry.org/metrics-discovery/internal/testhelpers"
@@ -20,7 +21,7 @@ var _ = Describe("Proxy", func() {
 		promServer    *stubPromServer
 		scrapeCerts   *testhelpers.TestCerts
 		scrapeConfigs []scraper.PromScraperConfig
-		metrics       *testhelpers.SpyMetricClient
+		metrics       *metrichelpers.SpyMetricsRegistry
 		loggr         *log.Logger
 	}
 
@@ -49,7 +50,7 @@ var _ = Describe("Proxy", func() {
 			promServer:    promServer,
 			scrapeCerts:   scrapeCerts,
 			scrapeConfigs: scrapeConfigs,
-			metrics:       testhelpers.NewMetricClient(),
+			metrics:       metrichelpers.NewMetricsRegistry(),
 			loggr:         log.New(GinkgoWriter, "", 0),
 		}
 	}
