@@ -19,6 +19,7 @@ type Subscriber func(queue string, callback nats.MsgHandler) (*nats.Subscription
 type ConfigGenerator struct {
 	sync.Mutex
 	path                     string
+	writeFrequency           time.Duration
 	configTTL                time.Duration
 	configExpirationInterval time.Duration
 
@@ -43,6 +44,7 @@ type timestampedTarget struct {
 
 func NewConfigGenerator(
 	subscriber Subscriber,
+	writeFrequency,
 	ttl,
 	expirationInterval time.Duration,
 	path string,
@@ -52,6 +54,7 @@ func NewConfigGenerator(
 	configGenerator := &ConfigGenerator{
 		timestampedTargets:       make(map[string]timestampedTarget),
 		path:                     path,
+		writeFrequency:           writeFrequency,
 		configTTL:                ttl,
 		configExpirationInterval: expirationInterval,
 
@@ -72,10 +75,13 @@ func NewConfigGenerator(
 }
 
 func (cg *ConfigGenerator) Start() {
-	t := time.NewTicker(cg.configExpirationInterval)
+	expirationTicker := time.NewTicker(cg.configExpirationInterval)
+	writeTicker := time.NewTicker(cg.writeFrequency)
 	for {
 		select {
-		case <-t.C:
+		case <-writeTicker.C:
+			cg.writeConfigToFile()
+		case <-expirationTicker.C:
 			cg.expireScrapeConfigs()
 		case <-cg.stop:
 			close(cg.done)
@@ -104,8 +110,6 @@ func (cg *ConfigGenerator) generate(message *nats.Msg) {
 		scrapeTarget: scrapeTarget,
 		ts:           time.Now(),
 	}
-
-	cg.writeConfigToFile()
 }
 
 func (cg *ConfigGenerator) unmarshalScrapeTarget(message *nats.Msg) (*target.Target, bool) {

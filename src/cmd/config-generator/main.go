@@ -38,6 +38,7 @@ func main() {
 
 	generator := app.NewConfigGenerator(
 		natsConn.Subscribe,
+		config.WriteFrequency,
 		config.ConfigTimeToLive,
 		config.ConfigExpirationInterval,
 		config.ScrapeConfigFilePath,

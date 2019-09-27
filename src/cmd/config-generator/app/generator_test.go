@@ -32,8 +32,13 @@ var _ = Describe("Config generator", func() {
 	}
 
 	var readTargets = func(tc *testContext) string {
-		fileData, err := ioutil.ReadFile(tc.configPath)
-		Expect(err).ToNot(HaveOccurred())
+		var fileData []byte
+
+		Eventually(func() error {
+			var err error
+			fileData, err = ioutil.ReadFile(tc.configPath)
+			return err
+		}).Should(Succeed())
 
 		return string(fileData)
 	}
@@ -41,7 +46,9 @@ var _ = Describe("Config generator", func() {
 	It("Generates a config with data from the queue", func() {
 		tc := setup()
 
-		generator := app.NewConfigGenerator(tc.subscriber.Subscribe,
+		generator := app.NewConfigGenerator(
+			tc.subscriber.Subscribe,
+			100 * time.Millisecond,
 			time.Hour,
 			time.Hour,
 			tc.configPath,
@@ -78,10 +85,39 @@ var _ = Describe("Config generator", func() {
 		]`))
 	})
 
+	It("generates the config at the given interval", func() {
+		tc := setup()
+
+		generator := app.NewConfigGenerator(
+			tc.subscriber.Subscribe,
+			time.Hour,
+			time.Hour,
+			time.Hour,
+			tc.configPath,
+			testhelpers.NewMetricsRegistry(),
+			tc.logger,
+		)
+		go generator.Start()
+
+		tc.subscriber.callback(&nats.Msg{
+			Data: target("job1"),
+		})
+		tc.subscriber.callback(&nats.Msg{
+			Data: target("job2"),
+		})
+
+		Consistently(func() error {
+			_, err := ioutil.ReadFile(tc.configPath)
+			return err
+		}).ShouldNot(Succeed())
+	})
+
 	It("doesn't duplicate jobs", func() {
 		tc := setup()
 
-		generator := app.NewConfigGenerator(tc.subscriber.Subscribe,
+		generator := app.NewConfigGenerator(
+			tc.subscriber.Subscribe,
+			100 * time.Millisecond,
 			time.Hour,
 			time.Hour,
 			tc.configPath,
@@ -117,6 +153,7 @@ var _ = Describe("Config generator", func() {
 
 		generator := app.NewConfigGenerator(
 			tc.subscriber.Subscribe,
+			100 * time.Millisecond,
 			200*time.Millisecond,
 			100*time.Millisecond,
 			tc.configPath,
@@ -182,6 +219,7 @@ var _ = Describe("Config generator", func() {
 		spyMetrics := testhelpers.NewMetricsRegistry()
 		generator := app.NewConfigGenerator(
 			tc.subscriber.Subscribe,
+			100 * time.Millisecond,
 			600*time.Millisecond,
 			100*time.Millisecond,
 			tc.configPath,
