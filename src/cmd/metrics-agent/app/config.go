@@ -7,13 +7,22 @@ import (
 	"time"
 )
 
-// GRPCConfig stores the configuration for the router as a server using a PORT
-// with mTLS certs.
-type GRPCConfig struct {
-	Port     uint16 `env:"AGENT_PORT, report"`
-	CAFile   string `env:"AGENT_CA_FILE_PATH, required, report"`
-	CertFile string `env:"AGENT_CERT_FILE_PATH, required, report"`
-	KeyFile  string `env:"AGENT_KEY_FILE_PATH, required, report"`
+// Config holds the configuration for the metrics agent
+type Config struct {
+	MetricsExporter MetricsExporterConfig
+	MetricsServer   config.MetricsServer
+	GRPC            GRPCConfig
+
+	// Scraper Certs
+	ScrapeKeyPath    string `env:"SCRAPE_KEY_PATH, required, report"`
+	ScrapeCertPath   string `env:"SCRAPE_CERT_PATH, required, report"`
+	ScrapeCACertPath string `env:"SCRAPE_CA_CERT_PATH, required, report"`
+
+	MetricsTargetFile string            `env:"METRICS_TARGETS_FILE, required, report"`
+	ConfigGlobs       []string          `env:"CONFIG_GLOBS, report"`
+	Tags              map[string]string `env:"AGENT_TAGS"`
+	Addr              string            `env:"ADDR, required, report"`
+	InstanceID        string            `env:"INSTANCE_ID, required, report"`
 }
 
 // MetricsExporterConfig stores the configuration for the metrics server using a PORT
@@ -27,19 +36,13 @@ type MetricsExporterConfig struct {
 	TimeToLive         time.Duration `env:"TTL, report"`
 }
 
-// Config holds the configuration for the metrics agent
-type Config struct {
-	MetricsExporter MetricsExporterConfig
-	MetricsServer   config.MetricsServer
-	GRPC            GRPCConfig
-
-	// Scraper Certs
-	ScrapeKeyPath    string `env:"SCRAPE_KEY_PATH, report"`
-	ScrapeCertPath   string `env:"SCRAPE_CERT_PATH, report"`
-	ScrapeCACertPath string `env:"SCRAPE_CA_CERT_PATH, report"`
-
-	ConfigGlobs     []string          `env:"CONFIG_GLOBS, report"`
-	Tags            map[string]string `env:"AGENT_TAGS"`
+// GRPCConfig stores the configuration for the router as a server using a PORT
+// with mTLS certs.
+type GRPCConfig struct {
+	Port     uint16 `env:"AGENT_PORT, report"`
+	CAFile   string `env:"AGENT_CA_FILE_PATH, required, report"`
+	CertFile string `env:"AGENT_CERT_FILE_PATH, required, report"`
+	KeyFile  string `env:"AGENT_KEY_FILE_PATH, required, report"`
 }
 
 // LoadConfig will load the configuration for the forwarder agent from the

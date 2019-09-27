@@ -11,7 +11,7 @@ templates:
   metrics_ca.crt.erb: config/certs/metrics_ca.crt
   metrics.crt.erb: config/certs/metrics.crt
   metrics.key.erb: config/certs/metrics.key
-  metric_targets.yml.erb: config/metric_targets.yml
+
   scrape.crt.erb: config/certs/scrape.crt
   scrape.key.erb: config/certs/scrape.key
   scrape_ca.crt.erb: config/certs/scrape_ca.crt
@@ -63,4 +63,7 @@ properties:
 
   config_globs:
     description: "Files matching the globs are expected to contain information to scrape a Prometheus metrics endpoint on localhost."
-    default: [/var/vcap/jobs/*/config/prom_scraper_config.yml, /var/vcap/jobs/*/config/metric_port.yml]
+    default: [/var/vcap/jobs/*/config/prom_scraper_config.yml]
+  metrics_targets_file:
+    description: "The location of the generated metrics_targets.yml containing on-vm locations to scrape"
+    default: /var/vcap/data/metrics-agent/metric_targets.yml

@@ -2,6 +2,7 @@
   instance_group = spec.job.name || name
   instance_id = spec.id || spec.index.to_s
   deployment = spec.deployment
+  addr = spec.address
 
   tags = {
       deployment: deployment,
@@ -26,6 +27,7 @@
     "unsafe" => {
       "unrestricted_volumes" => config_volumes,
     },
+    "ephemeral_disk" => true,
     "env" => {
       "AGENT_PORT" => "#{p("port")}",
       "AGENT_CA_FILE_PATH" => "#{certs_dir}/grpc_ca.crt",
@@ -38,7 +40,10 @@
       "METRICS_CA_FILE_PATH" => "#{certs_dir}/metrics_ca.crt",
       "METRICS_CERT_FILE_PATH" => "#{certs_dir}/metrics.crt",
       "METRICS_KEY_FILE_PATH" => "#{certs_dir}/metrics.key",
-      "WHITELISTED_TIMER_TAGS" => "#{p("metrics.whitelisted_timer_tags") }",
+      "WHITELISTED_TIMER_TAGS" => "#{p("metrics.whitelisted_timer_tags")}",
+      "METRICS_TARGETS_FILE" => "#{p("metrics_targets_file")}",
+      "ADDR" => "#{addr}",
+      "INSTANCE_ID" => "#{instance_id}",
     }
   }
 

@@ -9,6 +9,7 @@ import (
 	"code.cloudfoundry.org/loggregator-agent/pkg/scraper"
 	"code.cloudfoundry.org/metrics-discovery/internal/collector"
 	"code.cloudfoundry.org/metrics-discovery/internal/gatherer"
+	"code.cloudfoundry.org/metrics-discovery/internal/target"
 	"code.cloudfoundry.org/tlsconfig"
 	"context"
 	"crypto/tls"
@@ -17,8 +18,10 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
+	"gopkg.in/yaml.v2"
 	"log"
 	"net/http"
+	"os"
 	"time"
 )
 
@@ -52,6 +55,8 @@ func NewMetricsAgent(cfg Config, scrapeConfigProvider ScrapeConfigProvider, metr
 	for _, sc := range scrapeConfigs {
 		ma.scrapeConfigs[sc.SourceID] = sc
 	}
+
+	ma.buildMetricsTargets()
 
 	return ma
 }
@@ -197,7 +202,7 @@ func (m *MetricsAgent) proxyHandlers() map[string]http.Handler {
 	metricHandlers := make(map[string]http.Handler, len(m.scrapeConfigs))
 	for sourceId, sc := range m.scrapeConfigs {
 		proxyGatherer := gatherer.NewProxyGatherer(
-			[]scraper.PromScraperConfig{sc},
+			sc,
 			m.cfg.MetricsExporter.DefaultLabels,
 			m.cfg.ScrapeCertPath,
 			m.cfg.ScrapeKeyPath,
@@ -228,4 +233,34 @@ func (m *MetricsAgent) Stop() {
 func (m *MetricsAgent) hasScrapeConfig(sourceID string) bool {
 	_, ok := m.scrapeConfigs[sourceID]
 	return ok
+}
+
+func (m *MetricsAgent) buildMetricsTargets() {
+	metricsExporterTarget := []string{fmt.Sprintf("%s:%d", m.cfg.Addr, m.cfg.MetricsExporter.Port)}
+
+	targets := []target.Target{{
+		Targets: metricsExporterTarget,
+		Source:  fmt.Sprintf("metrics_agent_exporter__%s", m.cfg.InstanceID),
+	}}
+
+	for _, sc := range m.scrapeConfigs {
+		targets = append(targets, target.Target{
+			Targets: metricsExporterTarget,
+			Labels: map[string]string{
+				"__param_id": sc.SourceID,
+			},
+			Source: fmt.Sprintf("%s__%s", sc.SourceID, m.cfg.InstanceID),
+		})
+	}
+
+	f, err := os.Create(m.cfg.MetricsTargetFile)
+	if err != nil {
+		m.log.Fatalf("unable to create metrics target file at %s: %s", m.cfg.MetricsTargetFile, err)
+	}
+	defer f.Close()
+
+	err = yaml.NewEncoder(f).Encode(targets)
+	if err != nil {
+		m.log.Fatalf("unable to marshal metrics target file: %s", err)
+	}
 }

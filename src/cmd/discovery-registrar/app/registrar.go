@@ -62,7 +62,7 @@ func (r *DynamicRegistrar) Start() {
 func (r *DynamicRegistrar) publishTargets() {
 	targets := r.targetProvider()
 	for _, t := range targets {
-		bytes, err := yaml.Marshal(t)
+		bytes, err := yaml.Marshal(&t)
 		if err != nil {
 			r.logger.Printf("unable to marshal target(%s): %s\n", t.Source, err)
 			continue

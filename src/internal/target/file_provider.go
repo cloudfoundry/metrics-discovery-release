@@ -53,19 +53,21 @@ func (fp *fileProvider) populateTargets() {
 			continue
 		}
 
-		var t Target
-		err = yaml.Unmarshal(yamlFile, &t)
+		var targets []*Target
+		err = yaml.Unmarshal(yamlFile, &targets)
 		if err != nil {
 			fp.logger.Printf("Unmarshal: %v", err)
 			continue
 		}
 
-		if t.Source == "" {
-			fp.logger.Printf("Target from %s is missing source", f)
-			continue
-		}
+		for _, t := range targets {
+			if t.Source == "" {
+				fp.logger.Printf("Target from %s is missing source", f)
+				continue
+			}
 
-		fp.targets = append(fp.targets, &t)
+			fp.targets = append(fp.targets, t)
+		}
 	}
 }
 

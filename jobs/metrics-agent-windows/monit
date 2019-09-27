@@ -2,6 +2,7 @@
   instance_group = spec.job.name || name
   instance_id = spec.id || spec.index.to_s
   deployment = spec.deployment
+  addr = spec.address
 
   tags = {
       deployment: deployment,
@@ -25,6 +26,9 @@
     "METRICS_CERT_FILE_PATH" => "/var/vcap/jobs/metrics-agent-windows/config/certs/metrics.crt",
     "METRICS_KEY_FILE_PATH" => "/var/vcap/jobs/metrics-agent-windows/config/certs/metrics.key",
     "WHITELISTED_TIMER_TAGS" => "#{p("metrics.whitelisted_timer_tags")}",
+    "METRICS_TARGETS_FILE" => "#{p("metrics_targets_file")}",
+    "ADDR" => "#{addr}",
+    "INSTANCE_ID" => "#{instance_id}",
   }
 
   monit = {

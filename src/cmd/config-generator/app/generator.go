@@ -100,7 +100,7 @@ func (cg *ConfigGenerator) generate(message *nats.Msg) {
 		return
 	}
 
-	cg.timestampedTargets[scrapeTarget.Source] = timestampedTarget{ //TODO is source real? or is it just fantasy
+	cg.timestampedTargets[scrapeTarget.Source] = timestampedTarget{
 		scrapeTarget: scrapeTarget,
 		ts:           time.Now(),
 	}

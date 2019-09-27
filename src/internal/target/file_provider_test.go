@@ -16,18 +16,21 @@ var _ = Describe("FileProvider", func() {
 
 	It("parses a file and provides scrape targets", func() {
 		f := targetConfigFile("targets.yml")
-		writeConfigFile(fmt.Sprintf(targetListTemplate, "source"), f)
+		writeConfigFile(multiTargetListTemplate, f)
 
 		provider := target.NewFileProvider(f.Name(), time.Second, logger)
 		go provider.Start()
 
-		Eventually(provider.GetTargets).Should(ConsistOf(&target.Target{
-			Targets: []string{"localhost:8080"},
-			Labels: map[string]string{
-				"job": "job-name",
+		Eventually(provider.GetTargets).Should(ConsistOf(
+			&target.Target{
+				Targets: []string{"localhost:8080"},
+				Source:  "source-1",
 			},
-			Source: "source",
-		}))
+			&target.Target{
+				Targets: []string{"localhost:8080"},
+				Source:  "source-2",
+			},
+		))
 	})
 
 	It("updates scrapes targets on an interval", func() {
@@ -102,16 +105,24 @@ func writeConfigFile(config string, f *os.File) {
 
 const (
 	targetListTemplate = `---
-targets:
+- targets:
   - "localhost:8080"
-labels:
-  job: job-name
-source: %s
+  labels:
+    job: job-name
+  source: %s
+`
+	multiTargetListTemplate = `---
+- targets:
+  - "localhost:8080"
+  source: source-1
+- targets:
+  - "localhost:8080"
+  source: source-2
 `
 	targetMissingSource = `---
-targets:
+- targets:
   - "localhost:8080"
-labels:
-  job: job-name
+  labels:
+    job: job-name
 `
 )

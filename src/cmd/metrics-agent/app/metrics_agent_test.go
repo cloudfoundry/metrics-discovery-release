@@ -5,6 +5,7 @@ import (
 	"code.cloudfoundry.org/loggregator-agent/pkg/config"
 	"code.cloudfoundry.org/loggregator-agent/pkg/scraper"
 	"code.cloudfoundry.org/metrics-discovery/cmd/metrics-agent/app"
+	"code.cloudfoundry.org/metrics-discovery/internal/target"
 	"code.cloudfoundry.org/metrics-discovery/internal/testhelpers"
 	metrichelpers "code.cloudfoundry.org/go-metric-registry/testhelpers"
 	"code.cloudfoundry.org/tlsconfig"
@@ -15,10 +16,13 @@ import (
 	. "github.com/onsi/gomega"
 	dto "github.com/prometheus/client_model/go"
 	"github.com/prometheus/common/expfmt"
+	"gopkg.in/yaml.v2"
+	"io/ioutil"
 	"log"
 	"net"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"strings"
 	"sync"
 	"time"
@@ -30,6 +34,7 @@ var _ = Describe("MetricsAgent", func() {
 		grpcPort     uint16
 		metricsPort  uint16
 		testCerts    *testhelpers.TestCerts
+		targetsFile  string
 
 		ingressClient            *loggregator.IngressClient
 		fakeScrapeConfigProvider app.ScrapeConfigProvider
@@ -38,6 +43,7 @@ var _ = Describe("MetricsAgent", func() {
 	BeforeEach(func() {
 		testCerts = testhelpers.GenerateCerts("loggregatorCA")
 
+		targetsFile = os.TempDir() + "metrics_targets.yml"
 		grpcPort = getFreePort()
 		metricsPort = getFreePort()
 		cfg := app.Config{
@@ -62,6 +68,9 @@ var _ = Describe("MetricsAgent", func() {
 				CertFile: testCerts.Cert("metron"),
 				KeyFile:  testCerts.Key("metron"),
 			},
+			Addr:              "127.0.0.1",
+			InstanceID:        "instance_id",
+			MetricsTargetFile: targetsFile,
 		}
 
 		ingressClient = newTestingIngressClient(int(grpcPort), testCerts)
@@ -85,6 +94,31 @@ var _ = Describe("MetricsAgent", func() {
 
 	AfterEach(func() {
 		metricsAgent.Stop()
+		_ = os.Remove(targetsFile)
+	})
+
+	It("creates a metrics_targets.yml file with the agent as a target.", func() {
+		f, err := ioutil.ReadFile(targetsFile)
+		Expect(err).ToNot(HaveOccurred())
+
+		var targets []target.Target
+		err = yaml.Unmarshal(f, &targets)
+		Expect(err).ToNot(HaveOccurred())
+
+		Expect(targets).To(ConsistOf(
+			target.Target{
+				Targets: []string{fmt.Sprintf("127.0.0.1:%d", metricsPort)},
+				Labels:  map[string]string{},
+				Source:  "metrics_agent_exporter__instance_id",
+			},
+			target.Target{
+				Targets: []string{fmt.Sprintf("127.0.0.1:%d", metricsPort)},
+				Labels: map[string]string{
+					"__param_id": "source_id_scraped",
+				},
+				Source: "source_id_scraped__instance_id",
+			},
+		))
 	})
 
 	It("exposes metrics on a prometheus endpoint", func() {
