@@ -19,6 +19,7 @@ type Registry struct {
 	port       string
 	loggr      *log.Logger
 	registerer prometheus.Registerer
+	mux        *http.ServeMux
 }
 
 // A cumulative metric that represents a single monotonically increasing counter
@@ -45,6 +46,7 @@ type Histogram interface {
 func NewRegistry(logger *log.Logger, opts ...RegistryOption) *Registry {
 	pr := &Registry{
 		loggr: logger,
+		mux:   http.NewServeMux(),
 	}
 
 	for _, o := range opts {
@@ -57,7 +59,7 @@ func NewRegistry(logger *log.Logger, opts ...RegistryOption) *Registry {
 	pr.registerer.MustRegister(prometheus.NewGoCollector())
 	pr.registerer.MustRegister(prometheus.NewProcessCollector(prometheus.ProcessCollectorOpts{}))
 
-	http.Handle("/metrics", promhttp.HandlerFor(registry, promhttp.HandlerOpts{
+	pr.mux.Handle("/metrics", promhttp.HandlerFor(registry, promhttp.HandlerOpts{
 		Registry: pr.registerer,
 	}))
 	return pr
@@ -153,6 +155,7 @@ func (p *Registry) start(port int) {
 	addr := fmt.Sprintf("127.0.0.1:%d", port)
 	s := http.Server{
 		Addr:         addr,
+		Handler:      p.mux,
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 5 * time.Second,
 	}
@@ -183,6 +186,7 @@ func (p *Registry) startTLS(port int, certFile, keyFile, caFile string) {
 	addr := fmt.Sprintf(":%d", port)
 	s := http.Server{
 		Addr:         addr,
+		Handler:      p.mux,
 		TLSConfig:    tlsConfig,
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 5 * time.Second,

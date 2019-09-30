@@ -10,7 +10,7 @@ code.cloudfoundry.org/go-envstruct
 code.cloudfoundry.org/go-loggregator/rpc/loggregator_v2
 code.cloudfoundry.org/go-loggregator
 code.cloudfoundry.org/go-loggregator/metrics
-# code.cloudfoundry.org/go-metric-registry v0.0.0-20190924175840-9981b8ca099e
+# code.cloudfoundry.org/go-metric-registry v0.0.0-20190930200807-cfc6a44b372f
 code.cloudfoundry.org/go-metric-registry
 code.cloudfoundry.org/go-metric-registry/testhelpers
 # code.cloudfoundry.org/loggregator-agent v0.0.0-20190918193342-14308cf69de1 => code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20190828205358-fd77eb91324d
@@ -408,7 +408,7 @@ gopkg.in/fsnotify/fsnotify.v1
 gopkg.in/inf.v0
 # gopkg.in/tomb.v1 v1.0.0-20141024135613-dd632973f1e7
 gopkg.in/tomb.v1
-# gopkg.in/yaml.v2 v2.2.2
+# gopkg.in/yaml.v2 v2.2.3
 gopkg.in/yaml.v2
 # k8s.io/api v0.0.0-20190813020757-36bff7324fb7
 k8s.io/api/core/v1
