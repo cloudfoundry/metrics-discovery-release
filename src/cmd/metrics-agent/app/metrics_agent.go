@@ -238,6 +238,7 @@ func (m *MetricsAgent) buildMetricsTargets() {
 	metricsExporterTarget := []string{fmt.Sprintf("%s:%d", m.cfg.Addr, m.cfg.MetricsExporter.Port)}
 
 	labels := copyMap(m.cfg.Tags)
+	labels["instance_id"] = m.cfg.InstanceID
 
 	targets := []target.Target{{
 		Targets: metricsExporterTarget,
@@ -283,6 +284,7 @@ func appendScrapeConfigLabels(labels map[string]string, sc scraper.PromScraperCo
 	targetLabels := copyMap(labels)
 
 	targetLabels["__param_id"] = sc.SourceID
+	targetLabels["source_id"] = sc.SourceID
 
 	for k, v := range sc.Labels {
 		targetLabels[k] = v

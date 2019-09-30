@@ -111,11 +111,12 @@ var _ = Describe("MetricsAgent", func() {
 		Expect(targets).To(ConsistOf(
 			target.Target{
 				Targets: []string{fmt.Sprintf("127.0.0.1:%d", metricsPort)},
-				Labels:  map[string]string{
-					"a":   "1",
-					"b":   "2",
+				Labels: map[string]string{
+					"a":           "1",
+					"b":           "2",
+					"instance_id": "instance_id",
 				},
-				Source:  "metrics_agent_exporter__instance_id",
+				Source: "metrics_agent_exporter__instance_id",
 			},
 			target.Target{
 				Targets: []string{fmt.Sprintf("127.0.0.1:%d", metricsPort)},
@@ -124,6 +125,8 @@ var _ = Describe("MetricsAgent", func() {
 					"a":                   "1",
 					"b":                   "2",
 					"scrape_config_label": "lemons",
+					"source_id":           "source_id_scraped",
+					"instance_id":         "instance_id",
 				},
 				Source: "source_id_scraped__instance_id",
 			},
@@ -142,8 +145,9 @@ var _ = Describe("MetricsAgent", func() {
 			target.Target{
 				Targets: []string{fmt.Sprintf("127.0.0.1:%d", metricsPort)},
 				Labels: map[string]string{
-					"a":   "1",
-					"b":   "2",
+					"a":           "1",
+					"b":           "2",
+					"instance_id": "instance_id",
 				},
 				Source: "metrics_agent_exporter__instance_id",
 			},
@@ -166,6 +170,8 @@ var _ = Describe("MetricsAgent", func() {
 					"a":                   "1",
 					"b":                   "2",
 					"scrape_config_label": "lemons",
+					"source_id":           "source_id_scraped",
+					"instance_id":         "instance_id",
 				},
 				Source: "source_id_scraped__instance_id",
 			},
