@@ -96,9 +96,6 @@ func (cg *ConfigGenerator) Stop() {
 }
 
 func (cg *ConfigGenerator) generate(message *nats.Msg) {
-	cg.Lock()
-	defer cg.Unlock()
-
 	cg.delivered.Add(float64(1))
 
 	scrapeTarget, ok := cg.unmarshalScrapeTarget(message)
@@ -106,10 +103,7 @@ func (cg *ConfigGenerator) generate(message *nats.Msg) {
 		return
 	}
 
-	cg.timestampedTargets[scrapeTarget.Source] = timestampedTarget{
-		scrapeTarget: scrapeTarget,
-		ts:           time.Now(),
-	}
+	cg.addTarget(scrapeTarget)
 }
 
 func (cg *ConfigGenerator) unmarshalScrapeTarget(message *nats.Msg) (*target.Target, bool) {
@@ -123,11 +117,18 @@ func (cg *ConfigGenerator) unmarshalScrapeTarget(message *nats.Msg) (*target.Tar
 	return &t, true
 }
 
-func (cg *ConfigGenerator) writeConfigToFile() {
-	var targets []*target.Target
-	for _, cfg := range cg.timestampedTargets {
-		targets = append(targets, cfg.scrapeTarget)
+func (cg *ConfigGenerator) addTarget(scrapeTarget *target.Target) {
+	cg.Lock()
+	defer cg.Unlock()
+
+	cg.timestampedTargets[scrapeTarget.Source] = timestampedTarget{
+		scrapeTarget: scrapeTarget,
+		ts:           time.Now(),
 	}
+}
+
+func (cg *ConfigGenerator) writeConfigToFile() {
+	targets := cg.copyTargets()
 
 	data, err := json.Marshal(targets)
 	if err != nil {
@@ -141,6 +142,18 @@ func (cg *ConfigGenerator) writeConfigToFile() {
 	}
 }
 
+func (cg *ConfigGenerator) copyTargets() []*target.Target {
+	var targets []*target.Target
+
+	cg.Lock()
+	defer cg.Unlock()
+	for _, cfg := range cg.timestampedTargets {
+		targets = append(targets, cfg.scrapeTarget)
+	}
+
+	return targets
+}
+
 func (cg *ConfigGenerator) expireScrapeConfigs() {
 	cg.Lock()
 	defer cg.Unlock()
@@ -150,6 +163,4 @@ func (cg *ConfigGenerator) expireScrapeConfigs() {
 			delete(cg.timestampedTargets, k)
 		}
 	}
-
-	cg.writeConfigToFile()
 }

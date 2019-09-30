@@ -83,6 +83,9 @@ var _ = Describe("MetricsAgent", func() {
 				SourceID: "source_id_scraped",
 				Scheme:   "http",
 				Path:     "metrics",
+				Labels: map[string]string{
+					"scrape_config_label": "lemons",
+				},
 			}}, nil
 		}
 
@@ -108,13 +111,61 @@ var _ = Describe("MetricsAgent", func() {
 		Expect(targets).To(ConsistOf(
 			target.Target{
 				Targets: []string{fmt.Sprintf("127.0.0.1:%d", metricsPort)},
-				Labels:  map[string]string{},
+				Labels:  map[string]string{
+					"a":   "1",
+					"b":   "2",
+				},
 				Source:  "metrics_agent_exporter__instance_id",
 			},
 			target.Target{
 				Targets: []string{fmt.Sprintf("127.0.0.1:%d", metricsPort)},
 				Labels: map[string]string{
-					"__param_id": "source_id_scraped",
+					"__param_id":          "source_id_scraped",
+					"a":                   "1",
+					"b":                   "2",
+					"scrape_config_label": "lemons",
+				},
+				Source: "source_id_scraped__instance_id",
+			},
+		))
+	})
+
+	It("adds default labels to the exporter target", func() {
+		f, err := ioutil.ReadFile(targetsFile)
+		Expect(err).ToNot(HaveOccurred())
+
+		var targets []target.Target
+		err = yaml.Unmarshal(f, &targets)
+		Expect(err).ToNot(HaveOccurred())
+
+		Expect(targets).To(ContainElement(
+			target.Target{
+				Targets: []string{fmt.Sprintf("127.0.0.1:%d", metricsPort)},
+				Labels: map[string]string{
+					"a":   "1",
+					"b":   "2",
+				},
+				Source: "metrics_agent_exporter__instance_id",
+			},
+		))
+	})
+
+	It("adds default labels from scrape config and global config to target", func() {
+		f, err := ioutil.ReadFile(targetsFile)
+		Expect(err).ToNot(HaveOccurred())
+
+		var targets []target.Target
+		err = yaml.Unmarshal(f, &targets)
+		Expect(err).ToNot(HaveOccurred())
+
+		Expect(targets).To(ContainElement(
+			target.Target{
+				Targets: []string{fmt.Sprintf("127.0.0.1:%d", metricsPort)},
+				Labels: map[string]string{
+					"__param_id":          "source_id_scraped",
+					"a":                   "1",
+					"b":                   "2",
+					"scrape_config_label": "lemons",
 				},
 				Source: "source_id_scraped__instance_id",
 			},
@@ -131,26 +182,6 @@ var _ = Describe("MetricsAgent", func() {
 
 		metric := getMetric("total_counter", metricsPort, testCerts)
 		Expect(metric.GetCounter().GetValue()).To(BeNumerically("==", 22))
-	})
-
-	It("includes default tags", func() {
-		cancel := doUntilCancelled(func() {
-			ingressClient.EmitCounter("total_counter",
-				loggregator.WithTotal(22),
-				loggregator.WithCounterSourceInfo("some-source-id", "some-instance-id"),
-			)
-		})
-		defer cancel()
-
-		Eventually(getMetricFamilies(metricsPort, "", testCerts), 3).Should(HaveKey("total_counter"))
-
-		metric := getMetric("total_counter", metricsPort, testCerts)
-		Expect(metric.GetLabel()).To(ConsistOf(
-			&dto.LabelPair{Name: proto.String("a"), Value: proto.String("1")},
-			&dto.LabelPair{Name: proto.String("b"), Value: proto.String("2")},
-			&dto.LabelPair{Name: proto.String("source_id"), Value: proto.String("some-source-id")},
-			&dto.LabelPair{Name: proto.String("instance_id"), Value: proto.String("some-instance-id")},
-		))
 	})
 
 	It("filters timer tags not in whitelist", func() {

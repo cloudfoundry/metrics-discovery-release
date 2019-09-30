@@ -55,20 +55,15 @@ var _ = Describe("Proxy", func() {
 		}
 	}
 
-	var buildProxyCollectorWithDefaultLabels = func(tc *testContext, defaultLabels map[string]string) *gatherer.ProxyGatherer {
+	var buildProxyCollector = func(tc *testContext) *gatherer.ProxyGatherer {
 		return gatherer.NewProxyGatherer(
 			tc.scrapeConfig,
-			defaultLabels,
 			tc.scrapeCerts.Cert("client"),
 			tc.scrapeCerts.Key("client"),
 			tc.scrapeCerts.CA(),
 			tc.metrics,
 			tc.loggr,
 		)
-	}
-
-	var buildProxyCollector = func(tc *testContext) *gatherer.ProxyGatherer {
-		return buildProxyCollectorWithDefaultLabels(tc, nil)
 	}
 
 	It("collects metrics from a prom target", func() {
@@ -89,100 +84,6 @@ var _ = Describe("Proxy", func() {
 				),
 			),
 		))
-	})
-
-	Context("labels", func() {
-		It("adds global default labels to metrics", func() {
-			tc := setup("http", "metrics", nil)
-			proxyCollector := buildProxyCollectorWithDefaultLabels(tc, map[string]string{
-				"default_label": "foo",
-			})
-
-			mfs, err := proxyCollector.Gather()
-			Expect(err).ToNot(HaveOccurred())
-
-			Expect(mfs).To(ConsistOf(
-				And(
-					haveFamilyName("metric1"),
-					haveMetrics(
-						counterWith(1, map[string]string{"default_label": "foo"}),
-					),
-				),
-				And(
-					haveFamilyName("metric2"),
-					haveMetrics(
-						gaugeWith(2, map[string]string{"default_label": "foo"}),
-					),
-				),
-				And(
-					haveFamilyName("metric3"),
-					haveMetrics(
-						gaugeWith(11, map[string]string{"direction": "ingress", "default_label": "foo"}),
-						gaugeWith(22, map[string]string{"direction": "egress", "default_label": "foo"}),
-					),
-				),
-			))
-		})
-
-		It("adds target default labels to metrics", func() {
-			tc := setup("http", "metrics", nil)
-			tc.scrapeConfig.Labels = map[string]string{
-				"default_label": "target",
-			}
-			tc.scrapeConfig.SourceID = "source-id"
-
-			proxyCollector := buildProxyCollectorWithDefaultLabels(tc, map[string]string{
-				"default_label": "global",
-			})
-
-			mfs, err := proxyCollector.Gather()
-			Expect(err).ToNot(HaveOccurred())
-
-			Expect(getMetricsForFamily("metric3", mfs)).To(ConsistOf(
-				gaugeWith(11, map[string]string{
-					"direction":     "ingress",
-					"default_label": "target",
-					"source_id":     "source-id",
-				}),
-				gaugeWith(22, map[string]string{
-					"direction":     "egress",
-					"default_label": "target",
-					"source_id":     "source-id",
-				}),
-			))
-		})
-
-		It("doesn't overwrite the label if it exists", func() {
-			tc := setup("http", "metrics", nil)
-			proxyCollector := buildProxyCollectorWithDefaultLabels(tc, map[string]string{
-				"direction": "rotating",
-			})
-
-			mfs, err := proxyCollector.Gather()
-			Expect(err).ToNot(HaveOccurred())
-
-			Expect(mfs).To(ConsistOf(
-				And(
-					haveFamilyName("metric1"),
-					haveMetrics(
-						counterWith(1, map[string]string{"direction": "rotating"}),
-					),
-				),
-				And(
-					haveFamilyName("metric2"),
-					haveMetrics(
-						gaugeWith(2, map[string]string{"direction": "rotating"}),
-					),
-				),
-				And(
-					haveFamilyName("metric3"),
-					haveMetrics(
-						gaugeWith(11, map[string]string{"direction": "ingress"}),
-						gaugeWith(22, map[string]string{"direction": "egress"}),
-					),
-				),
-			))
-		})
 	})
 
 	It("can scrape with mTLS", func() {

@@ -203,7 +203,6 @@ func (m *MetricsAgent) proxyHandlers() map[string]http.Handler {
 	for sourceId, sc := range m.scrapeConfigs {
 		proxyGatherer := gatherer.NewProxyGatherer(
 			sc,
-			m.cfg.MetricsExporter.DefaultLabels,
 			m.cfg.ScrapeCertPath,
 			m.cfg.ScrapeKeyPath,
 			m.cfg.ScrapeCACertPath,
@@ -238,18 +237,21 @@ func (m *MetricsAgent) hasScrapeConfig(sourceID string) bool {
 func (m *MetricsAgent) buildMetricsTargets() {
 	metricsExporterTarget := []string{fmt.Sprintf("%s:%d", m.cfg.Addr, m.cfg.MetricsExporter.Port)}
 
+	labels := copyMap(m.cfg.Tags)
+
 	targets := []target.Target{{
 		Targets: metricsExporterTarget,
 		Source:  fmt.Sprintf("metrics_agent_exporter__%s", m.cfg.InstanceID),
+		Labels:  labels,
 	}}
 
 	for _, sc := range m.scrapeConfigs {
+		targetLabels := appendScrapeConfigLabels(labels, sc)
+
 		targets = append(targets, target.Target{
 			Targets: metricsExporterTarget,
-			Labels: map[string]string{
-				"__param_id": sc.SourceID,
-			},
-			Source: fmt.Sprintf("%s__%s", sc.SourceID, m.cfg.InstanceID),
+			Labels:  targetLabels,
+			Source:  fmt.Sprintf("%s__%s", sc.SourceID, m.cfg.InstanceID),
 		})
 	}
 
@@ -263,4 +265,28 @@ func (m *MetricsAgent) buildMetricsTargets() {
 	if err != nil {
 		m.log.Fatalf("unable to marshal metrics target file: %s", err)
 	}
+}
+
+func copyMap(original map[string]string) map[string]string {
+	copied := map[string]string{}
+
+	if original != nil {
+		for k, v := range original {
+			copied[k] = v
+		}
+	}
+
+	return copied
+}
+
+func appendScrapeConfigLabels(labels map[string]string, sc scraper.PromScraperConfig) map[string]string {
+	targetLabels := copyMap(labels)
+
+	targetLabels["__param_id"] = sc.SourceID
+
+	for k, v := range sc.Labels {
+		targetLabels[k] = v
+	}
+
+	return targetLabels
 }
