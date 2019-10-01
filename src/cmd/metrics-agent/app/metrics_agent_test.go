@@ -2,12 +2,12 @@ package app_test
 
 import (
 	"code.cloudfoundry.org/go-loggregator"
+	metrichelpers "code.cloudfoundry.org/go-metric-registry/testhelpers"
 	"code.cloudfoundry.org/loggregator-agent/pkg/config"
 	"code.cloudfoundry.org/loggregator-agent/pkg/scraper"
 	"code.cloudfoundry.org/metrics-discovery/cmd/metrics-agent/app"
 	"code.cloudfoundry.org/metrics-discovery/internal/target"
 	"code.cloudfoundry.org/metrics-discovery/internal/testhelpers"
-	metrichelpers "code.cloudfoundry.org/go-metric-registry/testhelpers"
 	"code.cloudfoundry.org/tlsconfig"
 	"context"
 	"fmt"
@@ -118,51 +118,6 @@ var _ = Describe("MetricsAgent", func() {
 				},
 				Source: "metrics_agent_exporter__instance_id",
 			},
-			target.Target{
-				Targets: []string{fmt.Sprintf("127.0.0.1:%d", metricsPort)},
-				Labels: map[string]string{
-					"__param_id":          "source_id_scraped",
-					"a":                   "1",
-					"b":                   "2",
-					"scrape_config_label": "lemons",
-					"source_id":           "source_id_scraped",
-					"instance_id":         "instance_id",
-				},
-				Source: "source_id_scraped__instance_id",
-			},
-		))
-	})
-
-	It("adds default labels to the exporter target", func() {
-		f, err := ioutil.ReadFile(targetsFile)
-		Expect(err).ToNot(HaveOccurred())
-
-		var targets []target.Target
-		err = yaml.Unmarshal(f, &targets)
-		Expect(err).ToNot(HaveOccurred())
-
-		Expect(targets).To(ContainElement(
-			target.Target{
-				Targets: []string{fmt.Sprintf("127.0.0.1:%d", metricsPort)},
-				Labels: map[string]string{
-					"a":           "1",
-					"b":           "2",
-					"instance_id": "instance_id",
-				},
-				Source: "metrics_agent_exporter__instance_id",
-			},
-		))
-	})
-
-	It("adds default labels from scrape config and global config to target", func() {
-		f, err := ioutil.ReadFile(targetsFile)
-		Expect(err).ToNot(HaveOccurred())
-
-		var targets []target.Target
-		err = yaml.Unmarshal(f, &targets)
-		Expect(err).ToNot(HaveOccurred())
-
-		Expect(targets).To(ContainElement(
 			target.Target{
 				Targets: []string{fmt.Sprintf("127.0.0.1:%d", metricsPort)},
 				Labels: map[string]string{

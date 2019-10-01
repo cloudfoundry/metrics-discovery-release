@@ -18,10 +18,8 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
-	"gopkg.in/yaml.v2"
 	"log"
 	"net/http"
-	"os"
 	"time"
 )
 
@@ -56,7 +54,13 @@ func NewMetricsAgent(cfg Config, scrapeConfigProvider ScrapeConfigProvider, metr
 		ma.scrapeConfigs[sc.SourceID] = sc
 	}
 
-	ma.buildMetricsTargets()
+	target.WriteFile(target.WriterConfig{
+		MetricsHost:   fmt.Sprintf("%s:%d", cfg.Addr, cfg.MetricsExporter.Port),
+		DefaultLabels: cfg.Tags,
+		InstanceID:    cfg.InstanceID,
+		File:          cfg.MetricsTargetFile,
+		ScrapeConfigs: scrapeConfigs,
+	}, log)
 
 	return ma
 }
@@ -232,63 +236,4 @@ func (m *MetricsAgent) Stop() {
 func (m *MetricsAgent) hasScrapeConfig(sourceID string) bool {
 	_, ok := m.scrapeConfigs[sourceID]
 	return ok
-}
-
-func (m *MetricsAgent) buildMetricsTargets() {
-	metricsExporterTarget := []string{fmt.Sprintf("%s:%d", m.cfg.Addr, m.cfg.MetricsExporter.Port)}
-
-	labels := copyMap(m.cfg.Tags)
-	labels["instance_id"] = m.cfg.InstanceID
-
-	targets := []target.Target{{
-		Targets: metricsExporterTarget,
-		Source:  fmt.Sprintf("metrics_agent_exporter__%s", m.cfg.InstanceID),
-		Labels:  labels,
-	}}
-
-	for _, sc := range m.scrapeConfigs {
-		targetLabels := appendScrapeConfigLabels(labels, sc)
-
-		targets = append(targets, target.Target{
-			Targets: metricsExporterTarget,
-			Labels:  targetLabels,
-			Source:  fmt.Sprintf("%s__%s", sc.SourceID, m.cfg.InstanceID),
-		})
-	}
-
-	f, err := os.Create(m.cfg.MetricsTargetFile)
-	if err != nil {
-		m.log.Fatalf("unable to create metrics target file at %s: %s", m.cfg.MetricsTargetFile, err)
-	}
-	defer f.Close()
-
-	err = yaml.NewEncoder(f).Encode(targets)
-	if err != nil {
-		m.log.Fatalf("unable to marshal metrics target file: %s", err)
-	}
-}
-
-func copyMap(original map[string]string) map[string]string {
-	copied := map[string]string{}
-
-	if original != nil {
-		for k, v := range original {
-			copied[k] = v
-		}
-	}
-
-	return copied
-}
-
-func appendScrapeConfigLabels(labels map[string]string, sc scraper.PromScraperConfig) map[string]string {
-	targetLabels := copyMap(labels)
-
-	targetLabels["__param_id"] = sc.SourceID
-	targetLabels["source_id"] = sc.SourceID
-
-	for k, v := range sc.Labels {
-		targetLabels[k] = v
-	}
-
-	return targetLabels
 }
