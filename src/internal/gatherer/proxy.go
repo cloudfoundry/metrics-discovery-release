@@ -75,6 +75,7 @@ func (c *ProxyGatherer) Gather() ([]*io_prometheus_client.MetricFamily, error) {
 	scrapeResults, err := c.scrape(c.scrapeConfig)
 	if err != nil {
 		c.incFailedScrapes(c.scrapeConfig.SourceID)
+		return nil, err
 	}
 
 	return scrapeResults, nil

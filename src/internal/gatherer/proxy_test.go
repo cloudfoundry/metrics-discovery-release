@@ -150,7 +150,7 @@ var _ = Describe("Proxy", func() {
 		))
 	})
 
-	It("gracefully handles failed scrapes", func() {
+	It("returns an error if the scrape fails", func() {
 		tc := setup("http", "metrics", nil)
 		tc.scrapeConfig = scraper.PromScraperConfig{
 			Port:     "9091",
@@ -162,7 +162,7 @@ var _ = Describe("Proxy", func() {
 		proxyCollector := buildProxyCollector(tc)
 
 		_, err := proxyCollector.Gather()
-		Expect(err).ToNot(HaveOccurred())
+		Expect(err).To(HaveOccurred())
 
 		Expect(tc.metrics.GetMetric(
 			"failed_scrapes",
