@@ -26,6 +26,13 @@ properties:
     default: {}
     example: {"deployment": "cf"}
 
+  scrape.tls.cert:
+    description: "The cert used to communicate with scrape targets"
+  scrape.tls.key:
+    description: "The key used to communicate with scrape targets"
+  scrape.tls.ca_cert:
+    description: "The CA used to communicate with scrape targets"
+
   grpc.ca_cert:
     description: "TLS loggregator root CA certificate"
   grpc.cert:
