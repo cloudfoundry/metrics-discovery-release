@@ -25,13 +25,13 @@ require (
 	github.com/square/certstrap v1.2.0 // indirect
 	go.opencensus.io v0.22.1 // indirect
 	golang.org/x/crypto v0.0.0-20191002192127-34f69633bfdc // indirect
-	golang.org/x/net v0.0.0-20191003171128-d98b1b443823 // indirect
+	golang.org/x/net v0.0.0-20191009170851-d66e71096ffb // indirect
 	golang.org/x/sync v0.0.0-20190911185100-cd5d95a43a6e // indirect
-	golang.org/x/sys v0.0.0-20191007154456-ef33b2fb2c41 // indirect
+	golang.org/x/sys v0.0.0-20191009170203-06d7bd2c5f4f // indirect
 	golang.org/x/time v0.0.0-20190921001708-c4c64cad1fd0 // indirect
-	google.golang.org/api v0.10.0 // indirect
-	google.golang.org/appengine v1.6.4 // indirect
-	google.golang.org/genproto v0.0.0-20191002211648-c459b9ce5143 // indirect
+	google.golang.org/api v0.11.0 // indirect
+	google.golang.org/appengine v1.6.5 // indirect
+	google.golang.org/genproto v0.0.0-20191009194640-548a555dbc03 // indirect
 	google.golang.org/grpc v1.24.0
 	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect
 	gopkg.in/yaml.v2 v2.2.4
