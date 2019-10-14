@@ -11,7 +11,7 @@ require (
 	code.cloudfoundry.org/loggregator-agent v0.0.0-20190918193342-14308cf69de1
 	code.cloudfoundry.org/tlsconfig v0.0.0-20190710180242-462f72de1106
 	github.com/benjamintf1/unmarshalledmatchers v0.0.0-20190408201839-bb1c1f34eaea
-	github.com/gogo/protobuf v1.3.0
+	github.com/gogo/protobuf v1.3.1
 	github.com/golang/groupcache v0.0.0-20191002201903-404acd9df4cc // indirect
 	github.com/nats-io/nats-server/v2 v2.1.0 // indirect
 	github.com/nats-io/nats.go v1.8.1

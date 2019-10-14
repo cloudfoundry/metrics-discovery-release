@@ -96,7 +96,7 @@ github.com/go-kit/kit/log
 github.com/go-kit/kit/log/level
 # github.com/go-logfmt/logfmt v0.4.0
 github.com/go-logfmt/logfmt
-# github.com/gogo/protobuf v1.3.0
+# github.com/gogo/protobuf v1.3.1
 github.com/gogo/protobuf/proto
 github.com/gogo/protobuf/sortkeys
 # github.com/golang/groupcache v0.0.0-20191002201903-404acd9df4cc
