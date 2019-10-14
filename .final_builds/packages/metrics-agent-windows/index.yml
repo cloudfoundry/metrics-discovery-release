@@ -1,0 +1,6 @@
+builds:
+  eba20ecf1599e77bd343afe2913fce845e270c3ccd66b2bfc0bf6ef7607bd1fd:
+    version: eba20ecf1599e77bd343afe2913fce845e270c3ccd66b2bfc0bf6ef7607bd1fd
+    blobstore_id: 45df9135-ab3b-4dff-7d34-435b5c5bcb6b
+    sha1: sha256:cf9a670684a0487b41c6103dff7d32d6ca43ccf3e94dc91c55322e6bd34a2b2b
+format-version: "2"
