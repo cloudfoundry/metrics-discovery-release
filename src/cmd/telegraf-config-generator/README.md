@@ -26,3 +26,8 @@ The telegraf-config-generator generates a telegraf config from `scrape_targets.j
 
 1. Bosh scp the telgraf binary to the same vm
 1. `./telegraf --config /var/vcap/data/scrape-config-generator/telegraf.toml`
+
+## Updating config
+
+Each time the `scrape_targets.json` changes the config generator will nee to be re-run
+A `SIGHUP` can be sent to Telegraf to reload the `telegraf.toml`
