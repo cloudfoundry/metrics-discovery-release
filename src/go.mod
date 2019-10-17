@@ -13,6 +13,8 @@ require (
 	github.com/benjamintf1/unmarshalledmatchers v0.0.0-20190408201839-bb1c1f34eaea
 	github.com/gogo/protobuf v1.3.1
 	github.com/golang/groupcache v0.0.0-20191002201903-404acd9df4cc // indirect
+	github.com/influxdata/toml v0.0.0-20180607005434-2a2e3012f7cf
+	github.com/naoina/go-stringutil v0.1.0 // indirect
 	github.com/nats-io/nats-server/v2 v2.1.0 // indirect
 	github.com/nats-io/nats.go v1.8.1
 	github.com/onsi/ginkgo v1.10.2

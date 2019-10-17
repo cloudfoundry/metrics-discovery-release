@@ -164,6 +164,12 @@ github.com/hpcloud/tail/ratelimiter
 github.com/hpcloud/tail/util
 github.com/hpcloud/tail/watch
 github.com/hpcloud/tail/winfile
+# github.com/influxdata/telegraf v0.10.1
+github.com/influxdata/telegraf/plugins/inputs/prometheus
+github.com/influxdata/telegraf/plugins/inputs
+# github.com/influxdata/toml v0.0.0-20180607005434-2a2e3012f7cf
+github.com/influxdata/toml
+github.com/influxdata/toml/ast
 # github.com/jmespath/go-jmespath v0.0.0-20180206201540-c2b33e8439af
 github.com/jmespath/go-jmespath
 # github.com/jpillora/backoff v0.0.0-20180909062703-3050d21c67d7
@@ -186,6 +192,8 @@ github.com/modern-go/concurrent
 github.com/modern-go/reflect2
 # github.com/mwitkow/go-conntrack v0.0.0-20190716064945-2f068394615f
 github.com/mwitkow/go-conntrack
+# github.com/naoina/go-stringutil v0.1.0
+github.com/naoina/go-stringutil
 # github.com/nats-io/nats.go v1.8.1
 github.com/nats-io/nats.go
 github.com/nats-io/nats.go/encoders/builtin
@@ -230,6 +238,8 @@ github.com/onsi/gomega/matchers/support/goraph/node
 github.com/onsi/gomega/matchers/support/goraph/util
 # github.com/pkg/errors v0.8.1
 github.com/pkg/errors
+# github.com/pmezard/go-difflib v1.0.0
+github.com/pmezard/go-difflib/difflib
 # github.com/prometheus/client_golang v1.1.0
 github.com/prometheus/client_golang/prometheus
 github.com/prometheus/client_golang/prometheus/promhttp
@@ -266,6 +276,11 @@ github.com/prometheus/prometheus/util/treecache
 github.com/samuel/go-zookeeper/zk
 # github.com/square/certstrap v1.2.0
 github.com/square/certstrap/pkix
+# github.com/stretchr/objx v0.2.0
+github.com/stretchr/objx
+# github.com/stretchr/testify v1.4.0
+github.com/stretchr/testify/mock
+github.com/stretchr/testify/assert
 # go.opencensus.io v0.22.1
 go.opencensus.io/plugin/ochttp
 go.opencensus.io/plugin/ochttp/propagation/tracecontext
