@@ -1,6 +1,15 @@
 ## Using Metrics Agent
-Metrics Agent converts Loggregator metrics from the Forwarder Agent into Prometheus Exposition style metrics and hosts
+Metrics Agent proxies to Prometheus-scrapable endpoints defined by `prom_scraper_config.yml` files on the VM.
+
+Metrics Agent also converts Loggregator metrics from the Forwarder Agent into Prometheus Exposition style metrics and hosts
 them on a Prometheus-scrapable endpoint. Loggregator v2 Envelopes are converted to Prometheus metric types.
+
+#### Exporter endpoint
+The Metrics Agent Exporter endpoint hosts all metrics on the VM
+The `id` parameter can be used to target a specific component with a Prometheus-scrapable enpoint and a `prom_scraper_config.yml`
+If no `id` is specified, the metrics converted from Forwarder Agent will be served
+
+- Note: The Metrics Agent filters any metrics from the Forwarder Agent for Source IDs with a `prom_scraper_config.yml`
 
 #### Conversion
 | Loggregator envelope type                                   | Prometheus type                                                                                                                                                                                   |

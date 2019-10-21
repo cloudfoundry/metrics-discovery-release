@@ -31,7 +31,8 @@ The scrape config will be modified as metric targets come and go. Interested met
 for changes.
 
 ### Metrics agent
-An agent that receives metrics from the Forwarder Agent and exposes them on a prometheus-scrapable endpoint.
+An agent that proxies to components with a `prom_scraper_config.yml` and
+receives metrics from the Forwarder Agent and exposes them on a prometheus-scrapable endpoint.
 More information can be found in the [docs][metrics-agent]
 
 ### Pivotal Tracker
