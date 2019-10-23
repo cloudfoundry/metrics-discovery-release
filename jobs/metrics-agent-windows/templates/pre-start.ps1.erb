@@ -4,6 +4,12 @@ LOG_DIR="/var/vcap/sys/log/metrics-agent-windows"
 <<-POWERSHELL
 New-Item -Path #{RUN_DIR} -ItemType directory -Force
 New-Item -Path #{LOG_DIR} -ItemType directory -Force
-New-NetFirewallRule -Protocol TCP -LocalPort #{p("metrics_exporter_port")} -Direction Inbound -Action Allow -DisplayName "Metrics Exporter"
+
+if (-Not (Get-NetFirewallRule | Where-Object { $_.DisplayName -eq "Metrics Exporter" })) {
+  New-NetFirewallRule -Protocol TCP -LocalPort #{p("metrics_exporter_port")} -Direction Inbound -Action Allow -DisplayName "Metrics Exporter"
+  if (-Not (Get-NetFirewallRule | Where-Object { $_.DisplayName -eq "Metrics Exporter" })) {
+    Write-Error "Unable to add RepPort firewall rule"
+  }
+}
 POWERSHELL
  %>
