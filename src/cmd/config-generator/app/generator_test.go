@@ -178,9 +178,9 @@ var _ = Describe("Config generator", func() {
 			}
 		}()
 
-		targets := readTargets(tc)
-
-		Expect(targets).To(MatchUnorderedJSON(`[
+		Eventually(func() string {
+			return readTargets(tc)
+		}).Should(MatchUnorderedJSON(`[
 			{
 				"targets": [
 				  "localhost:8080"
