@@ -101,7 +101,7 @@ github.com/go-logfmt/logfmt
 # github.com/gogo/protobuf v1.3.1
 github.com/gogo/protobuf/proto
 github.com/gogo/protobuf/sortkeys
-# github.com/golang/groupcache v0.0.0-20191002201903-404acd9df4cc
+# github.com/golang/groupcache v0.0.0-20191025150517-4a4ac3fbac33
 github.com/golang/groupcache/lru
 # github.com/golang/protobuf v1.3.2
 github.com/golang/protobuf/proto
@@ -316,7 +316,7 @@ golang.org/x/oauth2/jws
 golang.org/x/oauth2/jwt
 # golang.org/x/sync v0.0.0-20190911185100-cd5d95a43a6e
 golang.org/x/sync/semaphore
-# golang.org/x/sys v0.0.0-20191024073052-e66fe6eb8e0c => golang.org/x/sys v0.0.0-20190801041406-cbf593c0f2f3
+# golang.org/x/sys v0.0.0-20191025090151-53bf42e6b339 => golang.org/x/sys v0.0.0-20190801041406-cbf593c0f2f3
 golang.org/x/sys/windows
 golang.org/x/sys/unix
 # golang.org/x/text v0.3.2
