@@ -42,10 +42,10 @@ properties:
 
   metrics_exporter_port:
     description: "Port the agent uses to serve the Prometheus endpoint"
-    default: 14826
+    default: 14726
   metrics.port:
     description: "Port the agent uses to serve metrics and debug information"
-    default: 14827
+    default: 14727
   metrics.ca_cert:
     description: "TLS CA cert to verify requests to metrics endpoint."
   metrics.cert:
