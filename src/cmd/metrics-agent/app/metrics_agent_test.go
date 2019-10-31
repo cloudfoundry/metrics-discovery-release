@@ -289,6 +289,9 @@ func getMetricsResponse(port uint16, id string, testCerts *testhelpers.TestCerts
 func getMetricFamilies(port uint16, id string, testCerts *testhelpers.TestCerts) func() map[string]*dto.MetricFamily {
 	return func() map[string]*dto.MetricFamily {
 		resp, err := getMetricsResponse(port, id, testCerts)
+		if err != nil {
+			return nil
+		}
 
 		metricFamilies, err := new(expfmt.TextParser).TextToMetricFamilies(resp.Body)
 		if err != nil {
