@@ -15,7 +15,7 @@ require (
 	github.com/golang/groupcache v0.0.0-20191027212112-611e8accdfc9 // indirect
 	github.com/json-iterator/go v1.1.8 // indirect
 	github.com/nats-io/nats-server/v2 v2.1.0 // indirect
-	github.com/nats-io/nats.go v1.9.0
+	github.com/nats-io/nats.go v1.9.1
 	github.com/nats-io/nkeys v0.1.2 // indirect
 	github.com/onsi/ginkgo v1.10.3
 	github.com/onsi/gomega v1.7.1
