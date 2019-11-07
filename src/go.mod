@@ -25,7 +25,7 @@ require (
 	github.com/prometheus/prometheus v2.13.1+incompatible // pinned
 	github.com/square/certstrap v1.2.0 // indirect
 	go.opencensus.io v0.22.1 // indirect
-	golang.org/x/crypto v0.0.0-20191105034135-c7e5f84aec59 // indirect
+	golang.org/x/crypto v0.0.0-20191106202628-ed6320f186d4 // indirect
 	golang.org/x/net v0.0.0-20191105084925-a882066a44e0 // indirect
 	golang.org/x/sync v0.0.0-20190911185100-cd5d95a43a6e // indirect
 	golang.org/x/sys v0.0.0-20191105231009-c1f44814a5cd // indirect
