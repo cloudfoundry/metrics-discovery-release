@@ -34,11 +34,11 @@ var _ = Describe("Config generator", func() {
 	var readTargets = func(tc *testContext) string {
 		var fileData []byte
 
-		Eventually(func() error {
-			var err error
-			fileData, err = ioutil.ReadFile(tc.configPath)
-			return err
-		}).Should(Succeed())
+		Eventually(func() string {
+			fileData, _ = ioutil.ReadFile(tc.configPath)
+
+			return string(fileData)
+		}).ShouldNot(Equal(""))
 
 		return string(fileData)
 	}
