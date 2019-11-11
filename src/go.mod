@@ -16,7 +16,7 @@ require (
 	github.com/json-iterator/go v1.1.8 // indirect
 	github.com/nats-io/nats-server/v2 v2.1.0 // indirect
 	github.com/nats-io/nats.go v1.9.1
-	github.com/nats-io/nkeys v0.1.2 // indirect
+	github.com/nats-io/nkeys v0.1.3 // indirect
 	github.com/onsi/ginkgo v1.10.3
 	github.com/onsi/gomega v1.7.1
 	github.com/prometheus/client_golang v1.2.1
