@@ -11,12 +11,13 @@ require (
 	code.cloudfoundry.org/loggregator-agent v0.0.0-20190918193342-14308cf69de1
 	code.cloudfoundry.org/tlsconfig v0.0.0-20190710180242-462f72de1106
 	github.com/benjamintf1/unmarshalledmatchers v0.0.0-20190408201839-bb1c1f34eaea
+	github.com/cespare/xxhash/v2 v2.1.1 // indirect
 	github.com/gogo/protobuf v1.3.1
 	github.com/golang/groupcache v0.0.0-20191027212112-611e8accdfc9 // indirect
 	github.com/json-iterator/go v1.1.8 // indirect
+	github.com/nats-io/jwt v0.3.2 // indirect
 	github.com/nats-io/nats-server/v2 v2.1.0 // indirect
 	github.com/nats-io/nats.go v1.9.1
-	github.com/nats-io/nkeys v0.1.3 // indirect
 	github.com/onsi/ginkgo v1.10.3
 	github.com/onsi/gomega v1.7.1
 	github.com/prometheus/client_golang v1.2.1
@@ -28,7 +29,7 @@ require (
 	go.opencensus.io v0.22.2 // indirect
 	golang.org/x/crypto v0.0.0-20191112222119-e1110fd1c708 // indirect
 	golang.org/x/net v0.0.0-20191112182307-2180aed22343 // indirect
-	golang.org/x/sys v0.0.0-20191113165036-4c7a9d0fe056 // indirect
+	golang.org/x/sys v0.0.0-20191115151921-52ab43148777 // indirect
 	golang.org/x/time v0.0.0-20191024005414-555d28b269f0 // indirect
 	google.golang.org/appengine v1.6.5 // indirect
 	google.golang.org/genproto v0.0.0-20191114150713-6bbd007550de // indirect
