@@ -22,14 +22,14 @@ require (
 	github.com/prometheus/client_golang v1.2.1
 	github.com/prometheus/client_model v0.0.0-20190812154241-14fe0d1b01d4
 	github.com/prometheus/common v0.7.0
-	github.com/prometheus/procfs v0.0.7 // indirect
+	github.com/prometheus/procfs v0.0.8 // indirect
 	github.com/prometheus/prometheus v2.13.1+incompatible // pinned
 	github.com/square/certstrap v1.2.0 // indirect
 	go.opencensus.io v0.22.2 // indirect
 	golang.org/x/crypto v0.0.0-20191122220453-ac88ee75c92c // indirect
 	golang.org/x/net v0.0.0-20191125084936-ffdde1057850 // indirect
 	golang.org/x/oauth2 v0.0.0-20191122200657-5d9234df094c // indirect
-	golang.org/x/sys v0.0.0-20191120155948-bd437916bb0e // indirect
+	golang.org/x/sys v0.0.0-20191126131656-8a8471f7e56d // indirect
 	golang.org/x/time v0.0.0-20191024005414-555d28b269f0 // indirect
 	google.golang.org/appengine v1.6.5 // indirect
 	google.golang.org/genproto v0.0.0-20191115221424-83cc0476cb11 // indirect
