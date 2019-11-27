@@ -22,7 +22,7 @@ code.cloudfoundry.org/loggregator-agent/pkg/ingress/v2
 code.cloudfoundry.org/loggregator-agent/pkg/plumbing/batching
 # code.cloudfoundry.org/rfc5424 v0.0.0-20180905210152-236a6d29298a
 code.cloudfoundry.org/rfc5424
-# code.cloudfoundry.org/tlsconfig v0.0.0-20190710180242-462f72de1106
+# code.cloudfoundry.org/tlsconfig v0.0.0-20191126220907-6c65973656e3
 code.cloudfoundry.org/tlsconfig
 code.cloudfoundry.org/tlsconfig/certtest
 # contrib.go.opencensus.io/exporter/ocagent v0.6.0
@@ -294,7 +294,7 @@ go.opencensus.io/trace/internal
 golang.org/x/crypto/ed25519
 golang.org/x/crypto/ed25519/internal/edwards25519
 golang.org/x/crypto/ssh/terminal
-# golang.org/x/net v0.0.0-20191125084936-ffdde1057850
+# golang.org/x/net v0.0.0-20191126235420-ef20fe5d7933
 golang.org/x/net/context
 golang.org/x/net/trace
 golang.org/x/net/internal/timeseries
@@ -319,7 +319,7 @@ golang.org/x/oauth2/jws
 golang.org/x/oauth2/jwt
 # golang.org/x/sync v0.0.0-20190911185100-cd5d95a43a6e
 golang.org/x/sync/semaphore
-# golang.org/x/sys v0.0.0-20191126131656-8a8471f7e56d
+# golang.org/x/sys v0.0.0-20191127021746-63cb32ae39b2
 golang.org/x/sys/windows
 golang.org/x/sys/unix
 # golang.org/x/text v0.3.2
