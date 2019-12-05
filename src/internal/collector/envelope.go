@@ -265,10 +265,13 @@ func durationInSeconds(timer *loggregator_v2.Timer) float64 {
 
 func (c *EnvelopeCollector) convertTags(env *loggregator_v2.Envelope) ([]string, []string) {
 	labelNames, labelValues := c.toLabels(env.SourceId, c.allTags(env))
-	labelNames = append(labelNames, "source_id")
-	labelValues = append(labelValues, env.GetSourceId())
 
-	if env.GetInstanceId() != "" {
+	if _, ok := env.GetTags()["source_id"]; !ok {
+		labelNames = append(labelNames, "source_id")
+		labelValues = append(labelValues, env.GetSourceId())
+	}
+
+	if _, ok := env.GetTags()["instance_id"]; !ok && env.GetInstanceId() != "" {
 		labelNames = append(labelNames, "instance_id")
 		labelValues = append(labelValues, env.GetInstanceId())
 	}

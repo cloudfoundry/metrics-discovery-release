@@ -164,10 +164,10 @@ var _ = Describe("EnvelopeCollector", func() {
 			Expect(collectMetrics(envelopeCollector)).To(Receive(And(
 				haveName("label_counter"),
 				haveLabels(
-					&dto.LabelPair{Name: proto.String("a"), Value: proto.String("1")},
-					&dto.LabelPair{Name: proto.String("b"), Value: proto.String("2")},
-					&dto.LabelPair{Name: proto.String("source_id"), Value: proto.String("some-source-id")},
-					&dto.LabelPair{Name: proto.String("instance_id"), Value: proto.String("some-instance-id")},
+					labelPair("a","1"),
+					labelPair("b","2"),
+					labelPair("source_id","some-source-id"),
+					labelPair("instance_id","some-instance-id"),
 				),
 			)))
 		})
@@ -180,9 +180,9 @@ var _ = Describe("EnvelopeCollector", func() {
 			Expect(collectMetrics(envelopeCollector)).To(Receive(And(
 				haveName("some_gauge"),
 				haveLabels(
-					&dto.LabelPair{Name: proto.String("unit"), Value: proto.String("percentage")},
-					&dto.LabelPair{Name: proto.String("source_id"), Value: proto.String("some-source-id")},
-					&dto.LabelPair{Name: proto.String("instance_id"), Value: proto.String("some-instance-id")},
+					labelPair("unit","percentage"),
+					labelPair("source_id","some-source-id"),
+					labelPair("instance_id","some-instance-id"),
 				),
 			)))
 		})
@@ -198,10 +198,10 @@ var _ = Describe("EnvelopeCollector", func() {
 			Expect(collectMetrics(envelopeCollector)).To(Receive(And(
 				haveName("some_timer_seconds"),
 				haveLabels(
-					&dto.LabelPair{Name: proto.String("a"), Value: proto.String("1")},
-					&dto.LabelPair{Name: proto.String("b"), Value: proto.String("2")},
-					&dto.LabelPair{Name: proto.String("source_id"), Value: proto.String("some-source-id")},
-					&dto.LabelPair{Name: proto.String("instance_id"), Value: proto.String("some-instance-id")},
+					labelPair("a","1"),
+					labelPair("b","2"),
+					labelPair("source_id","some-source-id"),
+					labelPair("instance_id","some-instance-id"),
 				),
 			)))
 		})
@@ -213,8 +213,8 @@ var _ = Describe("EnvelopeCollector", func() {
 			Expect(collectMetrics(envelopeCollector)).To(Receive(And(
 				haveName("some_gauge"),
 				haveLabels(
-					&dto.LabelPair{Name: proto.String("source_id"), Value: proto.String("some-source-id")},
-					&dto.LabelPair{Name: proto.String("instance_id"), Value: proto.String("some-instance-id")},
+					labelPair("source_id","some-source-id"),
+					labelPair("instance_id","some-instance-id"),
 				),
 			)))
 		})
@@ -231,16 +231,16 @@ var _ = Describe("EnvelopeCollector", func() {
 			Expect(collectMetrics(envelopeCollector)).To(Receive(And(
 				haveName("label_counter"),
 				haveLabels(
-					&dto.LabelPair{Name: proto.String("not_valid"), Value: proto.String("2")},
-					&dto.LabelPair{Name: proto.String("totally_fine"), Value: proto.String("3")},
-					&dto.LabelPair{Name: proto.String("source_id"), Value: proto.String("some-source-id")},
-					&dto.LabelPair{Name: proto.String("instance_id"), Value: proto.String("some-instance-id")},
+					labelPair("not_valid","2"),
+					labelPair("totally_fine","3"),
+					labelPair("source_id","some-source-id"),
+					labelPair("instance_id","some-instance-id"),
 				),
 			)))
 			Expect(spyRegistry.GetMetricValue("modified_tags", map[string]string{"originating_source_id": "some-source-id"})).To(Equal(1.0))
 		})
 
-		It("dropped reserved tags", func() {
+		It("drops reserved tags", func() {
 			spyRegistry := testhelpers.NewMetricsRegistry()
 			envelopeCollector := collector.NewEnvelopeCollector(spyRegistry)
 			counter := counterWithTags("label_counter", 1, map[string]string{
@@ -252,9 +252,9 @@ var _ = Describe("EnvelopeCollector", func() {
 			Expect(collectMetrics(envelopeCollector)).To(Receive(And(
 				haveName("label_counter"),
 				haveLabels(
-					&dto.LabelPair{Name: proto.String("totally_fine"), Value: proto.String("3")},
-					&dto.LabelPair{Name: proto.String("source_id"), Value: proto.String("some-source-id")},
-					&dto.LabelPair{Name: proto.String("instance_id"), Value: proto.String("some-instance-id")},
+					labelPair("totally_fine","3"),
+					labelPair("source_id","some-source-id"),
+					labelPair("instance_id","some-instance-id"),
 				),
 			)))
 			Expect(spyRegistry.GetMetricValue("invalid_metric_label", map[string]string{"originating_source_id": "some-source-id"})).To(Equal(1.0))
@@ -272,10 +272,10 @@ var _ = Describe("EnvelopeCollector", func() {
 			Expect(collectMetrics(envelopeCollector)).To(Receive(And(
 				haveName("label_counter"),
 				haveLabels(
-					&dto.LabelPair{Name: proto.String("a"), Value: proto.String("1")},
-					&dto.LabelPair{Name: proto.String("b"), Value: proto.String("2")},
-					&dto.LabelPair{Name: proto.String("source_id"), Value: proto.String("some-source-id")},
-					&dto.LabelPair{Name: proto.String("instance_id"), Value: proto.String("some-instance-id")},
+					labelPair("a","1"),
+					labelPair("b","2"),
+					labelPair("source_id","some-source-id"),
+					labelPair("instance_id","some-instance-id"),
 				),
 			)))
 		})
@@ -288,7 +288,24 @@ var _ = Describe("EnvelopeCollector", func() {
 			Expect(collectMetrics(envelopeCollector)).To(Receive(And(
 				haveName("some_name"),
 				haveLabels(
-					&dto.LabelPair{Name: proto.String("source_id"), Value: proto.String("some-source-id")},
+					labelPair("source_id","some-source-id"),
+				),
+			)))
+		})
+
+		It("does not include instance_id or source_id if present in envelop tags", func() {
+			envelopeCollector := collector.NewEnvelopeCollector(testhelpers.NewMetricsRegistry())
+			counter := counterWithTags("some_name", 1, map[string]string{
+				"source_id": "source_id_from_tags",
+				"instance_id": "instance_id_from_tags",
+			})
+			Expect(envelopeCollector.Write(counter)).To(Succeed())
+
+			Expect(collectMetrics(envelopeCollector)).To(Receive(And(
+				haveName("some_name"),
+				haveLabels(
+					labelPair("source_id", "source_id_from_tags"),
+					labelPair("instance_id","instance_id_from_tags"),
 				),
 			)))
 		})
@@ -309,11 +326,11 @@ var _ = Describe("EnvelopeCollector", func() {
 			Expect(collectMetrics(envelopeCollector)).To(Receive(And(
 				haveName("some_name"),
 				haveLabels(
-					&dto.LabelPair{Name: proto.String("source_id"), Value: proto.String("some-source-id")},
-					&dto.LabelPair{Name: proto.String("instance_id"), Value: proto.String("some-instance-id")},
-					&dto.LabelPair{Name: proto.String("a"), Value: proto.String("1")},
-					&dto.LabelPair{Name: proto.String("b"), Value: proto.String("2")},
-					&dto.LabelPair{Name: proto.String("already_on_envelope"), Value: proto.String("3")},
+					labelPair("source_id","some-source-id"),
+					labelPair("instance_id","some-instance-id"),
+					labelPair("a","1"),
+					labelPair("b","2"),
+					labelPair("already_on_envelope","3"),
 				),
 			)))
 		})
@@ -387,6 +404,10 @@ var _ = Describe("EnvelopeCollector", func() {
 		})
 	})
 })
+
+func labelPair(name, value string) *dto.LabelPair {
+	return &dto.LabelPair{Name: proto.String(name), Value: proto.String(value)}
+}
 
 func receiveInAnyOrder(elements ...interface{}) types.GomegaMatcher {
 	return WithTransform(func(metricChan chan prometheus.Metric) []prometheus.Metric {
