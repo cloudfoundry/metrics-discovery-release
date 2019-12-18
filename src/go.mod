@@ -18,7 +18,7 @@ require (
 	github.com/nats-io/nats-server/v2 v2.1.2 // indirect
 	github.com/nats-io/nats.go v1.9.1
 	github.com/onsi/ginkgo v1.10.3
-	github.com/onsi/gomega v1.7.1
+	github.com/onsi/gomega v1.8.0
 	github.com/prometheus/client_golang v1.2.1
 	github.com/prometheus/client_model v0.0.0-20191202183732-d1d2010b5bee
 	github.com/prometheus/common v0.7.0
@@ -31,6 +31,7 @@ require (
 	golang.org/x/oauth2 v0.0.0-20191202225959-858c2ad4c8b6 // indirect
 	golang.org/x/sys v0.0.0-20191218084908-4a24b4065292 // indirect
 	golang.org/x/time v0.0.0-20191024005414-555d28b269f0 // indirect
+	golang.org/x/xerrors v0.0.0-20191204190536-9bdfabe68543 // indirect
 	google.golang.org/api v0.15.0 // indirect
 	google.golang.org/appengine v1.6.5 // indirect
 	google.golang.org/genproto v0.0.0-20191216205247-b31c10ee225f // indirect
