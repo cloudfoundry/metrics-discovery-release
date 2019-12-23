@@ -22,7 +22,7 @@ code.cloudfoundry.org/loggregator-agent/pkg/ingress/v2
 code.cloudfoundry.org/loggregator-agent/pkg/plumbing/batching
 # code.cloudfoundry.org/rfc5424 v0.0.0-20180905210152-236a6d29298a
 code.cloudfoundry.org/rfc5424
-# code.cloudfoundry.org/tlsconfig v0.0.0-20191126220907-6c65973656e3
+# code.cloudfoundry.org/tlsconfig v0.0.0-20191220232943-2819aba30e10
 code.cloudfoundry.org/tlsconfig
 code.cloudfoundry.org/tlsconfig/certtest
 # contrib.go.opencensus.io/exporter/ocagent v0.6.0
@@ -171,7 +171,7 @@ github.com/hpcloud/tail/winfile
 github.com/jmespath/go-jmespath
 # github.com/jpillora/backoff v0.0.0-20180909062703-3050d21c67d7
 github.com/jpillora/backoff
-# github.com/json-iterator/go v1.1.8
+# github.com/json-iterator/go v1.1.9
 github.com/json-iterator/go
 # github.com/kr/logfmt v0.0.0-20140226030751-b84e30acd515
 github.com/kr/logfmt
@@ -235,11 +235,11 @@ github.com/onsi/gomega/matchers/support/goraph/node
 github.com/onsi/gomega/matchers/support/goraph/util
 # github.com/pkg/errors v0.8.1
 github.com/pkg/errors
-# github.com/prometheus/client_golang v1.2.1
+# github.com/prometheus/client_golang v1.3.0
 github.com/prometheus/client_golang/prometheus
 github.com/prometheus/client_golang/prometheus/promhttp
 github.com/prometheus/client_golang/prometheus/internal
-# github.com/prometheus/client_model v0.0.0-20191202183732-d1d2010b5bee
+# github.com/prometheus/client_model v0.1.0
 github.com/prometheus/client_model/go
 # github.com/prometheus/common v0.7.0 => github.com/prometheus/common v0.7.0
 github.com/prometheus/common/expfmt
@@ -319,7 +319,7 @@ golang.org/x/oauth2/jws
 golang.org/x/oauth2/jwt
 # golang.org/x/sync v0.0.0-20190911185100-cd5d95a43a6e
 golang.org/x/sync/semaphore
-# golang.org/x/sys v0.0.0-20191220142924-d4481acd189f
+# golang.org/x/sys v0.0.0-20191220220014-0732a990476f
 golang.org/x/sys/windows
 golang.org/x/sys/unix
 # golang.org/x/text v0.3.2
@@ -370,7 +370,7 @@ google.golang.org/appengine/internal/base
 google.golang.org/appengine/internal/datastore
 google.golang.org/appengine/internal/log
 google.golang.org/appengine/internal/remote_api
-# google.golang.org/genproto v0.0.0-20191220162840-803ea799ed88
+# google.golang.org/genproto v0.0.0-20191220175831-5c49e3ecc1c1
 google.golang.org/genproto/googleapis/rpc/status
 google.golang.org/genproto/googleapis/api/httpbody
 google.golang.org/genproto/protobuf/field_mask
