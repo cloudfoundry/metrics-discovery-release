@@ -22,7 +22,7 @@ code.cloudfoundry.org/loggregator-agent/pkg/ingress/v2
 code.cloudfoundry.org/loggregator-agent/pkg/plumbing/batching
 # code.cloudfoundry.org/rfc5424 v0.0.0-20180905210152-236a6d29298a
 code.cloudfoundry.org/rfc5424
-# code.cloudfoundry.org/tlsconfig v0.0.0-20191220232943-2819aba30e10
+# code.cloudfoundry.org/tlsconfig v0.0.0-20200103214402-4ae6f49cdca0
 code.cloudfoundry.org/tlsconfig
 code.cloudfoundry.org/tlsconfig/certtest
 # contrib.go.opencensus.io/exporter/ocagent v0.6.0
@@ -97,7 +97,7 @@ github.com/dgrijalva/jwt-go
 # github.com/go-kit/kit v0.9.0
 github.com/go-kit/kit/log
 github.com/go-kit/kit/log/level
-# github.com/go-logfmt/logfmt v0.4.0
+# github.com/go-logfmt/logfmt v0.5.0
 github.com/go-logfmt/logfmt
 # github.com/gogo/protobuf v1.3.1
 github.com/gogo/protobuf/proto
@@ -173,8 +173,6 @@ github.com/jmespath/go-jmespath
 github.com/jpillora/backoff
 # github.com/json-iterator/go v1.1.9
 github.com/json-iterator/go
-# github.com/kr/logfmt v0.0.0-20140226030751-b84e30acd515
-github.com/kr/logfmt
 # github.com/matttproud/golang_protobuf_extensions v1.0.1
 github.com/matttproud/golang_protobuf_extensions/pbutil
 # github.com/miekg/dns v1.1.15
