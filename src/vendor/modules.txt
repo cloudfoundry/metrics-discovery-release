@@ -1,4 +1,4 @@
-# cloud.google.com/go v0.50.0
+# cloud.google.com/go v0.51.0
 cloud.google.com/go/compute/metadata
 # code.cloudfoundry.org/go-batching v0.0.0-20171020220229-924d2a9b48ac
 code.cloudfoundry.org/go-batching
@@ -309,7 +309,7 @@ golang.org/x/net/internal/iana
 golang.org/x/net/internal/socket
 golang.org/x/net/html/atom
 golang.org/x/net/context/ctxhttp
-# golang.org/x/oauth2 v0.0.0-20191202225959-858c2ad4c8b6
+# golang.org/x/oauth2 v0.0.0-20200107160858-eca82077e2d1
 golang.org/x/oauth2/google
 golang.org/x/oauth2
 golang.org/x/oauth2/internal
@@ -317,7 +317,7 @@ golang.org/x/oauth2/jws
 golang.org/x/oauth2/jwt
 # golang.org/x/sync v0.0.0-20190911185100-cd5d95a43a6e
 golang.org/x/sync/semaphore
-# golang.org/x/sys v0.0.0-20200106162015-b016eb3dc98e
+# golang.org/x/sys v0.0.0-20200107162124-548cf772de50
 golang.org/x/sys/windows
 golang.org/x/sys/unix
 # golang.org/x/text v0.3.2
