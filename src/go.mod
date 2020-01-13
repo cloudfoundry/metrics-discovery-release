@@ -23,13 +23,13 @@ require (
 	github.com/pkg/errors v0.9.0 // indirect
 	github.com/prometheus/client_golang v1.3.0
 	github.com/prometheus/client_model v0.1.0
-	github.com/prometheus/common v0.7.0
+	github.com/prometheus/common v0.8.0
 	github.com/prometheus/prometheus v2.13.1+incompatible // pinned
 	golang.org/x/crypto v0.0.0-20200109152110-61a87790db17 // indirect
 	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d // indirect
-	golang.org/x/sys v0.0.0-20200107162124-548cf772de50 // indirect
+	golang.org/x/sys v0.0.0-20200113162924-86b910548bc1 // indirect
 	golang.org/x/time v0.0.0-20191024005414-555d28b269f0 // indirect
-	google.golang.org/genproto v0.0.0-20200108215221-bd8f9a0ef82f // indirect
+	google.golang.org/genproto v0.0.0-20200113173426-e1de0a7b01eb // indirect
 	google.golang.org/grpc v1.26.0
 	gopkg.in/yaml.v2 v2.2.7
 )
