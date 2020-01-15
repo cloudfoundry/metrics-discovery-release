@@ -20,12 +20,12 @@ require (
 	github.com/nats-io/nats.go v1.9.1
 	github.com/onsi/ginkgo v1.11.0
 	github.com/onsi/gomega v1.8.1
-	github.com/pkg/errors v0.9.0 // indirect
+	github.com/pkg/errors v0.9.1 // indirect
 	github.com/prometheus/client_golang v1.3.0
 	github.com/prometheus/client_model v0.1.0
 	github.com/prometheus/common v0.8.0
 	github.com/prometheus/prometheus v2.13.1+incompatible // pinned
-	golang.org/x/crypto v0.0.0-20200109152110-61a87790db17 // indirect
+	golang.org/x/crypto v0.0.0-20200115085410-6d4e4cb37c7d // indirect
 	golang.org/x/net v0.0.0-20200114155413-6afb5195e5aa // indirect
 	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d // indirect
 	golang.org/x/sys v0.0.0-20200113162924-86b910548bc1 // indirect
