@@ -28,9 +28,9 @@ require (
 	golang.org/x/crypto v0.0.0-20200115085410-6d4e4cb37c7d // indirect
 	golang.org/x/net v0.0.0-20200114155413-6afb5195e5aa // indirect
 	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d // indirect
-	golang.org/x/sys v0.0.0-20200113162924-86b910548bc1 // indirect
+	golang.org/x/sys v0.0.0-20200116001909-b77594299b42 // indirect
 	golang.org/x/time v0.0.0-20191024005414-555d28b269f0 // indirect
-	google.golang.org/genproto v0.0.0-20200113173426-e1de0a7b01eb // indirect
+	google.golang.org/genproto v0.0.0-20200115191322-ca5a22157cba // indirect
 	google.golang.org/grpc v1.26.0
 	gopkg.in/yaml.v2 v2.2.7
 )

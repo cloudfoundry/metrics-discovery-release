@@ -317,7 +317,7 @@ golang.org/x/oauth2/jws
 golang.org/x/oauth2/jwt
 # golang.org/x/sync v0.0.0-20190911185100-cd5d95a43a6e
 golang.org/x/sync/semaphore
-# golang.org/x/sys v0.0.0-20200113162924-86b910548bc1
+# golang.org/x/sys v0.0.0-20200116001909-b77594299b42
 golang.org/x/sys/windows
 golang.org/x/sys/unix
 # golang.org/x/text v0.3.2
@@ -368,7 +368,7 @@ google.golang.org/appengine/internal/base
 google.golang.org/appengine/internal/datastore
 google.golang.org/appengine/internal/log
 google.golang.org/appengine/internal/remote_api
-# google.golang.org/genproto v0.0.0-20200113173426-e1de0a7b01eb
+# google.golang.org/genproto v0.0.0-20200115191322-ca5a22157cba
 google.golang.org/genproto/googleapis/rpc/status
 google.golang.org/genproto/googleapis/api/httpbody
 google.golang.org/genproto/protobuf/field_mask
