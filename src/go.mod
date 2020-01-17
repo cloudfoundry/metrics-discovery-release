@@ -14,6 +14,7 @@ require (
 	github.com/go-logfmt/logfmt v0.5.0 // indirect
 	github.com/gogo/protobuf v1.3.1
 	github.com/google/go-cmp v0.4.0 // indirect
+	github.com/hashicorp/golang-lru v0.5.4 // indirect
 	github.com/json-iterator/go v1.1.9 // indirect
 	github.com/kr/pretty v0.2.0 // indirect
 	github.com/nats-io/nats-server/v2 v2.1.2 // indirect
@@ -25,12 +26,12 @@ require (
 	github.com/prometheus/client_model v0.1.0
 	github.com/prometheus/common v0.8.0
 	github.com/prometheus/prometheus v2.13.1+incompatible // pinned
-	golang.org/x/crypto v0.0.0-20200115085410-6d4e4cb37c7d // indirect
+	golang.org/x/crypto v0.0.0-20200117160349-530e935923ad // indirect
 	golang.org/x/net v0.0.0-20200114155413-6afb5195e5aa // indirect
 	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d // indirect
-	golang.org/x/sys v0.0.0-20200116001909-b77594299b42 // indirect
+	golang.org/x/sys v0.0.0-20200117145432-59e60aa80a0c // indirect
 	golang.org/x/time v0.0.0-20191024005414-555d28b269f0 // indirect
-	google.golang.org/genproto v0.0.0-20200115191322-ca5a22157cba // indirect
+	google.golang.org/genproto v0.0.0-20200117163144-32f20d992d24 // indirect
 	google.golang.org/grpc v1.26.0
 	gopkg.in/yaml.v2 v2.2.7
 )
