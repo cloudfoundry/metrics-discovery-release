@@ -22,7 +22,7 @@ code.cloudfoundry.org/loggregator-agent/pkg/ingress/v2
 code.cloudfoundry.org/loggregator-agent/pkg/plumbing/batching
 # code.cloudfoundry.org/rfc5424 v0.0.0-20180905210152-236a6d29298a
 code.cloudfoundry.org/rfc5424
-# code.cloudfoundry.org/tlsconfig v0.0.0-20200121234528-fcd72f4608b7
+# code.cloudfoundry.org/tlsconfig v0.0.0-20200125003142-b5ccaa4fedfc
 code.cloudfoundry.org/tlsconfig
 code.cloudfoundry.org/tlsconfig/certtest
 # contrib.go.opencensus.io/exporter/ocagent v0.6.0
@@ -317,7 +317,7 @@ golang.org/x/oauth2/jws
 golang.org/x/oauth2/jwt
 # golang.org/x/sync v0.0.0-20190911185100-cd5d95a43a6e
 golang.org/x/sync/semaphore
-# golang.org/x/sys v0.0.0-20200122134326-e047566fdf82
+# golang.org/x/sys v0.0.0-20200124204421-9fbb57f87de9
 golang.org/x/sys/windows
 golang.org/x/sys/unix
 # golang.org/x/text v0.3.2
