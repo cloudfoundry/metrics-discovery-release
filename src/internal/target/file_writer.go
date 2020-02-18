@@ -1,7 +1,7 @@
 package target
 
 import (
-	"code.cloudfoundry.org/loggregator-agent/pkg/scraper"
+	"code.cloudfoundry.org/loggregator-agent-release/src/pkg/scraper"
 	"fmt"
 	"gopkg.in/yaml.v2"
 	"log"

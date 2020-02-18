@@ -2,7 +2,7 @@ package main
 
 import (
 	metrics "code.cloudfoundry.org/go-metric-registry"
-	"code.cloudfoundry.org/loggregator-agent/pkg/scraper"
+	"code.cloudfoundry.org/loggregator-agent-release/src/pkg/scraper"
 	"code.cloudfoundry.org/metrics-discovery/cmd/metrics-agent/app"
 	"log"
 	_ "net/http/pprof"

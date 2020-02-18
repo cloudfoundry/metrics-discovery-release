@@ -2,7 +2,7 @@ package gatherer
 
 import (
 	metrics "code.cloudfoundry.org/go-metric-registry"
-	"code.cloudfoundry.org/loggregator-agent/pkg/scraper"
+	"code.cloudfoundry.org/loggregator-agent-release/src/pkg/scraper"
 	"code.cloudfoundry.org/tlsconfig"
 	"fmt"
 	io_prometheus_client "github.com/prometheus/client_model/go"
@@ -16,9 +16,9 @@ import (
 )
 
 type ProxyGatherer struct {
-	scrapeConfig  scraper.PromScraperConfig
-	httpDoer      func(*http.Request) (*http.Response, error)
-	metrics       metricsRegistry
+	scrapeConfig scraper.PromScraperConfig
+	httpDoer     func(*http.Request) (*http.Response, error)
+	metrics      metricsRegistry
 }
 
 type metricsRegistry interface {
@@ -34,9 +34,9 @@ func NewProxyGatherer(
 	loggr *log.Logger,
 ) *ProxyGatherer {
 	pg := &ProxyGatherer{
-		scrapeConfig:  scrapeConfig,
-		metrics:       metrics,
-		httpDoer:      buildHttpClient(certPath, keyPath, caPath, scrapeConfig.ServerName, loggr).Do,
+		scrapeConfig: scrapeConfig,
+		metrics:      metrics,
+		httpDoer:     buildHttpClient(certPath, keyPath, caPath, scrapeConfig.ServerName, loggr).Do,
 	}
 
 	pg.newFailedScrapeMetric(scrapeConfig.SourceID)

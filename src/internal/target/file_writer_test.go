@@ -1,7 +1,7 @@
 package target_test
 
 import (
-	"code.cloudfoundry.org/loggregator-agent/pkg/scraper"
+	"code.cloudfoundry.org/loggregator-agent-release/src/pkg/scraper"
 	"code.cloudfoundry.org/metrics-discovery/internal/target"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"

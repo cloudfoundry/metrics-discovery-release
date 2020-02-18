@@ -3,8 +3,8 @@ package app_test
 import (
 	"code.cloudfoundry.org/go-loggregator"
 	metrichelpers "code.cloudfoundry.org/go-metric-registry/testhelpers"
-	"code.cloudfoundry.org/loggregator-agent/pkg/config"
-	"code.cloudfoundry.org/loggregator-agent/pkg/scraper"
+	"code.cloudfoundry.org/loggregator-agent-release/src/pkg/config"
+	"code.cloudfoundry.org/loggregator-agent-release/src/pkg/scraper"
 	"code.cloudfoundry.org/metrics-discovery/cmd/metrics-agent/app"
 	"code.cloudfoundry.org/metrics-discovery/internal/target"
 	"code.cloudfoundry.org/metrics-discovery/internal/testhelpers"

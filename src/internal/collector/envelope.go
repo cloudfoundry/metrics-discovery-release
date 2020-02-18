@@ -3,7 +3,7 @@ package collector
 import (
 	"code.cloudfoundry.org/go-loggregator/rpc/loggregator_v2"
 	metrics "code.cloudfoundry.org/go-metric-registry"
-	v2 "code.cloudfoundry.org/loggregator-agent/pkg/egress/v2"
+	v2 "code.cloudfoundry.org/loggregator-agent-release/src/pkg/egress/v2"
 	"fmt"
 	"github.com/prometheus/client_golang/prometheus"
 	"regexp"
