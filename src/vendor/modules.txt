@@ -12,13 +12,13 @@ code.cloudfoundry.org/go-loggregator/rpc/loggregator_v2
 # code.cloudfoundry.org/go-metric-registry v0.0.0-20191209165758-93cfd5e30bb0
 code.cloudfoundry.org/go-metric-registry
 code.cloudfoundry.org/go-metric-registry/testhelpers
-# code.cloudfoundry.org/loggregator-agent v0.0.0-20190918193342-14308cf69de1 => code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20200217181245-6e4084c82580
-code.cloudfoundry.org/loggregator-agent/pkg/config
-code.cloudfoundry.org/loggregator-agent/pkg/diodes
-code.cloudfoundry.org/loggregator-agent/pkg/egress/v2
-code.cloudfoundry.org/loggregator-agent/pkg/ingress/v2
-code.cloudfoundry.org/loggregator-agent/pkg/plumbing/batching
-code.cloudfoundry.org/loggregator-agent/pkg/scraper
+# code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20200218204818-848adfa31872
+code.cloudfoundry.org/loggregator-agent-release/src/pkg/config
+code.cloudfoundry.org/loggregator-agent-release/src/pkg/diodes
+code.cloudfoundry.org/loggregator-agent-release/src/pkg/egress/v2
+code.cloudfoundry.org/loggregator-agent-release/src/pkg/ingress/v2
+code.cloudfoundry.org/loggregator-agent-release/src/pkg/plumbing/batching
+code.cloudfoundry.org/loggregator-agent-release/src/pkg/scraper
 # code.cloudfoundry.org/rfc5424 v0.0.0-20180905210152-236a6d29298a
 code.cloudfoundry.org/rfc5424
 # code.cloudfoundry.org/tlsconfig v0.0.0-20200131000646-bbe0f8da39b3
