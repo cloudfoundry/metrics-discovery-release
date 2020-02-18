@@ -8,12 +8,11 @@ code.cloudfoundry.org/go-diodes
 code.cloudfoundry.org/go-envstruct
 # code.cloudfoundry.org/go-loggregator v0.0.0-20190809213911-969cb33bee6a
 code.cloudfoundry.org/go-loggregator
-code.cloudfoundry.org/go-loggregator/metrics
 code.cloudfoundry.org/go-loggregator/rpc/loggregator_v2
 # code.cloudfoundry.org/go-metric-registry v0.0.0-20191209165758-93cfd5e30bb0
 code.cloudfoundry.org/go-metric-registry
 code.cloudfoundry.org/go-metric-registry/testhelpers
-# code.cloudfoundry.org/loggregator-agent v0.0.0-20190918193342-14308cf69de1 => code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20190828205358-fd77eb91324d
+# code.cloudfoundry.org/loggregator-agent v0.0.0-20190918193342-14308cf69de1 => code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20200217181245-6e4084c82580
 code.cloudfoundry.org/loggregator-agent/pkg/config
 code.cloudfoundry.org/loggregator-agent/pkg/diodes
 code.cloudfoundry.org/loggregator-agent/pkg/egress/v2
@@ -244,7 +243,7 @@ github.com/prometheus/common/config
 github.com/prometheus/common/expfmt
 github.com/prometheus/common/internal/bitbucket.org/ww/goautoneg
 github.com/prometheus/common/model
-# github.com/prometheus/procfs v0.0.9
+# github.com/prometheus/procfs v0.0.10
 github.com/prometheus/procfs
 github.com/prometheus/procfs/internal/fs
 github.com/prometheus/procfs/internal/util
@@ -317,7 +316,7 @@ golang.org/x/oauth2/jws
 golang.org/x/oauth2/jwt
 # golang.org/x/sync v0.0.0-20190911185100-cd5d95a43a6e
 golang.org/x/sync/semaphore
-# golang.org/x/sys v0.0.0-20200212091648-12a6c2dcc1e4
+# golang.org/x/sys v0.0.0-20200217220822-9197077df867
 golang.org/x/sys/unix
 golang.org/x/sys/windows
 # golang.org/x/text v0.3.2
@@ -368,7 +367,7 @@ google.golang.org/appengine/internal/modules
 google.golang.org/appengine/internal/remote_api
 google.golang.org/appengine/internal/urlfetch
 google.golang.org/appengine/urlfetch
-# google.golang.org/genproto v0.0.0-20200212174721-66ed5ce911ce
+# google.golang.org/genproto v0.0.0-20200218151345-dad8c97a84f5
 google.golang.org/genproto/googleapis/api/httpbody
 google.golang.org/genproto/googleapis/rpc/status
 google.golang.org/genproto/protobuf/field_mask
