@@ -1,13 +1,15 @@
 package app
 
 import (
-	"code.cloudfoundry.org/go-envstruct"
 	"log"
 	"time"
+
+	"code.cloudfoundry.org/go-envstruct"
 )
 
 type Config struct {
 	NatsHosts                []string      `env:"NATS_HOSTS,              required, report"`
+	NatsCAPath               string        `env:"NATS_CA_PATH,            required, report"`
 	ScrapeConfigFilePath     string        `env:"SCRAPE_CONFIG_FILE_PATH, required, report"`
 	ConfigExpirationInterval time.Duration `env:"CONFIG_EXPIRATION_INTERVAL,        report"`
 	ConfigTimeToLive         time.Duration `env:"CONFIG_TTL,                        report"`

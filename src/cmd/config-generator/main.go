@@ -1,12 +1,16 @@
 package main
 
 import (
-	metrics "code.cloudfoundry.org/go-metric-registry"
-	"code.cloudfoundry.org/metrics-discovery/cmd/config-generator/app"
-	"github.com/nats-io/nats.go"
+	"crypto/tls"
+	"crypto/x509"
+	"io/ioutil"
 	"log"
 	"os"
 	"time"
+
+	metrics "code.cloudfoundry.org/go-metric-registry"
+	"code.cloudfoundry.org/metrics-discovery/cmd/config-generator/app"
+	"github.com/nats-io/nats.go"
 )
 
 func main() {
@@ -25,6 +29,7 @@ func main() {
 		ClosedCB:          closedCB(logger),
 		DisconnectedErrCB: disconnectErrHandler(logger),
 		ReconnectedCB:     reconnectedCB(logger),
+		TLSConfig:         getTLSConfig(config),
 	}
 
 	natsConn, err := opts.Connect()
@@ -48,6 +53,26 @@ func main() {
 
 	generator.Start()
 	defer generator.Stop()
+}
+
+func getTLSConfig(cfg app.Config) *tls.Config {
+	if cfg.NatsCAPath != "" {
+		caCert, err := ioutil.ReadFile(cfg.NatsCAPath)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		caCertPool := x509.NewCertPool()
+
+		if !caCertPool.AppendCertsFromPEM(caCert) {
+			log.Fatalf("Failed to load CA certificate from file %s", cfg.NatsCAPath)
+		}
+
+		return &tls.Config{
+			RootCAs: caCertPool,
+		}
+	}
+	return nil
 }
 
 func closedCB(log *log.Logger) func(conn *nats.Conn) {

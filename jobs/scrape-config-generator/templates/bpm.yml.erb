@@ -1,8 +1,8 @@
 <%
-    nats_ips = link('nats').instances.map { |instance| instance.address }
-    nats_port = link('nats').p("nats.port")
-    nats_user = link('nats').p("nats.user")
-    nats_password = link('nats').p("nats.password")
+    nats_ips = link('nats-tls').instances.map { |instance| instance.address }
+    nats_port = link('nats-tls').p("nats.port")
+    nats_user = link('nats-tls').p("nats.user")
+    nats_password = link('nats-tls').p("nats.password")
 
     nats_hosts = nats_ips.map do |h|
       "nats://#{nats_user}:#{nats_password}@#{h}:#{nats_port}"
@@ -16,6 +16,7 @@ processes:
   executable: /var/vcap/packages/scrape-config-generator/scrape-config-generator
   env:
     NATS_HOSTS: "<%= nats_str %>"
+    NATS_CA_PATH: "/var/vcap/jobs/scrape-config-generator/config/certs/nats_ca.crt"
     SCRAPE_CONFIG_FILE_PATH: "<%= p('scrape_config_file_path') %>"
     CONFIG_EXPIRATION_INTERVAL: "<%= p('expiration_interval') %>"
     SCRAPE_CA_PATH: "/var/vcap/jobs/scrape-config-generator/config/certs/scrape_ca.crt"

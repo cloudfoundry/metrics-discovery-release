@@ -2,11 +2,12 @@
 name: metrics-discovery-registrar-windows
 
 consumes:
-- name: nats
-  type: nats
+- name: nats-tls
+  type: nats-tls
 
 templates:
   pre-start.ps1.erb: bin/pre-start.ps1
+  nats_ca.crt.erb: config/certs/nats_ca.crt
   metrics_ca.crt.erb: config/certs/metrics_ca.crt
   metrics.crt.erb: config/certs/metrics.crt
   metrics.key.erb: config/certs/metrics.key

@@ -1,15 +1,19 @@
 package main
 
 import (
-	metrics "code.cloudfoundry.org/go-metric-registry"
-	"code.cloudfoundry.org/metrics-discovery/cmd/discovery-registrar/app"
-	"code.cloudfoundry.org/metrics-discovery/internal/target"
-	"github.com/nats-io/nats.go"
+	"crypto/tls"
+	"crypto/x509"
+	"io/ioutil"
 	"log"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
+
+	metrics "code.cloudfoundry.org/go-metric-registry"
+	"code.cloudfoundry.org/metrics-discovery/cmd/discovery-registrar/app"
+	"code.cloudfoundry.org/metrics-discovery/internal/target"
+	"github.com/nats-io/nats.go"
 )
 
 func main() {
@@ -23,7 +27,6 @@ func main() {
 
 	targetProvider := target.NewFileProvider(cfg.TargetsGlob, cfg.TargetRefreshInterval, logger)
 	go targetProvider.Start()
-
 
 	m := metrics.NewRegistry(logger,
 		metrics.WithTLSServer(cfg.MetricsPort, cfg.MetricsCertPath, cfg.MetricsKeyPath, cfg.MetricsCAPath),
@@ -47,6 +50,7 @@ func connectToNATS(cfg app.Config, logger *log.Logger) *nats.Conn {
 		ClosedCB:          closedCB(logger),
 		DisconnectedErrCB: disconnectErrHandler(logger),
 		ReconnectedCB:     reconnectedCB(logger),
+		TLSConfig:         getTLSConfig(cfg),
 	}
 
 	natsConn, err := opts.Connect()
@@ -54,6 +58,26 @@ func connectToNATS(cfg app.Config, logger *log.Logger) *nats.Conn {
 		logger.Fatalf("Unable to connect to nats servers: %s", err)
 	}
 	return natsConn
+}
+
+func getTLSConfig(cfg app.Config) *tls.Config {
+	if cfg.NatsCAPath != "" {
+		caCert, err := ioutil.ReadFile(cfg.NatsCAPath)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		caCertPool := x509.NewCertPool()
+
+		if !caCertPool.AppendCertsFromPEM(caCert) {
+			log.Fatalf("Failed to load CA certificate from file %s", cfg.NatsCAPath)
+		}
+
+		return &tls.Config{
+			RootCAs: caCertPool,
+		}
+	}
+	return nil
 }
 
 func waitForTermination() {

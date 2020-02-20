@@ -2,11 +2,12 @@
 name: scrape-config-generator
 
 consumes:
-- name: nats
-  type: nats
+- name: nats-tls
+  type: nats-tls
 
 templates:
   bpm.yml.erb: config/bpm.yml
+  nats_ca.crt.erb: config/certs/nats_ca.crt
   metrics_ca.crt.erb: config/certs/metrics_ca.crt
   metrics.crt.erb: config/certs/metrics.crt
   metrics.key.erb: config/certs/metrics.key
