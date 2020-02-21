@@ -12,7 +12,7 @@ code.cloudfoundry.org/go-loggregator/rpc/loggregator_v2
 # code.cloudfoundry.org/go-metric-registry v0.0.0-20191209165758-93cfd5e30bb0
 code.cloudfoundry.org/go-metric-registry
 code.cloudfoundry.org/go-metric-registry/testhelpers
-# code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20200219181424-1e043e284f7c
+# code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20200220181518-0191c6696549
 code.cloudfoundry.org/loggregator-agent-release/src/pkg/config
 code.cloudfoundry.org/loggregator-agent-release/src/pkg/diodes
 code.cloudfoundry.org/loggregator-agent-release/src/pkg/egress/v2
@@ -287,7 +287,7 @@ go.opencensus.io/trace
 go.opencensus.io/trace/internal
 go.opencensus.io/trace/propagation
 go.opencensus.io/trace/tracestate
-# golang.org/x/crypto v0.0.0-20200219234226-1ad67e1f0ef4
+# golang.org/x/crypto v0.0.0-20200221170553-0f24fbd83dfb
 golang.org/x/crypto/ed25519
 golang.org/x/crypto/ed25519/internal/edwards25519
 golang.org/x/crypto/ssh/terminal

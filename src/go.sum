@@ -29,8 +29,8 @@ code.cloudfoundry.org/go-loggregator v0.0.0-20190809213911-969cb33bee6a h1:uqD5N
 code.cloudfoundry.org/go-loggregator v0.0.0-20190809213911-969cb33bee6a/go.mod h1:fYXv8qS6feR/OV1q5N1z/R70y0y4KHZgFSQ8GhWTN1M=
 code.cloudfoundry.org/go-metric-registry v0.0.0-20191209165758-93cfd5e30bb0 h1:ZJIyGOTZ+G6QmlPlSZWANSDMzb5mJbvWl8UC88qR3Hs=
 code.cloudfoundry.org/go-metric-registry v0.0.0-20191209165758-93cfd5e30bb0/go.mod h1:cjL7/hjRgOnMy/FbPsGZG9qmR6oSPKG/FwKLLlh2j2U=
-code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20200219181424-1e043e284f7c h1:wUaMWo0iUhTNkPo+DGsz2z0tn28qdo66lCywXzWX3mQ=
-code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20200219181424-1e043e284f7c/go.mod h1:XjZiGqe1STTsnkQA3t3gC28cR6jNnASGmVaJ1HrLpr0=
+code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20200220181518-0191c6696549 h1:j2NovARDVZ4P8QP8XBy2ejTSw09GUoZI1KnVou+qAas=
+code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20200220181518-0191c6696549/go.mod h1:gPi0eRO1/ZE45f/r2VsEJbKk8D82m4hobmJqMHDg3kI=
 code.cloudfoundry.org/rfc5424 v0.0.0-20180905210152-236a6d29298a h1:8rqv2w8xEceNwckcF5ONeRt0qBHlh5bnNfFnYTrZbxs=
 code.cloudfoundry.org/rfc5424 v0.0.0-20180905210152-236a6d29298a/go.mod h1:tkZo8GtzBjySJ7USvxm4E36lNQw1D3xM6oKHGqdaAJ4=
 code.cloudfoundry.org/tlsconfig v0.0.0-20190710180242-462f72de1106 h1:F36x++Jh2aWiBK++W9wI97SJuprnROicHiV0HtdSOzc=
@@ -543,8 +543,8 @@ golang.org/x/crypto v0.0.0-20190611184440-5c40567a22f8/go.mod h1:yigFU9vqHzYiE8U
 golang.org/x/crypto v0.0.0-20190617133340-57b3e21c3d56/go.mod h1:yigFU9vqHzYiE8UmvKecakEJjdnWj3jj499lnFckfCI=
 golang.org/x/crypto v0.0.0-20190701094942-4def268fd1a4/go.mod h1:yigFU9vqHzYiE8UmvKecakEJjdnWj3jj499lnFckfCI=
 golang.org/x/crypto v0.0.0-20191011191535-87dc89f01550/go.mod h1:yigFU9vqHzYiE8UmvKecakEJjdnWj3jj499lnFckfCI=
-golang.org/x/crypto v0.0.0-20200219234226-1ad67e1f0ef4 h1:4icQlpeqbz3WxfgP6Eq3szTj95KTrlH/CwzBzoxuFd0=
-golang.org/x/crypto v0.0.0-20200219234226-1ad67e1f0ef4/go.mod h1:LzIPMQfyMNhhGPhUkYOs5KpL4U8rLKemX1yGLhDgUto=
+golang.org/x/crypto v0.0.0-20200221170553-0f24fbd83dfb h1:Bg7BRk6M/6/zfhJrglNmi/oiI2jwKuETZ3vrdYr1qFk=
+golang.org/x/crypto v0.0.0-20200221170553-0f24fbd83dfb/go.mod h1:LzIPMQfyMNhhGPhUkYOs5KpL4U8rLKemX1yGLhDgUto=
 golang.org/x/exp v0.0.0-20190121172915-509febef88a4/go.mod h1:CJ0aWSM057203Lf6IL+f9T1iT9GByDxfZKAQTCR3kQA=
 golang.org/x/exp v0.0.0-20190306152737-a1d7652674e8/go.mod h1:CJ0aWSM057203Lf6IL+f9T1iT9GByDxfZKAQTCR3kQA=
 golang.org/x/exp v0.0.0-20190510132918-efd6b22b2522/go.mod h1:ZjyILWgesfNpC6sMxTJOJm9Kp84zZh5NQWvqDGG3Qr8=
