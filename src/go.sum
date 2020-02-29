@@ -29,8 +29,8 @@ code.cloudfoundry.org/go-loggregator v0.0.0-20190809213911-969cb33bee6a h1:uqD5N
 code.cloudfoundry.org/go-loggregator v0.0.0-20190809213911-969cb33bee6a/go.mod h1:fYXv8qS6feR/OV1q5N1z/R70y0y4KHZgFSQ8GhWTN1M=
 code.cloudfoundry.org/go-metric-registry v0.0.0-20191209165758-93cfd5e30bb0 h1:ZJIyGOTZ+G6QmlPlSZWANSDMzb5mJbvWl8UC88qR3Hs=
 code.cloudfoundry.org/go-metric-registry v0.0.0-20191209165758-93cfd5e30bb0/go.mod h1:cjL7/hjRgOnMy/FbPsGZG9qmR6oSPKG/FwKLLlh2j2U=
-code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20200227182051-63eabcd3935d h1:dPqVZQkwW2qn9Wazz5DlHX/KbFHI8BcdHLkIrYSV/O0=
-code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20200227182051-63eabcd3935d/go.mod h1:yNkEr53/ruR8dhEEQ0vPokTeU5GW4VKOd65fLiZ0gVs=
+code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20200228182127-356ef39f7a92 h1:h10VcOLc0p97Zfz0GrcGJbxO4xSY/qTUkTunOmsE+N8=
+code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20200228182127-356ef39f7a92/go.mod h1:VWTjgMaSrGgNHbpd1uGVFnU8l/KRLJlW7A7V4WZxs8o=
 code.cloudfoundry.org/rfc5424 v0.0.0-20180905210152-236a6d29298a h1:8rqv2w8xEceNwckcF5ONeRt0qBHlh5bnNfFnYTrZbxs=
 code.cloudfoundry.org/rfc5424 v0.0.0-20180905210152-236a6d29298a/go.mod h1:tkZo8GtzBjySJ7USvxm4E36lNQw1D3xM6oKHGqdaAJ4=
 code.cloudfoundry.org/tlsconfig v0.0.0-20190710180242-462f72de1106 h1:F36x++Jh2aWiBK++W9wI97SJuprnROicHiV0HtdSOzc=
@@ -738,8 +738,6 @@ google.golang.org/genproto v0.0.0-20191216164720-4f79533eabd1/go.mod h1:n3cpQtvx
 google.golang.org/genproto v0.0.0-20191230161307-f3c370f40bfb/go.mod h1:n3cpQtvxv34hfy77yVDNjmbRyujviMdxYliBSkLhpCc=
 google.golang.org/genproto v0.0.0-20200212174721-66ed5ce911ce h1:1mbrb1tUU+Zmt5C94IGKADBTJZjZXAd+BubWi7r9EiI=
 google.golang.org/genproto v0.0.0-20200212174721-66ed5ce911ce/go.mod h1:55QSHmfGQM9UVYDPBsyGGes0y52j32PQ3BqQfXhyH3c=
-google.golang.org/genproto v0.0.0-20200227132054-3f1135a288c9 h1:Koy0f8zyrEVfIHetH7wjP5mQLUXiqDpubSg8V1fAxqc=
-google.golang.org/genproto v0.0.0-20200227132054-3f1135a288c9/go.mod h1:55QSHmfGQM9UVYDPBsyGGes0y52j32PQ3BqQfXhyH3c=
 google.golang.org/genproto v0.0.0-20200228133532-8c2c7df3a383 h1:Vo0fD5w0fUKriWlZLyrim2GXbumyN0D6euW79T9PgEE=
 google.golang.org/genproto v0.0.0-20200228133532-8c2c7df3a383/go.mod h1:55QSHmfGQM9UVYDPBsyGGes0y52j32PQ3BqQfXhyH3c=
 google.golang.org/grpc v1.19.0/go.mod h1:mqu4LbDTu4XGKhr4mRzUsmM4RtVoemTSY81AxZiDr8c=
