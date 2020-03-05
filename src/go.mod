@@ -3,12 +3,12 @@ module code.cloudfoundry.org/metrics-discovery
 go 1.12
 
 require (
-	cloud.google.com/go v0.53.0 // indirect
+	cloud.google.com/go v0.54.0 // indirect
 	code.cloudfoundry.org/go-diodes v0.0.0-20190809170250-f77fb823c7ee
 	code.cloudfoundry.org/go-envstruct v1.5.0
 	code.cloudfoundry.org/go-loggregator v0.0.0-20190809213911-969cb33bee6a // pinned
 	code.cloudfoundry.org/go-metric-registry v0.0.0-20191209165758-93cfd5e30bb0
-	code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20200303182455-12c1d3dba2f5
+	code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20200305000035-02dc5da922f1
 	code.cloudfoundry.org/tlsconfig v0.0.0-20200131000646-bbe0f8da39b3
 	github.com/benjamintf1/unmarshalledmatchers v0.0.0-20190408201839-bb1c1f34eaea
 	github.com/go-logfmt/logfmt v0.5.0 // indirect
@@ -25,7 +25,6 @@ require (
 	github.com/prometheus/common v0.9.1
 	github.com/prometheus/prometheus v2.13.1+incompatible // pinned
 	golang.org/x/crypto v0.0.0-20200302210943-78000ba7a073 // indirect
-	golang.org/x/time v0.0.0-20191024005414-555d28b269f0 // indirect
 	google.golang.org/grpc v1.27.1
 	gopkg.in/yaml.v2 v2.2.8
 )
