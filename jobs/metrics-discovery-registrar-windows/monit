@@ -10,7 +10,7 @@
 
   nats_str = nats_hosts.join(",")
 
-  certs_dir="/var/vcap/jobs/metrics-discovery-registrar/config/certs"
+  certs_dir="/var/vcap/jobs/metrics-discovery-registrar-windows/config/certs"
 
   env = {
     "PUBLISH_INTERVAL" => "#{p("publish_interval")}",
