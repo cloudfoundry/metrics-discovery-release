@@ -1,17 +1,19 @@
 package collector_test
 
 import (
+	b64 "encoding/base64"
+	"fmt"
+	"time"
+
 	"code.cloudfoundry.org/go-loggregator/rpc/loggregator_v2"
 	"code.cloudfoundry.org/go-metric-registry/testhelpers"
 	"code.cloudfoundry.org/metrics-discovery/internal/collector"
-	"fmt"
 	"github.com/gogo/protobuf/proto"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/types"
 	"github.com/prometheus/client_golang/prometheus"
 	dto "github.com/prometheus/client_model/go"
-	"time"
 )
 
 var _ = Describe("EnvelopeCollector", func() {
@@ -159,15 +161,17 @@ var _ = Describe("EnvelopeCollector", func() {
 				"a": "1",
 				"b": "2",
 			})
+			encodedName := b64.StdEncoding.EncodeToString([]byte("label_counter"))
 			Expect(envelopeCollector.Write(counter)).To(Succeed())
 
 			Expect(collectMetrics(envelopeCollector)).To(Receive(And(
 				haveName("label_counter"),
 				haveLabels(
-					labelPair("a","1"),
-					labelPair("b","2"),
-					labelPair("source_id","some-source-id"),
-					labelPair("instance_id","some-instance-id"),
+					labelPair("a", "1"),
+					labelPair("b", "2"),
+					labelPair("source_id", "some-source-id"),
+					labelPair("instance_id", "some-instance-id"),
+					labelPair("loggregator_name", encodedName),
 				),
 			)))
 		})
@@ -175,14 +179,16 @@ var _ = Describe("EnvelopeCollector", func() {
 		It("includes tags for gauges", func() {
 			envelopeCollector := collector.NewEnvelopeCollector(testhelpers.NewMetricsRegistry())
 			gauge := gaugeWithUnit("some_gauge", "percentage")
+			encodedName := b64.StdEncoding.EncodeToString([]byte("some_gauge"))
 			Expect(envelopeCollector.Write(gauge)).To(Succeed())
 
 			Expect(collectMetrics(envelopeCollector)).To(Receive(And(
 				haveName("some_gauge"),
 				haveLabels(
-					labelPair("unit","percentage"),
-					labelPair("source_id","some-source-id"),
-					labelPair("instance_id","some-instance-id"),
+					labelPair("unit", "percentage"),
+					labelPair("source_id", "some-source-id"),
+					labelPair("instance_id", "some-instance-id"),
+					labelPair("loggregator_name", encodedName),
 				),
 			)))
 		})
@@ -193,28 +199,32 @@ var _ = Describe("EnvelopeCollector", func() {
 				"a": "1",
 				"b": "2",
 			})
+			encodedName := b64.StdEncoding.EncodeToString([]byte("some_timer"))
 			Expect(envelopeCollector.Write(timer)).To(Succeed())
 
 			Expect(collectMetrics(envelopeCollector)).To(Receive(And(
 				haveName("some_timer_seconds"),
 				haveLabels(
-					labelPair("a","1"),
-					labelPair("b","2"),
-					labelPair("source_id","some-source-id"),
-					labelPair("instance_id","some-instance-id"),
+					labelPair("a", "1"),
+					labelPair("b", "2"),
+					labelPair("source_id", "some-source-id"),
+					labelPair("instance_id", "some-instance-id"),
+					labelPair("loggregator_name", encodedName),
 				),
 			)))
 		})
 
 		It("ignores units if empty", func() {
 			envelopeCollector := collector.NewEnvelopeCollector(testhelpers.NewMetricsRegistry())
+			encodedName := b64.StdEncoding.EncodeToString([]byte("some_gauge"))
 			Expect(envelopeCollector.Write(gauge(map[string]float64{"some_gauge": 7}))).To(Succeed())
 
 			Expect(collectMetrics(envelopeCollector)).To(Receive(And(
 				haveName("some_gauge"),
 				haveLabels(
-					labelPair("source_id","some-source-id"),
-					labelPair("instance_id","some-instance-id"),
+					labelPair("source_id", "some-source-id"),
+					labelPair("instance_id", "some-instance-id"),
+					labelPair("loggregator_name", encodedName),
 				),
 			)))
 		})
@@ -226,15 +236,17 @@ var _ = Describe("EnvelopeCollector", func() {
 				"not.valid":    "2",
 				"totally_fine": "3",
 			})
+			encodedName := b64.StdEncoding.EncodeToString([]byte("label_counter"))
 			Expect(envelopeCollector.Write(counter)).To(Succeed())
 
 			Expect(collectMetrics(envelopeCollector)).To(Receive(And(
 				haveName("label_counter"),
 				haveLabels(
-					labelPair("not_valid","2"),
-					labelPair("totally_fine","3"),
-					labelPair("source_id","some-source-id"),
-					labelPair("instance_id","some-instance-id"),
+					labelPair("not_valid", "2"),
+					labelPair("totally_fine", "3"),
+					labelPair("source_id", "some-source-id"),
+					labelPair("instance_id", "some-instance-id"),
+					labelPair("loggregator_name", encodedName),
 				),
 			)))
 			Expect(spyRegistry.GetMetricValue("modified_tags", map[string]string{"originating_source_id": "some-source-id"})).To(Equal(1.0))
@@ -247,14 +259,16 @@ var _ = Describe("EnvelopeCollector", func() {
 				"__invalid":    "1",
 				"totally_fine": "3",
 			})
+			encodedName := b64.StdEncoding.EncodeToString([]byte("label_counter"))
 			Expect(envelopeCollector.Write(counter)).To(Succeed())
 
 			Expect(collectMetrics(envelopeCollector)).To(Receive(And(
 				haveName("label_counter"),
 				haveLabels(
-					labelPair("totally_fine","3"),
-					labelPair("source_id","some-source-id"),
-					labelPair("instance_id","some-instance-id"),
+					labelPair("totally_fine", "3"),
+					labelPair("source_id", "some-source-id"),
+					labelPair("instance_id", "some-instance-id"),
+					labelPair("loggregator_name", encodedName),
 				),
 			)))
 			Expect(spyRegistry.GetMetricValue("invalid_metric_label", map[string]string{"originating_source_id": "some-source-id"})).To(Equal(1.0))
@@ -267,15 +281,17 @@ var _ = Describe("EnvelopeCollector", func() {
 				"b": "2",
 				"c": "",
 			})
+			encodedName := b64.StdEncoding.EncodeToString([]byte("label_counter"))
 			Expect(envelopeCollector.Write(counter)).To(Succeed())
 
 			Expect(collectMetrics(envelopeCollector)).To(Receive(And(
 				haveName("label_counter"),
 				haveLabels(
-					labelPair("a","1"),
-					labelPair("b","2"),
-					labelPair("source_id","some-source-id"),
-					labelPair("instance_id","some-instance-id"),
+					labelPair("a", "1"),
+					labelPair("b", "2"),
+					labelPair("source_id", "some-source-id"),
+					labelPair("instance_id", "some-instance-id"),
+					labelPair("loggregator_name", encodedName),
 				),
 			)))
 		})
@@ -283,12 +299,14 @@ var _ = Describe("EnvelopeCollector", func() {
 		It("does not include instance_id if empty", func() {
 			envelopeCollector := collector.NewEnvelopeCollector(testhelpers.NewMetricsRegistry())
 			counter := counterWithEmptyInstanceID("some_name", 1)
+			encodedName := b64.StdEncoding.EncodeToString([]byte("some_name"))
 			Expect(envelopeCollector.Write(counter)).To(Succeed())
 
 			Expect(collectMetrics(envelopeCollector)).To(Receive(And(
 				haveName("some_name"),
 				haveLabels(
-					labelPair("source_id","some-source-id"),
+					labelPair("source_id", "some-source-id"),
+					labelPair("loggregator_name", encodedName),
 				),
 			)))
 		})
@@ -296,16 +314,18 @@ var _ = Describe("EnvelopeCollector", func() {
 		It("does not include instance_id or source_id if present in envelop tags", func() {
 			envelopeCollector := collector.NewEnvelopeCollector(testhelpers.NewMetricsRegistry())
 			counter := counterWithTags("some_name", 1, map[string]string{
-				"source_id": "source_id_from_tags",
+				"source_id":   "source_id_from_tags",
 				"instance_id": "instance_id_from_tags",
 			})
+			encodedName := b64.StdEncoding.EncodeToString([]byte("some_name"))
 			Expect(envelopeCollector.Write(counter)).To(Succeed())
 
 			Expect(collectMetrics(envelopeCollector)).To(Receive(And(
 				haveName("some_name"),
 				haveLabels(
 					labelPair("source_id", "source_id_from_tags"),
-					labelPair("instance_id","instance_id_from_tags"),
+					labelPair("instance_id", "instance_id_from_tags"),
+					labelPair("loggregator_name", encodedName),
 				),
 			)))
 		})
@@ -321,16 +341,18 @@ var _ = Describe("EnvelopeCollector", func() {
 			counter := counterWithTags("some_name", 1, map[string]string{
 				"already_on_envelope": "3",
 			})
+			encodedName := b64.StdEncoding.EncodeToString([]byte("some_name"))
 			Expect(envelopeCollector.Write(counter)).To(Succeed())
 
 			Expect(collectMetrics(envelopeCollector)).To(Receive(And(
 				haveName("some_name"),
 				haveLabels(
-					labelPair("source_id","some-source-id"),
-					labelPair("instance_id","some-instance-id"),
-					labelPair("a","1"),
-					labelPair("b","2"),
-					labelPair("already_on_envelope","3"),
+					labelPair("source_id", "some-source-id"),
+					labelPair("instance_id", "some-instance-id"),
+					labelPair("a", "1"),
+					labelPair("b", "2"),
+					labelPair("already_on_envelope", "3"),
+					labelPair("loggregator_name", encodedName),
 				),
 			)))
 		})

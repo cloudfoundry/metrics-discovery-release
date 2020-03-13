@@ -1,15 +1,17 @@
 package collector
 
 import (
-	"code.cloudfoundry.org/go-loggregator/rpc/loggregator_v2"
-	metrics "code.cloudfoundry.org/go-metric-registry"
-	v2 "code.cloudfoundry.org/loggregator-agent-release/src/pkg/egress/v2"
+	b64 "encoding/base64"
 	"fmt"
-	"github.com/prometheus/client_golang/prometheus"
 	"regexp"
 	"strings"
 	"sync"
 	"time"
+
+	"code.cloudfoundry.org/go-loggregator/rpc/loggregator_v2"
+	metrics "code.cloudfoundry.org/go-metric-registry"
+	v2 "code.cloudfoundry.org/loggregator-agent-release/src/pkg/egress/v2"
+	"github.com/prometheus/client_golang/prometheus"
 )
 
 const help = "Metrics Agent collected metric"
@@ -158,13 +160,14 @@ func (c *EnvelopeCollector) convertEnvelope(env *loggregator_v2.Envelope) (map[s
 }
 
 func (c *EnvelopeCollector) convertCounter(env *loggregator_v2.Envelope) (metricID string, metric prometheus.Metric, err error) {
-	name := env.GetCounter().GetName()
-	name, modified := sanitizeName(name)
+	originalName := env.GetCounter().GetName()
+	name, modified := sanitizeName(originalName)
 	if modified {
 		c.incrementCounter("modified_tags", env.GetSourceId())
 	}
 
 	labelNames, labelValues := c.convertTags(env)
+	labelNames, labelValues = addLoggregatorNameTag(labelNames, labelValues, originalName)
 
 	desc := prometheus.NewDesc(name, help, labelNames, nil)
 	metric, err = prometheus.NewConstMetric(desc, prometheus.CounterValue, float64(env.GetCounter().GetTotal()), labelValues...)
@@ -176,16 +179,17 @@ func (c *EnvelopeCollector) convertCounter(env *loggregator_v2.Envelope) (metric
 }
 
 func (c *EnvelopeCollector) convertGaugeEnvelope(env *loggregator_v2.Envelope) (map[string]prometheus.Metric, error) {
-	envelopeLabelNames, envelopeLabelValues := c.convertTags(env)
+	labelNames, labelValues := c.convertTags(env)
 
 	promMetrics := map[string]prometheus.Metric{}
+
 	for name, metric := range env.GetGauge().GetMetrics() {
-		name, modified := sanitizeName(name)
+		sanitizedName, modified := sanitizeName(name)
 		if modified {
 			c.incrementCounter("modified_tags", env.GetSourceId())
 		}
 
-		id, metric, err := convertGaugeValue(name, metric, envelopeLabelNames, envelopeLabelValues)
+		id, metric, err := convertGaugeValue(name, sanitizedName, metric, labelNames, labelValues)
 		if err != nil {
 			return nil, fmt.Errorf("invalid metric: %s", err)
 		}
@@ -195,16 +199,16 @@ func (c *EnvelopeCollector) convertGaugeEnvelope(env *loggregator_v2.Envelope) (
 	return promMetrics, nil
 }
 
-func convertGaugeValue(name string, gaugeValue *loggregator_v2.GaugeValue, envelopeLabelNames, envelopeLabelValues []string) (string, prometheus.Metric, error) {
-	gaugeLabelNames, gaugeLabelValues := gaugeLabels(gaugeValue, envelopeLabelNames, envelopeLabelValues)
-
-	desc := prometheus.NewDesc(name, help, gaugeLabelNames, nil)
-	metric, err := prometheus.NewConstMetric(desc, prometheus.GaugeValue, gaugeValue.Value, gaugeLabelValues...)
+func convertGaugeValue(originalName, sanitizedName string, gaugeValue *loggregator_v2.GaugeValue, envelopeLabelNames, envelopeLabelValues []string) (string, prometheus.Metric, error) {
+	labelNames, labelValues := gaugeLabels(gaugeValue, envelopeLabelNames, envelopeLabelValues)
+	labelNames, labelValues = addLoggregatorNameTag(labelNames, labelValues, originalName)
+	desc := prometheus.NewDesc(sanitizedName, help, labelNames, nil)
+	metric, err := prometheus.NewConstMetric(desc, prometheus.GaugeValue, gaugeValue.Value, labelValues...)
 	if err != nil {
 		return "", nil, err
 	}
 
-	return buildMetricID(name, envelopeLabelNames, envelopeLabelValues), metric, nil
+	return buildMetricID(sanitizedName, envelopeLabelNames, envelopeLabelValues), metric, nil
 }
 
 func buildMetricID(name string, envelopeLabelNames, envelopeLabelValues []string) string {
@@ -238,6 +242,7 @@ func (c *EnvelopeCollector) convertTimer(env *loggregator_v2.Envelope) (metricID
 	}
 
 	labelNames, labelValues := c.convertTags(env)
+	labelNames, labelValues = addLoggregatorNameTag(labelNames, labelValues, timer.GetName())
 	id := buildMetricID(name, labelNames, labelValues)
 
 	c.Lock()
@@ -320,6 +325,11 @@ func (c *EnvelopeCollector) incrementCounter(metricName, originatingSourceID str
 		fmt.Sprintf("Total number of %s for the originating source id from the envelope", metricName),
 		metrics.WithMetricLabels(map[string]string{"originating_source_id": originatingSourceID}),
 	).Add(1)
+}
+
+func addLoggregatorNameTag(labelNames, labelValues []string, name string) ([]string, []string) {
+	name = b64.StdEncoding.EncodeToString([]byte(name))
+	return append(labelNames, "loggregator_name"), append(labelValues, name)
 }
 
 func sanitizeTagName(name string) (string, bool) {

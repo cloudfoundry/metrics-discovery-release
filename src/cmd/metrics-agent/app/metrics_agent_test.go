@@ -10,6 +10,7 @@ import (
 	"code.cloudfoundry.org/metrics-discovery/internal/testhelpers"
 	"code.cloudfoundry.org/tlsconfig"
 	"context"
+	b64 "encoding/base64"
 	"fmt"
 	"github.com/gogo/protobuf/proto"
 	. "github.com/onsi/ginkgo"
@@ -160,11 +161,13 @@ var _ = Describe("MetricsAgent", func() {
 		defer cancel()
 
 		Eventually(getMetricFamilies(metricsPort, "", testCerts), 3).Should(HaveKey("timer_seconds"))
+		encodedName := b64.StdEncoding.EncodeToString([]byte("timer"))
 
 		metric := getMetric("timer_seconds", metricsPort, testCerts)
 		Expect(metric.GetLabel()).To(ConsistOf(
 			&dto.LabelPair{Name: proto.String("whitelist1"), Value: proto.String("whitelist1")},
 			&dto.LabelPair{Name: proto.String("whitelist2"), Value: proto.String("whitelist2")},
+			&dto.LabelPair{Name: proto.String("loggregator_name"), Value: proto.String(encodedName)},
 
 			// source and instance id are added from envelope properties
 			&dto.LabelPair{Name: proto.String("source_id"), Value: proto.String("source-id-from-source-info")},
