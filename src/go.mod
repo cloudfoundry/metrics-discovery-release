@@ -13,6 +13,7 @@ require (
 	github.com/benjamintf1/unmarshalledmatchers v0.0.0-20190408201839-bb1c1f34eaea
 	github.com/go-logfmt/logfmt v0.5.0 // indirect
 	github.com/gogo/protobuf v1.3.1
+	github.com/golang/protobuf v1.3.5 // indirect
 	github.com/google/gofuzz v1.1.0 // indirect
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
 	github.com/nats-io/nats-server/v2 v2.1.4 // indirect
@@ -25,6 +26,7 @@ require (
 	github.com/prometheus/common v0.9.1
 	github.com/prometheus/prometheus v2.13.1+incompatible // pinned
 	golang.org/x/crypto v0.0.0-20200311171314-f7b00557c8c4 // indirect
+	google.golang.org/genproto v0.0.0-20200313141609-30c55424f95d // indirect
 	google.golang.org/grpc v1.28.0
 	gopkg.in/yaml.v2 v2.2.8
 )
