@@ -55,13 +55,15 @@ func connectToNATS(cfg app.Config, logger *log.Logger) *nats.Conn {
 
 	natsConn, err := opts.Connect()
 	if err != nil {
-		logger.Fatalf("Unable to connect to nats servers: %s", err)
+		logger.Fatalf("Unable to connect to nats servers (%s): %s", cfg.NatsHosts, err)
 	}
 	return natsConn
 }
 
 func getTLSConfig(cfg app.Config) *tls.Config {
+	loggr.Println("getting TLS config!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1")
 	if cfg.NatsCAPath != "" {
+		loggr.Println("got CA path ************************************************************")
 		caCert, err := ioutil.ReadFile(cfg.NatsCAPath)
 		if err != nil {
 			log.Fatal(err)
@@ -73,8 +75,14 @@ func getTLSConfig(cfg app.Config) *tls.Config {
 			log.Fatalf("Failed to load CA certificate from file %s", cfg.NatsCAPath)
 		}
 
+		certKeyPair, err := tls.LoadX509KeyPair(cfg.NatsCertPath, cfg.NatsKeyPath)
+		if err != nil {
+			log.Fatal(err)
+		}
+
 		return &tls.Config{
-			RootCAs: caCertPool,
+			RootCAs:      caCertPool,
+			Certificates: []tls.Certificate{certKeyPair},
 		}
 	}
 	return nil

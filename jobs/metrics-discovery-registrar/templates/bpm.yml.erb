@@ -1,14 +1,9 @@
 <%
-  nats_ips = link('nats-tls').instances.map { |instance| instance.address }
   nats_port = link('nats-tls').p("nats.port")
   nats_user = link('nats-tls').p("nats.user")
   nats_password = link('nats-tls').p("nats.password")
 
-  nats_hosts = nats_ips.map do |h|
-    "nats://#{nats_user}:#{nats_password}@#{h}:#{nats_port}"
-  end
-
-  nats_str = nats_hosts.join(",")
+  nats_str = "nats://#{nats_user}:#{nats_password}@nats.service.cf.internal:#{nats_port}"
 
   certs_dir="/var/vcap/jobs/metrics-discovery-registrar/config/certs"
 
@@ -24,6 +19,8 @@
       "PUBLISH_INTERVAL" => "#{p("publish_interval")}",
       "NATS_HOSTS" => nats_str,
       "NATS_CA_PATH" => "#{certs_dir}/nats_ca.crt",
+      "NATS_CERT_PATH" => "#{certs_dir}/nats.crt",
+      "NATS_KEY_PATH" => "#{certs_dir}/nats.key",
       "TARGETS_GLOB" => p("targets_glob"),
       "TARGET_REFRESH_INTERVAL" => "#{p("target_refresh_interval")}",
       "METRICS_CA_PATH" => "#{certs_dir}/metrics_ca.crt",
