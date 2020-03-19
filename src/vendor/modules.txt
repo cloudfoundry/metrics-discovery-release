@@ -12,7 +12,7 @@ code.cloudfoundry.org/go-loggregator/rpc/loggregator_v2
 # code.cloudfoundry.org/go-metric-registry v0.0.0-20191209165758-93cfd5e30bb0
 code.cloudfoundry.org/go-metric-registry
 code.cloudfoundry.org/go-metric-registry/testhelpers
-# code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20200318170357-7de73be4dffc
+# code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20200318183451-f5b991644b0a
 code.cloudfoundry.org/loggregator-agent-release/src/pkg/config
 code.cloudfoundry.org/loggregator-agent-release/src/pkg/diodes
 code.cloudfoundry.org/loggregator-agent-release/src/pkg/egress/v2
@@ -243,7 +243,7 @@ github.com/prometheus/common/config
 github.com/prometheus/common/expfmt
 github.com/prometheus/common/internal/bitbucket.org/ww/goautoneg
 github.com/prometheus/common/model
-# github.com/prometheus/procfs v0.0.10
+# github.com/prometheus/procfs v0.0.11
 github.com/prometheus/procfs
 github.com/prometheus/procfs/internal/fs
 github.com/prometheus/procfs/internal/util
@@ -369,7 +369,7 @@ google.golang.org/appengine/internal/modules
 google.golang.org/appengine/internal/remote_api
 google.golang.org/appengine/internal/urlfetch
 google.golang.org/appengine/urlfetch
-# google.golang.org/genproto v0.0.0-20200318110522-7735f76e9fa5
+# google.golang.org/genproto v0.0.0-20200319113533-08878b785e9c
 google.golang.org/genproto/googleapis/api/httpbody
 google.golang.org/genproto/googleapis/rpc/status
 google.golang.org/genproto/protobuf/field_mask
