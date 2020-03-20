@@ -24,8 +24,9 @@ require (
 	github.com/prometheus/client_model v0.2.0
 	github.com/prometheus/common v0.9.1
 	github.com/prometheus/prometheus v2.13.1+incompatible // pinned
-	golang.org/x/crypto v0.0.0-20200320145329-97fc981609be // indirect
-	golang.org/x/net v0.0.0-20200319234117-63522dbf7eec // indirect
+	golang.org/x/crypto v0.0.0-20200320181102-891825fb96df // indirect
+	golang.org/x/net v0.0.0-20200320181208-1c781a10960a // indirect
+	golang.org/x/sys v0.0.0-20200320181252-af34d8274f85 // indirect
 	google.golang.org/grpc v1.28.0
 	gopkg.in/yaml.v2 v2.2.8
 )
