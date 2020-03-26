@@ -12,7 +12,7 @@ code.cloudfoundry.org/go-loggregator/rpc/loggregator_v2
 # code.cloudfoundry.org/go-metric-registry v0.0.0-20191209165758-93cfd5e30bb0
 code.cloudfoundry.org/go-metric-registry
 code.cloudfoundry.org/go-metric-registry/testhelpers
-# code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20200324183904-8b714dc6f09c
+# code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20200325183946-0b86588d75cf
 code.cloudfoundry.org/loggregator-agent-release/src/pkg/config
 code.cloudfoundry.org/loggregator-agent-release/src/pkg/diodes
 code.cloudfoundry.org/loggregator-agent-release/src/pkg/egress/v2
@@ -369,7 +369,7 @@ google.golang.org/appengine/internal/modules
 google.golang.org/appengine/internal/remote_api
 google.golang.org/appengine/internal/urlfetch
 google.golang.org/appengine/urlfetch
-# google.golang.org/genproto v0.0.0-20200325114520-5b2d0af7952b
+# google.golang.org/genproto v0.0.0-20200326112834-f447254575fd
 google.golang.org/genproto/googleapis/api/httpbody
 google.golang.org/genproto/googleapis/rpc/status
 google.golang.org/genproto/protobuf/field_mask
