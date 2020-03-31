@@ -11,6 +11,8 @@ type Config struct {
 	PublishInterval time.Duration `env:"PUBLISH_INTERVAL,                 report"`
 	NatsHosts       []string      `env:"NATS_HOSTS,             required, report"`
 	NatsCAPath      string        `env:"NATS_CA_PATH,           required, report"`
+	NatsCertPath    string        `env:"NATS_CERT_PATH,           required, report"`
+	NatsKeyPath     string        `env:"NATS_KEY_PATH,           required, report"`
 
 	TargetsGlob           string        `env:"TARGETS_GLOB,            report"`
 	TargetRefreshInterval time.Duration `env:"TARGET_REFRESH_INTERVAL, report"`

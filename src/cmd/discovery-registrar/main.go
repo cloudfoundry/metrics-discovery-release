@@ -3,6 +3,7 @@ package main
 import (
 	"crypto/tls"
 	"crypto/x509"
+	"github.com/nats-io/nats.go"
 	"io/ioutil"
 	"log"
 	"os"
@@ -13,7 +14,6 @@ import (
 	metrics "code.cloudfoundry.org/go-metric-registry"
 	"code.cloudfoundry.org/metrics-discovery/cmd/discovery-registrar/app"
 	"code.cloudfoundry.org/metrics-discovery/internal/target"
-	"github.com/nats-io/nats.go"
 )
 
 func main() {
@@ -73,8 +73,15 @@ func getTLSConfig(cfg app.Config) *tls.Config {
 			log.Fatalf("Failed to load CA certificate from file %s", cfg.NatsCAPath)
 		}
 
+		cert, err := tls.LoadX509KeyPair(cfg.NatsCertPath, cfg.NatsKeyPath)
+		if err != nil {
+			log.Fatalf("Failed to load certificate from cert: %s and key: %s", cfg.NatsCertPath, cfg.NatsKeyPath)
+		}
+
 		return &tls.Config{
-			RootCAs: caCertPool,
+			Certificates:                []tls.Certificate{cert},
+			RootCAs:                     caCertPool,
+
 		}
 	}
 	return nil

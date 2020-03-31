@@ -8,6 +8,8 @@ consumes:
 templates:
   bpm.yml.erb: config/bpm.yml
   nats_ca.crt.erb: config/certs/nats_ca.crt
+  nats_client.crt.erb: config/certs/nats.crt
+  nats_client.key.erb: config/certs/nats.key
   metrics_ca.crt.erb: config/certs/metrics_ca.crt
   metrics.crt.erb: config/certs/metrics.crt
   metrics.key.erb: config/certs/metrics.key
@@ -38,3 +40,8 @@ properties:
   metrics.port:
     description: "Port to host metrics endpoint"
     default: 15821
+
+  nats_client.cert:
+    description: "TLS certificate to communicate with the NATs server signed by the NATs CA"
+  nats_client.key:
+    description: "TLS private key to communicate with the NATs server signed by the NATs CA"
