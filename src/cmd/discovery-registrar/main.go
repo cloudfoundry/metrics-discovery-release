@@ -61,30 +61,26 @@ func connectToNATS(cfg app.Config, logger *log.Logger) *nats.Conn {
 }
 
 func getTLSConfig(cfg app.Config) *tls.Config {
-	if cfg.NatsCAPath != "" {
-		caCert, err := ioutil.ReadFile(cfg.NatsCAPath)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		caCertPool := x509.NewCertPool()
-
-		if !caCertPool.AppendCertsFromPEM(caCert) {
-			log.Fatalf("Failed to load CA certificate from file %s", cfg.NatsCAPath)
-		}
-
-		cert, err := tls.LoadX509KeyPair(cfg.NatsCertPath, cfg.NatsKeyPath)
-		if err != nil {
-			log.Fatalf("Failed to load certificate from cert: %s and key: %s", cfg.NatsCertPath, cfg.NatsKeyPath)
-		}
-
-		return &tls.Config{
-			Certificates:                []tls.Certificate{cert},
-			RootCAs:                     caCertPool,
-
-		}
+	caCert, err := ioutil.ReadFile(cfg.NatsCAPath)
+	if err != nil {
+		log.Fatal(err)
 	}
-	return nil
+
+	caCertPool := x509.NewCertPool()
+
+	if !caCertPool.AppendCertsFromPEM(caCert) {
+		log.Fatalf("Failed to load CA certificate from file %s", cfg.NatsCAPath)
+	}
+
+	cert, err := tls.LoadX509KeyPair(cfg.NatsCertPath, cfg.NatsKeyPath)
+	if err != nil {
+		log.Fatalf("Failed to load certificate from cert: %s and key: %s", cfg.NatsCertPath, cfg.NatsKeyPath)
+	}
+
+	return &tls.Config{
+		Certificates: []tls.Certificate{cert},
+		RootCAs:      caCertPool,
+	}
 }
 
 func waitForTermination() {

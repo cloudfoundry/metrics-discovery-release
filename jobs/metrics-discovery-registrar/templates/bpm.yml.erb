@@ -1,14 +1,11 @@
 <%
-  nats_ips = link('nats-tls').instances.map { |instance| instance.address }
+  nats_host = "nats.service.cf.internal"
   nats_port = link('nats-tls').p("nats.port")
   nats_user = link('nats-tls').p("nats.user")
   nats_password = link('nats-tls').p("nats.password")
 
-  nats_hosts = nats_ips.map do |h|
-    "nats://#{nats_user}:#{nats_password}@#{h}:#{nats_port}"
-  end
+  nats_str = "nats://#{nats_user}:#{nats_password}@#{nats_host}:#{nats_port}"
 
-  nats_str = nats_hosts.join(",")
 
   certs_dir="/var/vcap/jobs/metrics-discovery-registrar/config/certs"
 
