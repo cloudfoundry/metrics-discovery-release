@@ -1,4 +1,4 @@
-# cloud.google.com/go v0.55.0
+# cloud.google.com/go v0.56.0
 cloud.google.com/go/compute/metadata
 # code.cloudfoundry.org/go-batching v0.0.0-20171020220229-924d2a9b48ac
 code.cloudfoundry.org/go-batching
@@ -369,7 +369,7 @@ google.golang.org/appengine/internal/modules
 google.golang.org/appengine/internal/remote_api
 google.golang.org/appengine/internal/urlfetch
 google.golang.org/appengine/urlfetch
-# google.golang.org/genproto v0.0.0-20200331122359-1ee6d9798940
+# google.golang.org/genproto v0.0.0-20200401122417-09ab7b7031d2
 google.golang.org/genproto/googleapis/api/httpbody
 google.golang.org/genproto/googleapis/rpc/status
 google.golang.org/genproto/protobuf/field_mask

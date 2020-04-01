@@ -3,7 +3,7 @@ module code.cloudfoundry.org/metrics-discovery
 go 1.12
 
 require (
-	cloud.google.com/go v0.55.0 // indirect
+	cloud.google.com/go v0.56.0 // indirect
 	code.cloudfoundry.org/go-diodes v0.0.0-20190809170250-f77fb823c7ee
 	code.cloudfoundry.org/go-envstruct v1.5.0
 	code.cloudfoundry.org/go-loggregator v0.0.0-20190809213911-969cb33bee6a // pinned
@@ -24,6 +24,7 @@ require (
 	github.com/prometheus/client_model v0.2.0
 	github.com/prometheus/common v0.9.1
 	github.com/prometheus/prometheus v2.13.1+incompatible // pinned
+	google.golang.org/genproto v0.0.0-20200401122417-09ab7b7031d2 // indirect
 	google.golang.org/grpc v1.28.0
 	gopkg.in/yaml.v2 v2.2.8
 )
