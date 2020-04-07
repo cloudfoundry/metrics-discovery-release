@@ -17,6 +17,8 @@ processes:
   env:
     NATS_HOSTS: "<%= nats_str %>"
     NATS_CA_PATH: "/var/vcap/jobs/scrape-config-generator/config/certs/nats_ca.crt"
+    NATS_CERT_PATH: "/var/vcap/jobs/scrape-config-generator/config/certs/nats.crt"
+    NATS_KEY_PATH: "/var/vcap/jobs/scrape-config-generator/config/certs/nats.key"
     SCRAPE_CONFIG_FILE_PATH: "<%= p('scrape_config_file_path') %>"
     CONFIG_EXPIRATION_INTERVAL: "<%= p('expiration_interval') %>"
     SCRAPE_CA_PATH: "/var/vcap/jobs/scrape-config-generator/config/certs/scrape_ca.crt"
