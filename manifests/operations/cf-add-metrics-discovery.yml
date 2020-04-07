@@ -9,6 +9,9 @@
         cert: "((scrape_config_generator_metrics_tls.certificate))"
         key: "((scrape_config_generator_metrics_tls.private_key))"
         server_name: scrape_config_generator_metrics
+      nats_client:
+        cert: "((nats_client_cert.certificate))"
+        key: "((nats_client_cert.private_key))"
 
 - type: replace
   path: /addons/name=metrics-discovery-registrar?
