@@ -1,14 +1,15 @@
 package target_test
 
 import (
+	"io/ioutil"
+	"log"
+	"os"
+
 	"code.cloudfoundry.org/loggregator-agent-release/src/pkg/scraper"
 	"code.cloudfoundry.org/metrics-discovery/internal/target"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"gopkg.in/yaml.v2"
-	"io/ioutil"
-	"log"
-	"os"
 )
 
 var _ = Describe("File Writer", func() {
@@ -21,7 +22,7 @@ var _ = Describe("File Writer", func() {
 
 	var setup = func(scrapeConfigs []scraper.PromScraperConfig) *testContext {
 		tc := &testContext{
-			targetsFile: os.TempDir() + "metrics_targets.yml",
+			targetsFile: os.TempDir() + "/metrics_targets.yml",
 			metricsHost: "127.0.0.1:9991",
 			logger:      log.New(GinkgoWriter, "", 0),
 		}

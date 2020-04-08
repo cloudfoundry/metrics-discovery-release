@@ -1,23 +1,9 @@
 package app_test
 
 import (
-	"code.cloudfoundry.org/go-loggregator"
-	metrichelpers "code.cloudfoundry.org/go-metric-registry/testhelpers"
-	"code.cloudfoundry.org/loggregator-agent-release/src/pkg/config"
-	"code.cloudfoundry.org/loggregator-agent-release/src/pkg/scraper"
-	"code.cloudfoundry.org/metrics-discovery/cmd/metrics-agent/app"
-	"code.cloudfoundry.org/metrics-discovery/internal/target"
-	"code.cloudfoundry.org/metrics-discovery/internal/testhelpers"
-	"code.cloudfoundry.org/tlsconfig"
 	"context"
 	b64 "encoding/base64"
 	"fmt"
-	"github.com/gogo/protobuf/proto"
-	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
-	dto "github.com/prometheus/client_model/go"
-	"github.com/prometheus/common/expfmt"
-	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"log"
 	"net"
@@ -27,6 +13,21 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"code.cloudfoundry.org/go-loggregator"
+	metrichelpers "code.cloudfoundry.org/go-metric-registry/testhelpers"
+	"code.cloudfoundry.org/loggregator-agent-release/src/pkg/config"
+	"code.cloudfoundry.org/loggregator-agent-release/src/pkg/scraper"
+	"code.cloudfoundry.org/metrics-discovery/cmd/metrics-agent/app"
+	"code.cloudfoundry.org/metrics-discovery/internal/target"
+	"code.cloudfoundry.org/metrics-discovery/internal/testhelpers"
+	"code.cloudfoundry.org/tlsconfig"
+	"github.com/gogo/protobuf/proto"
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
+	dto "github.com/prometheus/client_model/go"
+	"github.com/prometheus/common/expfmt"
+	"gopkg.in/yaml.v2"
 )
 
 var _ = Describe("MetricsAgent", func() {
@@ -44,7 +45,7 @@ var _ = Describe("MetricsAgent", func() {
 	BeforeEach(func() {
 		testCerts = testhelpers.GenerateCerts("loggregatorCA")
 
-		targetsFile = os.TempDir() + "metrics_targets.yml"
+		targetsFile = os.TempDir() + "/metrics_targets.yml"
 		grpcPort = getFreePort()
 		metricsPort = getFreePort()
 		cfg := app.Config{
