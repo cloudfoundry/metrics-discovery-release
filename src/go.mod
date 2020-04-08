@@ -25,6 +25,8 @@ require (
 	github.com/prometheus/common v0.9.1
 	github.com/prometheus/prometheus v2.13.1+incompatible // pinned
 	golang.org/x/crypto v0.0.0-20200406173513-056763e48d71 // indirect
+	golang.org/x/sys v0.0.0-20200408040146-ea54a3c99b9b // indirect
+	google.golang.org/genproto v0.0.0-20200408120641-fbb3ad325eb7 // indirect
 	google.golang.org/grpc v1.28.1
 	gopkg.in/yaml.v2 v2.2.8
 )
