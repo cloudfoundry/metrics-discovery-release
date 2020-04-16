@@ -8,12 +8,11 @@ require (
 	code.cloudfoundry.org/go-envstruct v1.5.0
 	code.cloudfoundry.org/go-loggregator v0.0.0-20190809213911-969cb33bee6a // pinned
 	code.cloudfoundry.org/go-metric-registry v0.0.0-20200413202920-40d97c8804ec
-	code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20200413185310-928494229ebd
+	code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20200415201747-080632f693e3
 	code.cloudfoundry.org/tlsconfig v0.0.0-20200131000646-bbe0f8da39b3
 	github.com/benjamintf1/unmarshalledmatchers v0.0.0-20190408201839-bb1c1f34eaea
 	github.com/go-logfmt/logfmt v0.5.0 // indirect
 	github.com/gogo/protobuf v1.3.1
-	github.com/golang/protobuf v1.4.0 // indirect
 	github.com/google/gofuzz v1.1.0 // indirect
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
 	github.com/nats-io/nats-server/v2 v2.1.6 // indirect
