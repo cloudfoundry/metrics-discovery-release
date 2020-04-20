@@ -8,7 +8,7 @@ require (
 	code.cloudfoundry.org/go-envstruct v1.5.0
 	code.cloudfoundry.org/go-loggregator v0.0.0-20190809213911-969cb33bee6a // pinned
 	code.cloudfoundry.org/go-metric-registry v0.0.0-20200413202920-40d97c8804ec
-	code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20200417181151-c4e98ca64338
+	code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20200419201959-cdf364a0c3e5
 	code.cloudfoundry.org/tlsconfig v0.0.0-20200131000646-bbe0f8da39b3
 	github.com/benjamintf1/unmarshalledmatchers v0.0.0-20190408201839-bb1c1f34eaea
 	github.com/go-logfmt/logfmt v0.5.0 // indirect
@@ -24,7 +24,9 @@ require (
 	github.com/prometheus/client_model v0.2.0
 	github.com/prometheus/common v0.9.1
 	github.com/prometheus/prometheus v2.13.1+incompatible // pinned
-	golang.org/x/crypto v0.0.0-20200414173820-0848c9571904 // indirect
+	golang.org/x/crypto v0.0.0-20200420192832-a76a400e3025 // indirect
+	golang.org/x/sys v0.0.0-20200420163511-1957bb5e6d1f // indirect
+	google.golang.org/genproto v0.0.0-20200420144010-e5e8543f8aeb // indirect
 	google.golang.org/grpc v1.28.1
 	gopkg.in/yaml.v2 v2.2.8
 )
