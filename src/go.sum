@@ -36,8 +36,8 @@ code.cloudfoundry.org/go-loggregator v0.0.0-20190809213911-969cb33bee6a h1:uqD5N
 code.cloudfoundry.org/go-loggregator v0.0.0-20190809213911-969cb33bee6a/go.mod h1:fYXv8qS6feR/OV1q5N1z/R70y0y4KHZgFSQ8GhWTN1M=
 code.cloudfoundry.org/go-metric-registry v0.0.0-20200413202920-40d97c8804ec h1:smbjOXKD09W1ua5vOFt4gn0blVtuG3l3nAxwSwpi6Ts=
 code.cloudfoundry.org/go-metric-registry v0.0.0-20200413202920-40d97c8804ec/go.mod h1:cjL7/hjRgOnMy/FbPsGZG9qmR6oSPKG/FwKLLlh2j2U=
-code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20200506203818-25a1eed8972e h1:gzmAJPXP4KMcvnE8w1rLu2UBFU7yz4rBUBuSYEmdVgM=
-code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20200506203818-25a1eed8972e/go.mod h1:m4DHMbBtBHI6RMatKpECdqvB44DXjbiUa8Hco/IRNbs=
+code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20200507203841-4125b9897614 h1:8ADFLoy3e37IPh56j9XyPlD/UTyfiV9VuuavdYhsjFY=
+code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20200507203841-4125b9897614/go.mod h1:DGyej75/gDybywmSJkXiEW6iyD3Un8bas9clFNvUjvY=
 code.cloudfoundry.org/rfc5424 v0.0.0-20180905210152-236a6d29298a h1:8rqv2w8xEceNwckcF5ONeRt0qBHlh5bnNfFnYTrZbxs=
 code.cloudfoundry.org/rfc5424 v0.0.0-20180905210152-236a6d29298a/go.mod h1:tkZo8GtzBjySJ7USvxm4E36lNQw1D3xM6oKHGqdaAJ4=
 code.cloudfoundry.org/tlsconfig v0.0.0-20190710180242-462f72de1106 h1:F36x++Jh2aWiBK++W9wI97SJuprnROicHiV0HtdSOzc=
@@ -443,8 +443,6 @@ github.com/onsi/gomega v0.0.0-20190113212917-5533ce8a0da3/go.mod h1:ex+gbHU/CVuB
 github.com/onsi/gomega v1.5.0/go.mod h1:ex+gbHU/CVuBBDIJjb2X0qEXbFg53c61hWP/1CpauHY=
 github.com/onsi/gomega v1.6.0/go.mod h1:ex+gbHU/CVuBBDIJjb2X0qEXbFg53c61hWP/1CpauHY=
 github.com/onsi/gomega v1.7.1/go.mod h1:XdKZgCCFLUoM/7CFJVPcG8C1xQ1AJ0vpAezJrB7JYyY=
-github.com/onsi/gomega v1.9.0 h1:R1uwffexN6Pr340GtYRIdZmAiN4J+iw6WG4wog1DUXg=
-github.com/onsi/gomega v1.9.0/go.mod h1:Ho0h+IUsWyvy1OpqCwxlQ/21gkhVunqlU8fDGcoTdcA=
 github.com/onsi/gomega v1.10.0 h1:Gwkk+PTu/nfOwNMtUB/mRUv0X7ewW5dO4AERT1ThVKo=
 github.com/onsi/gomega v1.10.0/go.mod h1:Ho0h+IUsWyvy1OpqCwxlQ/21gkhVunqlU8fDGcoTdcA=
 github.com/opentracing-contrib/go-stdlib v0.0.0-20190519235532-cf7a6c988dc9/go.mod h1:PLldrQSroqzH70Xl+1DQcGnefIbqsKR7UDaiux3zV+w=
