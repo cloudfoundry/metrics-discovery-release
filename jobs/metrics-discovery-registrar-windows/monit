@@ -16,6 +16,8 @@
     "PUBLISH_INTERVAL" => "#{p("publish_interval")}",
     "NATS_HOSTS" => "#{nats_str}",
     "NATS_CA_PATH" => "#{certs_dir}/nats_ca.crt",
+    "NATS_CERT_PATH" => "#{certs_dir}/nats.crt",
+    "NATS_KEY_PATH" => "#{certs_dir}/nats.key",
     "TARGETS_GLOB" => "#{p("targets_glob")}",
     "TARGET_REFRESH_INTERVAL" => "#{p("target_refresh_interval")}",
     "METRICS_CA_PATH" => "#{certs_dir}/metrics_ca.crt",
