@@ -15,8 +15,8 @@ require (
 	github.com/gogo/protobuf v1.3.1
 	github.com/google/gofuzz v1.1.0 // indirect
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
-	github.com/nats-io/nats-server/v2 v2.1.6 // indirect
-	github.com/nats-io/nats.go v1.9.2
+	github.com/nats-io/nats-server/v2 v2.1.7 // indirect
+	github.com/nats-io/nats.go v1.10.0
 	github.com/onsi/ginkgo v1.12.0
 	github.com/onsi/gomega v1.10.0
 	github.com/pkg/errors v0.9.1 // indirect
@@ -25,6 +25,8 @@ require (
 	github.com/prometheus/common v0.10.0
 	github.com/prometheus/prometheus v2.13.1+incompatible // pinned
 	golang.org/x/crypto v0.0.0-20200510223506-06a226fb4e37 // indirect
+	google.golang.org/genproto v0.0.0-20200514193133-8feb7f20f2a2 // indirect
 	google.golang.org/grpc v1.29.1
+	google.golang.org/protobuf v1.23.0 // indirect
 	gopkg.in/yaml.v2 v2.3.0
 )
