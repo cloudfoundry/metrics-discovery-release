@@ -18,7 +18,8 @@ require (
 	github.com/nats-io/jwt v1.0.1 // indirect
 	github.com/nats-io/nats-server/v2 v2.1.7 // indirect
 	github.com/nats-io/nats.go v1.10.0
-	github.com/onsi/ginkgo v1.12.2
+	github.com/nats-io/nkeys v0.2.0 // indirect
+	github.com/onsi/ginkgo v1.12.3
 	github.com/onsi/gomega v1.10.1
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/prometheus/client_golang v1.6.0
@@ -26,6 +27,7 @@ require (
 	github.com/prometheus/common v0.10.0
 	github.com/prometheus/prometheus v2.13.1+incompatible // pinned
 	golang.org/x/crypto v0.0.0-20200510223506-06a226fb4e37 // indirect
+	google.golang.org/genproto v0.0.0-20200601130524-0f60399e6634 // indirect
 	google.golang.org/grpc v1.29.1
 	gopkg.in/yaml.v2 v2.3.0
 )
