@@ -3,7 +3,7 @@ module code.cloudfoundry.org/metrics-discovery
 go 1.12
 
 require (
-	cloud.google.com/go v0.57.0 // indirect
+	cloud.google.com/go v0.58.0 // indirect
 	code.cloudfoundry.org/go-diodes v0.0.0-20190809170250-f77fb823c7ee
 	code.cloudfoundry.org/go-envstruct v1.5.0
 	code.cloudfoundry.org/go-loggregator v0.0.0-20190809213911-969cb33bee6a // pinned
