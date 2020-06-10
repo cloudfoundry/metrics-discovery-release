@@ -45,8 +45,8 @@ code.cloudfoundry.org/go-loggregator v0.0.0-20190809213911-969cb33bee6a h1:uqD5N
 code.cloudfoundry.org/go-loggregator v0.0.0-20190809213911-969cb33bee6a/go.mod h1:fYXv8qS6feR/OV1q5N1z/R70y0y4KHZgFSQ8GhWTN1M=
 code.cloudfoundry.org/go-metric-registry v0.0.0-20200413202920-40d97c8804ec h1:smbjOXKD09W1ua5vOFt4gn0blVtuG3l3nAxwSwpi6Ts=
 code.cloudfoundry.org/go-metric-registry v0.0.0-20200413202920-40d97c8804ec/go.mod h1:cjL7/hjRgOnMy/FbPsGZG9qmR6oSPKG/FwKLLlh2j2U=
-code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20200606210653-30f2059481dd h1:Ws5+byeJvJhWZ0ytUVpsUgl/KAPXg3bYgGGs3K9X8ZM=
-code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20200606210653-30f2059481dd/go.mod h1:/RBykk/RxXcavwuI1Kej5INABZIYoT5XcugxC4NAT9w=
+code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20200608210902-deaf9bf2ac5c h1:esVnt6MCkl4HUSvg07FwjR/a3lGdeh2rcj7B7mUEh4M=
+code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20200608210902-deaf9bf2ac5c/go.mod h1:OVBjhM4cO55Q8IKLkewcT22CEnDrqxT3PloGO4R1VFo=
 code.cloudfoundry.org/rfc5424 v0.0.0-20180905210152-236a6d29298a h1:8rqv2w8xEceNwckcF5ONeRt0qBHlh5bnNfFnYTrZbxs=
 code.cloudfoundry.org/rfc5424 v0.0.0-20180905210152-236a6d29298a/go.mod h1:tkZo8GtzBjySJ7USvxm4E36lNQw1D3xM6oKHGqdaAJ4=
 code.cloudfoundry.org/tlsconfig v0.0.0-20190710180242-462f72de1106 h1:F36x++Jh2aWiBK++W9wI97SJuprnROicHiV0HtdSOzc=
@@ -523,6 +523,8 @@ github.com/prometheus/procfs v0.0.11 h1:DhHlBtkHWPYi8O2y31JkK0TF+DGM+51OopZjH/Ia
 github.com/prometheus/procfs v0.0.11/go.mod h1:lV6e/gmhEcM9IjHGsFOCxxuZ+z1YqCvr4OA4YeYWdaU=
 github.com/prometheus/procfs v0.1.0 h1:jhMy6QXfi3y2HEzFoyuCj40z4OZIIHHPtFyCMftmvKA=
 github.com/prometheus/procfs v0.1.0/go.mod h1:lV6e/gmhEcM9IjHGsFOCxxuZ+z1YqCvr4OA4YeYWdaU=
+github.com/prometheus/procfs v0.1.1 h1:/ZKcW+ixpq2dOl4yeH4qvACNXnkiDCp5e/F5Tq07X7o=
+github.com/prometheus/procfs v0.1.1/go.mod h1:lV6e/gmhEcM9IjHGsFOCxxuZ+z1YqCvr4OA4YeYWdaU=
 github.com/prometheus/prometheus v0.0.0-20180315085919-58e2a31db8de/go.mod h1:oAIUtOny2rjMX0OWN5vPR5/q/twIROJvdqnQKDdil/s=
 github.com/prometheus/prometheus v2.13.1+incompatible h1:2W7Aq4LQb71fD5QtFpATK3hGUn3AjcsjqlywEMwENUM=
 github.com/prometheus/prometheus v2.13.1+incompatible/go.mod h1:SgN99nHQ/tVJyAuyLKKz6i2j5cJx3eLy9MCRCPOXqUI=
@@ -741,6 +743,8 @@ golang.org/x/sys v0.0.0-20200519105757-fe76b779f299/go.mod h1:h1NjWce9XRLGQEsW7w
 golang.org/x/sys v0.0.0-20200523222454-059865788121/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/sys v0.0.0-20200602225109-6fdc65e7d980 h1:OjiUf46hAmXblsZdnoSXsEUSKU8r1UEzcL5RVZ4gO9Y=
 golang.org/x/sys v0.0.0-20200602225109-6fdc65e7d980/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
+golang.org/x/sys v0.0.0-20200610111108-226ff32320da h1:bGb80FudwxpeucJUjPYJXuJ8Hk91vNtfvrymzwiei38=
+golang.org/x/sys v0.0.0-20200610111108-226ff32320da/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/text v0.0.0-20160726164857-2910a502d2bf/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=
 golang.org/x/text v0.0.0-20170915032832-14c0d48ead0c/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=
 golang.org/x/text v0.3.0/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=
@@ -864,10 +868,10 @@ google.golang.org/genproto v0.0.0-20200430143042-b979b6f78d84/go.mod h1:55QSHmfG
 google.golang.org/genproto v0.0.0-20200511104702-f5ebc3bea380/go.mod h1:55QSHmfGQM9UVYDPBsyGGes0y52j32PQ3BqQfXhyH3c=
 google.golang.org/genproto v0.0.0-20200515170657-fc4c6c6a6587/go.mod h1:YsZOwe1myG/8QRHRsmBRE1LrgQY60beZKjly0O1fX9U=
 google.golang.org/genproto v0.0.0-20200526211855-cb27e3aa2013/go.mod h1:NbSheEEYHJ7i3ixzK3sjbqSGDJWnxyFXZblF3eUsNvo=
-google.golang.org/genproto v0.0.0-20200605102947-12044bf5ea91 h1:ES+5k7Xz+sYByd2L7mvcanaIuY0Iz3L3O6OhN+cRdu8=
-google.golang.org/genproto v0.0.0-20200605102947-12044bf5ea91/go.mod h1:jDfRM7FcilCzHH/e9qn6dsT145K34l5v+OpcnNgKAAA=
 google.golang.org/genproto v0.0.0-20200608115520-7c474a2e3482 h1:i+Aiej6cta/Frzp13/swvwz5O00kYcSe0A/C5Wd7zX8=
 google.golang.org/genproto v0.0.0-20200608115520-7c474a2e3482/go.mod h1:jDfRM7FcilCzHH/e9qn6dsT145K34l5v+OpcnNgKAAA=
+google.golang.org/genproto v0.0.0-20200610104632-a5b850bcf112 h1:iwoQI4kCHAgRg0oltV6+Jnq5COzoS0NN+QLqHewrf5U=
+google.golang.org/genproto v0.0.0-20200610104632-a5b850bcf112/go.mod h1:jDfRM7FcilCzHH/e9qn6dsT145K34l5v+OpcnNgKAAA=
 google.golang.org/grpc v1.19.0/go.mod h1:mqu4LbDTu4XGKhr4mRzUsmM4RtVoemTSY81AxZiDr8c=
 google.golang.org/grpc v1.19.1/go.mod h1:mqu4LbDTu4XGKhr4mRzUsmM4RtVoemTSY81AxZiDr8c=
 google.golang.org/grpc v1.20.1/go.mod h1:10oTOabMzJvdu6/UiuZezV6QK5dSlG84ov/aaiqXj38=
