@@ -12,7 +12,7 @@ code.cloudfoundry.org/go-loggregator/rpc/loggregator_v2
 # code.cloudfoundry.org/go-metric-registry v0.0.0-20200413202920-40d97c8804ec
 code.cloudfoundry.org/go-metric-registry
 code.cloudfoundry.org/go-metric-registry/testhelpers
-# code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20200610211200-f30d116faeb3
+# code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20200611211245-64c7a26df91a
 code.cloudfoundry.org/loggregator-agent-release/src/pkg/config
 code.cloudfoundry.org/loggregator-agent-release/src/pkg/diodes
 code.cloudfoundry.org/loggregator-agent-release/src/pkg/egress/v2
@@ -197,7 +197,7 @@ github.com/nxadm/tail/ratelimiter
 github.com/nxadm/tail/util
 github.com/nxadm/tail/watch
 github.com/nxadm/tail/winfile
-# github.com/onsi/ginkgo v1.12.3
+# github.com/onsi/ginkgo v1.13.0
 github.com/onsi/ginkgo
 github.com/onsi/ginkgo/config
 github.com/onsi/ginkgo/internal/codelocation
@@ -372,7 +372,7 @@ google.golang.org/appengine/internal/modules
 google.golang.org/appengine/internal/remote_api
 google.golang.org/appengine/internal/urlfetch
 google.golang.org/appengine/urlfetch
-# google.golang.org/genproto v0.0.0-20200611194920-44ba362f84c1
+# google.golang.org/genproto v0.0.0-20200612171551-7676ae05be11
 google.golang.org/genproto/googleapis/api/httpbody
 google.golang.org/genproto/googleapis/rpc/status
 google.golang.org/genproto/protobuf/field_mask
