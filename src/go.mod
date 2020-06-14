@@ -25,6 +25,7 @@ require (
 	github.com/prometheus/client_golang v1.6.0
 	github.com/prometheus/client_model v0.2.0
 	github.com/prometheus/common v0.10.0
+	github.com/prometheus/procfs v0.1.3 // indirect
 	github.com/prometheus/prometheus v2.13.1+incompatible // pinned
 	golang.org/x/crypto v0.0.0-20200604202706-70a84ac30bf9 // indirect
 	google.golang.org/grpc v1.29.1
