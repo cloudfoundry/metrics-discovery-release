@@ -1,0 +1,480 @@
+resource_types:
+- name: pcf-pool
+  source:
+    repository: cftoolsmiths/toolsmiths-envs-resource
+  type: docker-image
+
+resources:
+- name: cf-env
+  type: pcf-pool
+  source:
+    api_token: ((toolsmith-api-key))
+    hostname: environments.toolsmiths.cf-app.com
+    pool_name: cf-deployment
+  tags:
+  - cf-denver-shared-vsphere
+
+- name: 24h
+  source:
+    interval: 24h
+  type: time
+
+- name: 5m
+  source:
+    interval: 5m
+  type: time
+
+- name: cf-acceptance-tests
+  source:
+    branch: master
+    uri: https://github.com/cloudfoundry/cf-acceptance-tests.git
+  type: git
+
+- name: cfar-logging-acceptance-tests
+  source:
+    branch: master
+    uri: https://github.com/cloudfoundry/cfar-logging-acceptance-tests.git
+  type: git
+
+- name: cf-deployment
+  source:
+    branch: master
+    private_key: ((loggregator-key))
+    uri: https://github.com/cloudfoundry/cf-deployment
+  type: git
+
+- name: cf-deployment-concourse-tasks
+  source:
+    tag_filter: v*
+    uri: https://github.com/cloudfoundry/cf-deployment-concourse-tasks
+  type: git
+
+- name: cf-deployment-concourse-tasks-image
+  source:
+    repository: relintdockerhubpushbot/cf-deployment-concourse-tasks
+    tag: latest
+  type: docker-image
+
+- name: cf-drain-cli
+  source:
+    branch: develop
+    uri: https://github.com/cloudfoundry/cf-drain-cli
+  type: git
+
+- name: cf-drain-cli-master
+  source:
+    branch: master
+    private_key: ((loggregator-key))
+    uri: git@github.com:cloudfoundry/cf-drain-cli
+  type: git
+
+- name: concourse-tasks
+  source:
+    branch: master
+    uri: https://github.com/pivotal-cf/concourse-tasks
+  type: git
+
+- name: loggregator-ci
+  source:
+    branch: master
+    private_key: ((loggregator-key))
+    uri: git@github.com:cloudfoundry/loggregator-ci
+  type: git
+
+- name: metrics-discovery-release
+  source:
+    branch: develop
+    ignore_paths:
+    - .final_builds
+    - releases
+    private_key: ((loggregator-key))
+    uri: git@github.com:cloudfoundry/metrics-discovery-release.git
+  type: git
+
+- name: metrics-discovery-release-elect
+  source:
+    branch: release-elect
+    ignore_paths:
+    - .final_builds
+    - releases
+    private_key: ((loggregator-key))
+    uri: git@github.com:cloudfoundry/metrics-discovery-release.git
+  type: git
+
+- name: metrics-discovery-release-master
+  source:
+    branch: master
+    disable_ci_skip: true
+    private_key: ((loggregator-key))
+    uri: git@github.com:cloudfoundry/metrics-discovery-release.git
+  type: git
+
+- name: nats-release
+  source:
+    branch: master
+    private_key: ((loggregator-key))
+    uri: git@github.com:cloudfoundry/nats-release.git
+  type: git
+
+jobs:
+- name: metrics-discovery-tests
+  plan:
+  - in_parallel:
+      steps:
+      - get: loggregator-ci
+      - get: 24h
+        trigger: true
+      - get: metrics-discovery-release
+        trigger: true
+  - in_parallel:
+      steps:
+      - file: loggregator-ci/tasks/go-test/task.yml
+        input_mapping:
+          source-repo: metrics-discovery-release
+        task: run-tests
+      - do:
+        - file: loggregator-ci/tasks/go-windows-tests/build-binary/task.yml
+          input_mapping:
+            release: metrics-discovery-release
+          task: build-windows-test-binary
+        - file: loggregator-ci/tasks/go-windows-tests/run-tests/task.yml
+          task: run-windows-tests
+  - file: loggregator-ci/tasks/commit/task.yml
+    input_mapping:
+      release-repo: tested-source
+    output_mapping:
+      committed-repo: committed-metrics-discovery-release
+    params:
+      COMMIT_MESSAGE: Bump modules
+    task: commit
+  - params:
+      rebase: true
+      repository: committed-metrics-discovery-release
+    put: metrics-discovery-release
+  public: true
+  serial: true
+- name: metrics-discovery-promotion
+  plan:
+  - in_parallel:
+      steps:
+      - get: develop
+        passed:
+        - cats
+        - cfar-lats
+        - test-metrics-agent
+        - test-releases-can-be-exported
+        resource: metrics-discovery-release
+        trigger: true
+      - get: metrics-discovery-release-elect
+  - params:
+      repository: develop
+    put: metrics-discovery-release-elect
+  serial: true
+- name: metrics-discovery-master-promotion
+  plan:
+  - in_parallel:
+      steps:
+      - get: 5m
+        trigger: true
+      - get: metrics-discovery-release-elect
+        passed:
+        - metrics-discovery-promotion
+        trigger: true
+      - get: metrics-discovery-release-master
+      - get: loggregator-ci
+  - file: loggregator-ci/tasks/bumper/task.yml
+    input_mapping:
+      dest: metrics-discovery-release-master
+      source: metrics-discovery-release-elect
+    params:
+      DEST_BRANCH: master
+      SOURCE_BRANCH: release-elect
+      TRACKER_API_TOKEN: 9a8e6bb0f9edf884e3880a540de40ad4
+    task: bumper
+  - params:
+      repository: merged-dest
+    put: metrics-discovery-release-master
+  serial: true
+- name: cf-deploy
+  plan:
+  - in_parallel:
+      steps:
+      - get: loggregator-ci
+      - get: denver-deployments
+      - get: bbl-state
+        resource: deployments-loggregator
+      - get: cf-deployment
+        trigger: true
+      - get: cf-deployment-concourse-tasks
+      - get: metrics-discovery-release
+        passed:
+        - metrics-discovery-tests
+        trigger: true
+      - get: cf-drain-cli
+      - get: nats-release
+  - in_parallel:
+      steps:
+      - file: loggregator-ci/tasks/upload-release/task.yml
+        input_mapping:
+          bosh-release-dir: metrics-discovery-release
+        params:
+          BBL_STATE_DIR: ((acceptance_bbl_state_dir))
+        task: upload-metrics-discovery-release
+  - file: loggregator-ci/tasks/prepare-cf-ops/task.yml
+    params:
+      BBL_STATE_DIR: ((acceptance_bbl_state_dir))
+    task: copy-ops-files
+  - file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
+    input_mapping:
+      vars-files: bbl-state
+    params:
+      BBL_STATE_DIR: ((acceptance_bbl_state_dir))
+      OPS_FILES: |
+        scale-to-one-az.yml
+        use-compiled-releases.yml
+        experimental/use-compiled-releases-windows.yml
+        use-provided-router-certs.yml
+        experimental/fast-deploy-with-downtime-and-danger.yml
+
+        experimental/add-metric-store.yml
+        denver/add-grafana.yml
+        system-metrics/add-system-metrics-agent.yml
+        system-metrics-scraper/add-system-metrics-scraper.yml
+
+        metrics-discovery/cf-add-metrics-discovery.yml
+
+        experimental/use-logcache-syslog-ingress.yml
+
+        windows2019-cell.yml
+        use-online-windows2019fs.yml
+        use-latest-windows2019-stemcell.yml
+        experimental/add-system-metrics-agent-windows2019.yml
+        experimental/use-logcache-syslog-ingress-windows2019.yml
+        metrics-discovery/cf-add-metrics-discovery-windows.yml
+
+        denver/add-grafana.yml
+        denver/loggregator-clients.yml
+        denver/log-cache-acceptance.yml
+        denver/loggregator-acceptance.yml
+      SYSTEM_DOMAIN: ((acceptance_system_domain))
+      VARS_FILES: ""
+    task: cf-deploy
+  - attempts: 3
+    file: cf-deployment-concourse-tasks/set-feature-flags/task.yml
+    params:
+      BBL_STATE_DIR: ((acceptance_bbl_state_dir))
+      ENABLED_FEATURE_FLAGS: diego_docker
+      SYSTEM_DOMAIN: ((acceptance_system_domain))
+    task: enable-feature-flags
+  - file: cf-deployment-concourse-tasks/bosh-cleanup/task.yml
+    params:
+      BBL_STATE_DIR: ((acceptance_bbl_state_dir))
+    task: cleanup
+  - file: loggregator-ci/tasks/create-org-and-space/task.yml
+    params:
+      BBL_STATE_DIR: ((acceptance_bbl_state_dir))
+      ORG: system
+      SPACE: blackbox-testing
+      SYSTEM_DOMAIN: ((acceptance_system_domain))
+    task: create-blackbox-space
+  - file: loggregator-ci/tasks/create-org-and-space/task.yml
+    params:
+      BBL_STATE_DIR: ((acceptance_bbl_state_dir))
+      ORG: system
+      SPACE: accumulators
+      SYSTEM_DOMAIN: ((acceptance_system_domain))
+    task: create-accumulators-space
+  serial: true
+  serial_groups:
+  - cf-deploy
+  - bosh-cf-cats
+  - bosh-cfar-lats
+  - bosh-lcats
+  - bosh-export-releases
+  - bosh-metrics-agent
+  - bosh-metrics-test
+  - bosh-syslog-test
+- name: test-releases-can-be-exported
+  plan:
+  - in_parallel:
+      steps:
+      - get: concourse-tasks
+      - get: cf-deployment-concourse-tasks-image
+      - get: bbl-state
+        resource: deployments-loggregator
+      - get: metrics-discovery-release
+        passed:
+        - cf-deploy
+        trigger: true
+  - do:
+    - file: concourse-tasks/release/export/task.yml
+      params:
+        BBL_STATE_DIR: ((acceptance_bbl_state_dir))
+        RELEASE_NAMES: |
+          metrics-discovery
+      task: export-releases-xenial
+    - file: concourse-tasks/release/export/task.yml
+      params:
+        BBL_STATE_DIR: ((acceptance_bbl_state_dir))
+        RELEASE_NAMES: |
+          metrics-discovery
+        STEMCELL_OS: windows2019
+      task: export-releases-windows2019
+    ensure:
+      config:
+        container_limits: {}
+        inputs:
+        - name: bbl-state
+        params:
+          BBL_STATE_DIR: ((acceptance_bbl_state_dir))
+        platform: linux
+        run:
+          args:
+          - -c
+          - |
+            set -e
+            pushd "bbl-state/${BBL_STATE_DIR}" > /dev/null
+              eval "$(bbl print-env)"
+            popd > /dev/null
+
+            for deployment in $(bosh deployments --column Name | grep compilation-) ; do
+              bosh delete-deployment -d "$deployment" -n
+            done
+          path: /bin/bash
+      image: cf-deployment-concourse-tasks-image
+      task: clean-up
+  serial: true
+  serial_groups:
+  - bosh-export-releases
+- name: test-metrics-agent
+  plan:
+  - in_parallel:
+      steps:
+      - get: loggregator-ci
+      - get: bbl-state
+        resource: deployments-loggregator
+      - get: metrics-discovery-release
+        passed:
+        - cf-deploy
+        trigger: true
+  - file: loggregator-ci/tasks/test-metrics-agent/task.yml
+    params:
+      BBL_STATE_DIR: ((acceptance_bbl_state_dir))
+      METRICS_AGENT_PORT: 14726
+    task: test-metrics-agent
+  serial: true
+  serial_groups:
+  - bosh-metrics-agent
+- name: metrics-smoke-test
+  plan:
+  - in_parallel:
+      steps:
+      - get: loggregator-ci
+      - get: bbl-state
+        resource: deployments-loggregator
+      - get: cf-deployment-concourse-tasks-image
+      - get: metrics-discovery-release
+        passed:
+        - cf-deploy
+        trigger: true
+  - config:
+      container_limits: {}
+      inputs:
+      - name: metrics-discovery-release
+        path: input-releases/metrics-discovery-release
+      outputs:
+      - name: releases
+      platform: linux
+      run:
+        args:
+        - -c
+        - |
+          set -e
+          cp -a input-releases/* releases
+        path: /bin/bash
+    image: cf-deployment-concourse-tasks-image
+    task: move-releases
+  - file: loggregator-ci/tasks/check-metrics/task.yml
+    params:
+      BBL_STATE_DIR: ((acceptance_bbl_state_dir))
+      CF_API: https://api.((acceptance_system_domain))
+      DOMAIN: ((acceptance_system_domain))
+      JOB_BLACKLIST: |
+        loggregator_agent
+        loggregator_trafficcontroller
+        adapter
+        scheduler
+        log-cache-blackbox
+        log-cache-nozzle
+        statsd_injector
+      METRIC_SOURCE: https://metric-store.((acceptance_system_domain))
+      ORG: system
+      SPACE: blackbox-testing
+      STATIC_SOURCE_IDS: |
+        metron
+        traffic_controller
+      USERNAME: admin
+    task: check-metrics
+  serial: true
+  serial_groups:
+  - bosh-metrics-test
+- name: cats
+  plan:
+  - in_parallel:
+      steps:
+      - get: loggregator-ci
+      - get: cf-deployment-concourse-tasks
+      - get: deployments-loggregator
+      - get: cf-acceptance-tests
+      - get: metrics-discovery-release
+        passed:
+        - cf-deploy
+        trigger: true
+  - file: loggregator-ci/tasks/generate-cats-config/task.yml
+    input_mapping:
+      bbl-state: deployments-loggregator
+    params:
+      BBL_STATE_DIR: ((acceptance_bbl_state_dir))
+      SYSTEM_DOMAIN: ((acceptance_system_domain))
+    task: generate-config
+  - file: cf-deployment-concourse-tasks/run-cats/task.yml
+    input_mapping:
+      cf-acceptance-tests: cf-acceptance-tests
+      integration-config: cats-config
+    params:
+      CONFIG_FILE_PATH: cats-config.json
+      NODES: 9
+    task: run-cats
+  serial: true
+  serial_groups:
+  - bosh-cf-cats
+- name: cfar-lats
+  plan:
+  - in_parallel:
+      steps:
+      - get: cfar-logging-acceptance-tests
+        trigger: true
+      - get: loggregator-ci
+      - get: bbl-state
+        resource: deployments-loggregator
+      - get: cf-drain-cli-master
+      - get: cf-drain-cli
+        passed:
+        - cf-deploy
+      - get: metrics-discovery-release
+        passed:
+        - cf-deploy
+        trigger: true
+  - file: loggregator-ci/tasks/cfar-lats/task.yml
+    input_mapping:
+      cf-drain-cli: cf-drain-cli-master
+    params:
+      APP_PUSH_TIMEOUT: 180s
+      BBL_STATE_DIR: ((acceptance_bbl_state_dir))
+      CF_ADMIN_USER: admin
+      CF_DOMAIN: ((acceptance_system_domain))
+      SKIP_SSL_VALIDATION: true
+    task: run-cfar-lats
+  serial: true
+  serial_groups:
+  - bosh-cfar-lats
