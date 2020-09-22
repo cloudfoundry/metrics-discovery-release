@@ -231,7 +231,7 @@ jobs:
           # -o cf-deployment/operations/experimental/use-online-windows2019fs.yml > cf-deplyment/cf-deployment.yml
 
   - task: deploy-metrics-discovery
-    file: cf-deployment-concourse-tasks/bosh-deploy-with-created-release/tasks.yml
+    file: cf-deployment-concourse-tasks/bosh-deploy-with-created-release/task.yml
     input_mapping:
       release: metrics-discovery-release
       toolsmiths-env: cf-env
