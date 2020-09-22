@@ -148,26 +148,13 @@ jobs:
       input_mapping:
         source-repo: metrics-discovery-release
       task: run-tests
-    - do:
-      - file: loggregator-ci/tasks/go-windows-tests/build-binary/task.yml
-        input_mapping:
-          release: metrics-discovery-release
-        task: build-windows-test-binary
-      - file: loggregator-ci/tasks/go-windows-tests/run-tests/task.yml
-        task: run-windows-tests
-  - file: loggregator-ci/tasks/commit/task.yml
-    input_mapping:
-      release-repo: tested-source
-    output_mapping:
-      committed-repo: committed-metrics-discovery-release
-    params:
-      COMMIT_MESSAGE: Bump modules
-    task: commit
-  - params:
-      rebase: true
-      repository: committed-metrics-discovery-release
-    put: metrics-discovery-release
-  public: true
+    # - do:
+    #   - file: loggregator-ci/tasks/go-windows-tests/build-binary/task.yml
+    #     input_mapping:
+    #       release: metrics-discovery-release
+    #     task: build-windows-test-binary
+    #   - file: loggregator-ci/tasks/go-windows-tests/run-tests/task.yml
+    #     task: run-windows-tests
   serial: true
 
 

@@ -4,7 +4,7 @@ set -eox pipefail
 function set_globals {
     pipeline_name="metrics-discovery-release"
     TARGET="${TARGET:-denver}"
-    FLY_URL="https://concourse.denver.com"
+    FLY_URL="https://concourse.cf-denver.com"
 }
 
 function set_pipeline {
