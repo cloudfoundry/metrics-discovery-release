@@ -38,12 +38,6 @@ resources:
     uri: https://github.com/cloudfoundry/cf-acceptance-tests.git
   type: git
 
-- name: cfar-logging-acceptance-tests
-  source:
-    branch: master
-    uri: https://github.com/cloudfoundry/cfar-logging-acceptance-tests.git
-  type: git
-
 - name: cf-deployment
   source:
     branch: master
@@ -67,13 +61,6 @@ resources:
   source:
     branch: develop
     uri: https://github.com/cloudfoundry/cf-drain-cli
-  type: git
-
-- name: cf-drain-cli-master
-  source:
-    branch: master
-    private_key: ((loggregator-key))
-    uri: git@github.com:cloudfoundry/cf-drain-cli
   type: git
 
 - name: concourse-tasks
@@ -211,7 +198,7 @@ jobs:
           eval "$(bbl print-env --metadata-file cf-env/metadata)"
 
           echo "Grab CF manifest"
-          bosh -d cf manifest > cf-deployment/cf-tmp.yml
+          bosh -d cf manifest > cf-deployment/cf-deployment.yml # change me to /cf-tmp.yml when stuff below works
 
           # If we want to test against windows...
           # echo "Delete CF deployment"
@@ -238,9 +225,9 @@ jobs:
       ops-files: metrics-discovery-release
       vars-files: cf-deployment
     params:
+      # manifests/operations/cf-add-metrics-discovery-windows.yml
       OPS_FILES: |
-        manifest/operations/cf-add-metrics-discovery.yml
-        # manifest/operations/cf-add-metrics-discovery-windows.yml
+        manifests/operations/cf-add-metrics-discovery.yml
 
 
 ################################################################################################################
@@ -261,13 +248,11 @@ jobs:
   - do:
     - file: concourse-tasks/release/export/task.yml
       params:
-        BBL_STATE_DIR: ((acceptance_bbl_state_dir))
         RELEASE_NAMES: |
           metrics-discovery
       task: export-releases-xenial
     - file: concourse-tasks/release/export/task.yml
       params:
-        BBL_STATE_DIR: ((acceptance_bbl_state_dir))
         RELEASE_NAMES: |
           metrics-discovery
         STEMCELL_OS: windows2019
@@ -278,7 +263,6 @@ jobs:
         inputs:
         - name: bbl-state
         params:
-          BBL_STATE_DIR: ((acceptance_bbl_state_dir))
         platform: linux
         run:
           args:
@@ -312,7 +296,6 @@ jobs:
       trigger: true
   - file: loggregator-ci/tasks/test-metrics-agent/task.yml
     params:
-      BBL_STATE_DIR: ((acceptance_bbl_state_dir))
       METRICS_AGENT_PORT: 14726
     task: test-metrics-agent
   serial: true
@@ -350,9 +333,6 @@ jobs:
     task: move-releases
   - file: loggregator-ci/tasks/check-metrics/task.yml
     params:
-      BBL_STATE_DIR: ((acceptance_bbl_state_dir))
-      CF_API: https://api.((acceptance_system_domain))
-      DOMAIN: ((acceptance_system_domain))
       JOB_BLACKLIST: |
         loggregator_agent
         loggregator_trafficcontroller
@@ -376,71 +356,40 @@ jobs:
 - name: cats
   plan:
   - in_parallel:
-    - get: loggregator-ci
     - get: cf-deployment-concourse-tasks
     - get: cf-env
       tags:
       - cf-denver-shared-vsphere
+    - get: loggregator-ci
     - get: cf-acceptance-tests
     - get: metrics-discovery-release
       passed:
       - cf-deploy
       trigger: true
-  - file: loggregator-ci/tasks/generate-cats-config/task.yml
+  - task: generate-config
+    file: cf-deployment-concourse-tasks/update-integration-configs/task.yml
     input_mapping:
-      bbl-state: deployments-loggregator
+      toolsmiths-env: cf-env
+      integration-configs: loggregator-ci
     params:
-      BBL_STATE_DIR: ((acceptance_bbl_state_dir))
-      SYSTEM_DOMAIN: ((acceptance_system_domain))
-    task: generate-config
+      CATS_INTEGRATION_CONFIG_FILE: cats-config.json
   - file: cf-deployment-concourse-tasks/run-cats/task.yml
     input_mapping:
       cf-acceptance-tests: cf-acceptance-tests
-      integration-config: cats-config
+      integration-config: updated-integration-configs
     params:
-      CONFIG_FILE_PATH: cats-config.json
       NODES: 9
+      CONFIG_FILE_PATH: cats-config.json
     task: run-cats
   serial: true
   serial_groups:
   - bosh-cf-cats
-- name: cfar-lats
-  plan:
-  - in_parallel:
-    - get: cfar-logging-acceptance-tests
-      trigger: true
-    - get: loggregator-ci
-    - get: cf-env
-      tags:
-      - cf-denver-shared-vsphere
-    - get: cf-drain-cli-master
-    - get: cf-drain-cli
-      passed:
-      - cf-deploy
-    - get: metrics-discovery-release
-      passed:
-      - cf-deploy
-      trigger: true
-  - file: loggregator-ci/tasks/cfar-lats/task.yml
-    input_mapping:
-      cf-drain-cli: cf-drain-cli-master
-    params:
-      APP_PUSH_TIMEOUT: 180s
-      BBL_STATE_DIR: ((acceptance_bbl_state_dir))
-      CF_ADMIN_USER: admin
-      CF_DOMAIN: ((acceptance_system_domain))
-      SKIP_SSL_VALIDATION: true
-    task: run-cfar-lats
-  serial: true
-  serial_groups:
-  - bosh-cfar-lats
 
 - name: unclaim-cfd
   plan:
   - get: cf-env
     passed:
     - cats
-    - cfar-lats
     - metrics-smoke-test
     - test-metrics-agent
     - test-releases-can-be-exported
@@ -461,7 +410,6 @@ jobs:
     - get: develop
       passed:
       - cats
-      - cfar-lats
       - metrics-smoke-test
       - test-metrics-agent
       - test-releases-can-be-exported
