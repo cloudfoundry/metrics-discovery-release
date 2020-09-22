@@ -119,7 +119,7 @@ resources:
 
 - name: nats-release
   source:
-    branch: master
+    branch: release
     private_key: ((loggregator-key))
     uri: git@github.com:cloudfoundry/nats-release.git
   type: git
