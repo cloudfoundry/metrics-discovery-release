@@ -332,6 +332,7 @@ jobs:
     image: cf-deployment-concourse-tasks-image
     task: move-releases
   - file: loggregator-ci/tasks/check-metrics/task.yml
+    input_mapping: {bbl-state: cf-env}
     params:
       JOB_BLACKLIST: |
         loggregator_agent
@@ -341,7 +342,6 @@ jobs:
         log-cache-blackbox
         log-cache-nozzle
         statsd_injector
-      METRIC_SOURCE: https://metric-store.((acceptance_system_domain))
       ORG: system
       SPACE: blackbox-testing
       STATIC_SOURCE_IDS: |
