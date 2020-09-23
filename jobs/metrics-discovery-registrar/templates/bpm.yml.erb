@@ -1,5 +1,9 @@
 <%
   nats_host = "nats.service.cf.internal"
+  if spec.name == p("nats_instance_group")
+    nats_host = "#{spec.id}.#{nats_host}"
+  end
+
   nats_port = link('nats-tls').p("nats.port")
   nats_user = link('nats-tls').p("nats.user")
   nats_password = link('nats-tls').p("nats.password")
