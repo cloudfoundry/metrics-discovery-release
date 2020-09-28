@@ -264,9 +264,10 @@ jobs:
           -o cf-deployment/operations/windows2019-cell.yml \
           -o cf-deployment/operations/use-latest-stemcell.yml \
           -o cf-deployment/operations/use-latest-windows2019-stemcell.yml \
+          -o cf-deployment/operations/use-online-windows2019fs.yml > generated-cf-deployment/cf-deployment.yml
+
           # -o cf-deployment/operations/use-compiled-releases.yml \
           # -o cf-deployment/operations/experimental/use-compiled-releases-windows.yml \
-          -o cf-deployment/operations/use-online-windows2019fs.yml > generated-cf-deployment/cf-deployment.yml
 
   - task: deploy-metrics-discovery
     file: cf-deployment-concourse-tasks/bosh-deploy-with-created-release/task.yml
