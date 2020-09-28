@@ -1,3 +1,25 @@
+groups:
+- name: metrics-discovery
+  jobs:
+    - metrics-discovery-tests
+    - claim-cfd
+    - cf-deploy
+    - cats
+    - test-metrics-agent
+    - test-releases-can-be-exported
+    - metrics-discovery-promotion
+    - unclaim-cfd
+    - metrics-discovery-master-promotion
+
+- name: release
+  jobs:
+    - metrics-discovery-create-final-release
+    - metrics-discovery-bumper-check
+    - metrics-discovery-merge-to-develop
+    - metrics-discovery-cut-major
+    - metrics-discovery-cut-minor
+    - metrics-discovery-cut-patch
+
 resource_types:
 - name: pcf-pool
   source:
@@ -92,12 +114,47 @@ resources:
   type: git
 
 - name: metrics-discovery-release-master
+  type: github-release
   source:
     branch: master
     disable_ci_skip: true
     private_key: ((cf-loggregator-oauth-bot-key))
     uri: git@github.com:cloudfoundry/metrics-discovery-release.git
   type: git
+
+- name: metrics-discovery-github-release-drafts
+  type: github-release
+  source:
+    access_token: ((access-token))
+    drafts: true
+    repository: metrics-discovery-release
+    user: cloudfoundry
+
+- name: metrics-discovery-github-release-published
+  type: github-release
+  source:
+    access_token: ((access-token))
+    repository: metrics-discovery-release
+    user: cloudfoundry
+
+- name: metrics-discovery-version
+  type: semver
+  source:
+    driver: git
+    uri: git@github.com:cloudfoundry/metrics-discovery-release
+    branch: master
+    file: src/version
+    private_key: ((cf-loggregator-oauth-bot-key))
+
+- name: metrics-discovery-release-master-version
+  type: git
+  source:
+    uri: git@github.com:cloudfoundry/metrics-discovery-release
+    branch: master
+    clean_tags: true
+    private_key: ((cf-loggregator-oauth-bot-key))
+    paths:
+    - src/version
 
 - name: nats-release
   source:
@@ -204,12 +261,12 @@ jobs:
 
           echo "Update CF manifest with Windows ops-files"
           bosh int generated-cf-deployment/cf-tmp.yml \
+          -o cf-deployment/operations/windows2019-cell.yml \
           -o cf-deployment/operations/use-latest-stemcell.yml \
           -o cf-deployment/operations/use-latest-windows2019-stemcell.yml \
-          -o cf-deployment/operations/windows2019-cell.yml \
           # -o cf-deployment/operations/use-compiled-releases.yml \
           # -o cf-deployment/operations/experimental/use-compiled-releases-windows.yml \
-          -o cf-deployment/operations/experimental/use-online-windows2019fs.yml > generated-cf-deplyment/cf-deployment.yml
+          -o cf-deployment/operations/use-online-windows2019fs.yml > generated-cf-deployment/cf-deployment.yml
 
   - task: deploy-metrics-discovery
     file: cf-deployment-concourse-tasks/bosh-deploy-with-created-release/task.yml
@@ -219,9 +276,9 @@ jobs:
       ops-files: metrics-discovery-release
       vars-files: generated-cf-deployment
     params:
-      # manifests/operations/cf-add-metrics-discovery-windows.yml
       OPS_FILES: |
         manifests/operations/cf-add-metrics-discovery.yml
+        manifests/operations/cf-add-metrics-discovery-windows.yml
 
 
 ################################################################################################################
@@ -373,6 +430,145 @@ jobs:
 ################################################################################################################
 #                                               Cut Releases
 ################################################################################################################
-# - name: create-release-patch
-# - name: create-release-minor
-# - name: create-release-major
+- name: metrics-discovery-bumper-check
+  plan:
+  - in_parallel:
+      steps:
+      - get: loggregator-ci
+      - get: metrics-discovery-release-master
+        trigger: true
+      - get: metrics-discovery-github-release-published
+  - file: loggregator-ci/tasks/bumper-check/task.yml
+    input_mapping:
+      published-release: metrics-discovery-github-release-published
+      release: metrics-discovery-release-master
+    params:
+      SSH_KEY: ((loggregator-key))
+      TRACKER_API_TOKEN: ((metric-egress-tracker-api-token))
+    task: diff-main-last-release
+  serial: true
+
+- name: metrics-discovery-cut-patch
+  plan:
+  - params:
+      bump: patch
+    put: metrics-discovery-version
+
+- name: metrics-discovery-cut-minor
+  plan:
+  - params:
+      bump: minor
+    put: metrics-discovery-version
+
+- name: metrics-discovery-cut-major
+  plan:
+  - params:
+      bump: major
+    put: metrics-discovery-version
+
+- name: metrics-discovery-create-final-release
+  plan:
+  - in_parallel:
+      steps:
+      - get: metrics-discovery-release-master-version
+      - get: loggregator-ci
+  - file: loggregator-ci/tasks/create-final-release/main/task.yml
+    input_mapping:
+      main-repo: metrics-discovery-release-master-version
+    params:
+      S3_ACCESS_KEY: ((s3-access-key-id))
+      S3_SECRET_KEY: ((s3-secret-access-key))
+      BLOBSTORE_BUCKET: metrics-discovery-release-blobs
+      JSON_KEY: ((gcp-service-account-key))
+      SSH_KEY: ((loggregator-key))
+      RELEASE_NAME: metrics-discovery-release
+      AUTO_BUMPABLE_COMMITS: |
+        'Bump modules'
+        'bump golang release'
+        'Merge final release artifacts'
+        'Create final release'
+        'bump to'
+    task: create-final-release
+  - params:
+      rebase: false
+      repository: repos/main-repo
+    put: metrics-discovery-release-master
+  - try:
+      file: loggregator-ci/tasks/create-final-release/should-publish/task.yml
+      on_failure:
+        params:
+          body: github-release/body
+          globs:
+          - github-release/*.tgz
+          name: github-release/name
+          tag: github-release/tag
+        put: metrics-discovery-github-release-drafts
+      on_success:
+        params:
+          body: github-release/body
+          globs:
+          - github-release/*.tgz
+          name: github-release/name
+          tag: github-release/tag
+        put: metrics-discovery-github-release-published
+      task: should-publish
+  serial: true
+
+- name: metrics-discovery-merge-to-develop
+  plan:
+  - in_parallel:
+      steps:
+      - get: metrics-discovery-release
+      - get: metrics-discovery-release-master
+        passed:
+        - metrics-discovery-create-final-release
+        trigger: true
+      - get: loggregator-ci
+      - get: metrics-discovery-github-release-published
+        trigger: true
+  - config:
+      container_limits: {}
+      image_resource:
+        source:
+          repository: loggregator/base
+        type: docker-image
+      inputs:
+      - name: main-repo
+      - name: published-release
+      platform: linux
+      run:
+        args:
+        - -c
+        - |
+          set -e
+
+          pushd main-repo > /dev/null
+            main_sha=$(git rev-parse HEAD)
+          popd
+
+          published_sha=$(cat published-release/commit_sha)
+
+          if [[ ${main_sha} != ${published_sha} ]]; then
+            echo "Published release sha doesn't match main repo sha"
+            echo "This job will retrigger once published release or main repo resource is updated"
+            exit 1
+          fi
+        path: /bin/bash
+    input_mapping:
+      main-repo: metrics-discovery-release-master
+      published-release: metrics-discovery-github-release-published
+    task: wait-for-releases-to-match
+  - file: loggregator-ci/tasks/merge-to-develop/task.yml
+    input_mapping:
+      develop-repo: metrics-discovery-release
+      master-repo: metrics-discovery-release-master
+    params:
+      DEVELOP_BRANCH: develop
+      MASTER_BRANCH: master
+      SSH_KEY: ((loggregator-key))
+    task: merge-back-to-develop
+  - params:
+      rebase: false
+      repository: repos/develop-repo
+    put: metrics-discovery-release
+  serial: true

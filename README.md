@@ -25,7 +25,7 @@ about the endpoint to be scraped using the [Prometheus format](https://prometheu
 
 The Scrape Config Generator subscribes to CF NATS and consumes published metric targets. It aggregates the metric targets
 and saves a Prometheus-formatted [scrape config](https://prometheus.io/docs/prometheus/latest/configuration/configuration/)
-to the path defined by the `scrape_config_file_path` property -- by default `/var/vcap/data/scrape-config-generator/scrape_configs.yml` 
+to the path defined by the `scrape_config_file_path` property -- by default `/var/vcap/data/scrape-config-generator/scrape_configs.yml`
 
 The scrape config will be modified as metric targets come and go. Interested metric scrapers should watch the scrape config file
 for changes.
@@ -35,16 +35,15 @@ An agent that proxies to components with a `prom_scraper_config.yml` and
 receives metrics from the Forwarder Agent and exposes them on a prometheus-scrapable endpoint.
 More information can be found in the [docs][metrics-agent]
 
-### Pivotal Tracker
-
-Items marked as "In Flight" on the Roadmap are tracked as new Features in
-[Pivotal Tracker][loggregator-tracker].
-
+### CI Pipeline
+The configuration for the Concourse pipeline lives in the `ci` directory. To
+fly and set up the pipeline, use the `./ci/set-pipeline.sh` script. This will
+set `ci/metrics-discovery-release.yml` pipeline config.
 
 [slack-badge]:         https://slack.cloudfoundry.org/badge.svg
 [loggregator-slack]:   https://cloudfoundry.slack.com/archives/loggregator
-[ci-badge]:            https://loggregator.ci.cf-app.com/api/v1/pipelines/products/jobs/metrics-discovery-tests-with-bumped-modules/badge
-[ci-pipeline]:         https://loggregator.ci.cf-app.com/teams/main/pipelines/loggregator
+[ci-badge]:            https://concourse.cf-denver.com/teams/loggregator/pipelines/metrics-discovery-release/badge
+[ci-pipeline]:         https://concourse.cf-denver.com/teams/loggregator/pipelines/metrics-discovery-release
 
 [metrics-agent]:        docs/metrics-agent.md
 [architecture]:         docs/metrics_discovery_release_architecture.png
