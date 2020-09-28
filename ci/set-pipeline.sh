@@ -5,6 +5,7 @@ function set_globals {
     pipeline_name="metrics-discovery-release"
     TARGET="${TARGET:-denver}"
     FLY_URL="https://concourse.cf-denver.com"
+    TEAM="loggregator"
 }
 
 function set_pipeline {
@@ -25,7 +26,7 @@ function set_pipeline {
 
 function sync_fly {
     if ! fly -t ${TARGET} status; then
-      fly -t ${TARGET} login -b -c ${FLY_URL}
+      fly -t ${TARGET} login -b -c ${FLY_URL} -n ${TEAM}
     fi
     fly -t ${TARGET} sync
 }

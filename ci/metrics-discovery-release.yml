@@ -187,8 +187,9 @@ jobs:
           tag: latest
       inputs:
       - name: cf-env
-      outputs:
       - name: cf-deployment
+      outputs:
+      - name: generated-cf-deployment
       run:
         path: /bin/bash
         args:
@@ -198,24 +199,22 @@ jobs:
           eval "$(bbl print-env --metadata-file cf-env/metadata)"
 
           echo "Grab CF manifest"
-          bosh -d cf manifest > cf-deployment/cf-deployment.yml # change me to /cf-tmp.yml when stuff below works
+          bosh -d cf manifest > generated-cf-deployment/cf-tmp.yml
 
-          # If we want to test against windows...
-          # echo "Delete CF deployment"
-          # bosh delete-deployyment -d cf
+          echo "Delete CF deployment"
+          bosh delete-deployment -d cf -n
 
-          # echo "Clean up releases"
-          # bosh clean-up --all
+          echo "Clean up releases"
+          bosh clean-up --all -n
 
-          # echo "Upload ubuntu and windows stemcells"
-          # TODO: need to figure out correct stemcell version to upload
-          #
-          # echo "Update CF manifest with Windows ops-files"
-          # bosh int cf-deployment/cf-tmp.yml \
-          # -o cf-deployment/operations/windows2019-cell.yml \
+          echo "Update CF manifest with Windows ops-files"
+          bosh int cf-deployment/cf-tmp.yml \
+          -o cf-deployment/operations/use-latest-stemcell.yml \
+          -o cf-deployment/operations/use-latest-windows2019-stemcell.yml \
+          -o cf-deployment/operations/windows2019-cell.yml \
           # -o cf-deployment/operations/use-compiled-releases.yml \
           # -o cf-deployment/operations/experimental/use-compiled-releases-windows.yml \
-          # -o cf-deployment/operations/experimental/use-online-windows2019fs.yml > cf-deplyment/cf-deployment.yml
+          -o cf-deployment/operations/experimental/use-online-windows2019fs.yml > generated-cf-deplyment/cf-deployment.yml
 
   - task: deploy-metrics-discovery
     file: cf-deployment-concourse-tasks/bosh-deploy-with-created-release/task.yml
@@ -223,7 +222,7 @@ jobs:
       release: metrics-discovery-release
       toolsmiths-env: cf-env
       ops-files: metrics-discovery-release
-      vars-files: cf-deployment
+      vars-files: generated-cf-deployment
     params:
       # manifests/operations/cf-add-metrics-discovery-windows.yml
       OPS_FILES: |
@@ -248,38 +247,20 @@ jobs:
       trigger: true
   - do:
     - file: concourse-tasks/release/export/task.yml
+      input_mapping:
+        cfd-env: cf-env
       params:
         RELEASE_NAMES: |
           metrics-discovery
       task: export-releases-xenial
     - file: concourse-tasks/release/export/task.yml
+      input_mapping:
+        cfd-env: cf-env
       params:
         RELEASE_NAMES: |
           metrics-discovery
         STEMCELL_OS: windows2019
       task: export-releases-windows2019
-    ensure:
-      config:
-        container_limits: {}
-        inputs:
-        - name: bbl-state
-        params:
-        platform: linux
-        run:
-          args:
-          - -c
-          - |
-            set -e
-            pushd "bbl-state/${BBL_STATE_DIR}" > /dev/null
-              eval "$(bbl print-env)"
-            popd > /dev/null
-
-            for deployment in $(bosh deployments --column Name | grep compilation-) ; do
-              bosh delete-deployment -d "$deployment" -n
-            done
-          path: /bin/bash
-      image: cf-deployment-concourse-tasks-image
-      task: clean-up
   serial: true
   serial_groups:
   - bosh-export-releases
@@ -303,58 +284,6 @@ jobs:
   serial: true
   serial_groups:
   - bosh-metrics-agent
-
-- name: metrics-smoke-test
-  plan:
-  - in_parallel:
-    - get: loggregator-ci
-    - get: cf-env
-      passed: [cf-deploy]
-      tags:
-      - cf-denver-shared-vsphere
-    - get: cf-deployment-concourse-tasks-image
-    - get: metrics-discovery-release
-      passed:
-      - cf-deploy
-      trigger: true
-  - config:
-      container_limits: {}
-      inputs:
-      - name: metrics-discovery-release
-        path: input-releases/metrics-discovery-release
-      outputs:
-      - name: releases
-      platform: linux
-      run:
-        args:
-        - -c
-        - |
-          set -e
-          cp -a input-releases/* releases
-        path: /bin/bash
-    image: cf-deployment-concourse-tasks-image
-    task: move-releases
-  - file: loggregator-ci/tasks/check-metrics/task.yml
-    input_mapping: {bbl-state: cf-env}
-    params:
-      JOB_DENYLIST: |
-        loggregator_agent
-        loggregator_trafficcontroller
-        adapter
-        scheduler
-        log-cache-blackbox
-        log-cache-nozzle
-        statsd_injector
-      ORG: system
-      SPACE: blackbox-testing
-      STATIC_SOURCE_IDS: |
-        metron
-        traffic_controller
-      USERNAME: admin
-    task: check-metrics
-  serial: true
-  serial_groups:
-  - bosh-metrics-test
 
 - name: cats
   plan:
@@ -394,7 +323,6 @@ jobs:
   - get: cf-env
     passed:
     - cats
-    - metrics-smoke-test
     - test-metrics-agent
     - test-releases-can-be-exported
     trigger: true
@@ -414,7 +342,6 @@ jobs:
     - get: develop
       passed:
       - cats
-      - metrics-smoke-test
       - test-metrics-agent
       - test-releases-can-be-exported
       resource: metrics-discovery-release
