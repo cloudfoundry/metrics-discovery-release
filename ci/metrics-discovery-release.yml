@@ -239,6 +239,7 @@ jobs:
     - get: concourse-tasks
     - get: cf-deployment-concourse-tasks-image
     - get: cf-env
+      passed: [cf-deploy]
       tags:
       - cf-denver-shared-vsphere
     - get: metrics-discovery-release
@@ -288,6 +289,7 @@ jobs:
   - in_parallel:
     - get: loggregator-ci
     - get: cf-env
+      passed: [cf-deploy]
       tags:
       - cf-denver-shared-vsphere
     - get: metrics-discovery-release
@@ -307,6 +309,7 @@ jobs:
   - in_parallel:
     - get: loggregator-ci
     - get: cf-env
+      passed: [cf-deploy]
       tags:
       - cf-denver-shared-vsphere
     - get: cf-deployment-concourse-tasks-image
@@ -334,7 +337,7 @@ jobs:
   - file: loggregator-ci/tasks/check-metrics/task.yml
     input_mapping: {bbl-state: cf-env}
     params:
-      JOB_BLACKLIST: |
+      JOB_DENYLIST: |
         loggregator_agent
         loggregator_trafficcontroller
         adapter
@@ -358,6 +361,7 @@ jobs:
   - in_parallel:
     - get: cf-deployment-concourse-tasks
     - get: cf-env
+      passed: [cf-deploy]
       tags:
       - cf-denver-shared-vsphere
     - get: loggregator-ci
