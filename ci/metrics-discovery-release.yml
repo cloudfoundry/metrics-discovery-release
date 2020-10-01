@@ -156,13 +156,6 @@ resources:
     paths:
     - src/version
 
-- name: nats-release
-  source:
-    branch: release
-    private_key: ((cf-loggregator-oauth-bot-key))
-    uri: git@github.com:cloudfoundry/nats-release.git
-  type: git
-
 jobs:
 ################################################################################################################
 #                                                Dependencies
@@ -228,7 +221,6 @@ jobs:
       - metrics-discovery-tests
       trigger: true
     - get: cf-drain-cli
-    - get: nats-release
   - task: grab-cf-manifest
     config:
       platform: linux
@@ -259,27 +251,61 @@ jobs:
           echo "Clean up releases"
           bosh clean-up --all -n
 
+          echo "Making ops-file for releases that exist both in linux and windows"
+          cat <<EOT >> release-ops.yml
+          - type: replace
+            path: /releases/name=diego
+            value:
+              name: diego
+              version: 2.48.0
+              url: https://bosh.io/d/github.com/cloudfoundry/diego-release?v=2.48.0
+              sha1: fbf8ebfeda1f326f5d6834b9a621b88a548e06e3
+          - type: replace
+            path: /releases/name=garden-runc
+            value:
+              name: garden-runc
+              version: 1.19.16
+              sha1: c5bb4211adb7e94750b56e81eda9bb8e09eab3a0
+              url: https://bosh.io/d/github.com/cloudfoundry/garden-runc-release?v=1.19.16
+          - type: replace
+            path: /releases/name=loggregator-agent
+            value:
+              name: loggregator-agent
+              version: 6.1.2
+              sha1: 7bd4ca5ab7f4b6cd3fefa1a8043bdf9ff9c94900
+              url: https://bosh.io/d/github.com/cloudfoundry/loggregator-agent-release?v=6.1.2
+          - type: replace
+            path: /releases/name=metrics-discovery
+            value:
+              name: metrics-discovery
+              version: 3.0.1
+              sha1: 4219b58972d20f6fccf1a4a167d915e34d86ee8a
+              url: https://bosh.io/d/github.com/cloudfoundry/metrics-discovery-release?v=3.0.1
+          EOT
+
           echo "Update CF manifest with Windows ops-files"
           bosh int generated-cf-deployment/cf-tmp.yml \
+          -o release-ops.yml \
           -o cf-deployment/operations/windows2019-cell.yml \
           -o cf-deployment/operations/use-latest-stemcell.yml \
           -o cf-deployment/operations/use-latest-windows2019-stemcell.yml \
           -o cf-deployment/operations/use-online-windows2019fs.yml > generated-cf-deployment/cf-deployment.yml
 
-          # -o cf-deployment/operations/use-compiled-releases.yml \
-          # -o cf-deployment/operations/experimental/use-compiled-releases-windows.yml \
-
   - task: deploy-metrics-discovery
     file: cf-deployment-concourse-tasks/bosh-deploy-with-created-release/task.yml
     input_mapping:
+      cf-deployment: generated-cf-deployment
       release: metrics-discovery-release
       toolsmiths-env: cf-env
       ops-files: metrics-discovery-release
       vars-files: generated-cf-deployment
-    params:
-      OPS_FILES: |
-        manifests/operations/cf-add-metrics-discovery.yml
-        manifests/operations/cf-add-metrics-discovery-windows.yml
+    # params:
+    #   OPS_FILES: |
+        # Windows ops files?
+        # need this task so that it deploys a dev release to actually test
+        # against
+        # manifests/operations/cf-add-metrics-discovery.yml
+        # manifests/operations/cf-add-metrics-discovery-windows.yml
 
 
 ################################################################################################################
