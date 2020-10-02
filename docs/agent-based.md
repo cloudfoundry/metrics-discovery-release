@@ -18,7 +18,7 @@ The following components of the Log and Metric Agent Architecture enable pull-ba
 The Metrics Agent collects Loggregator V2 envelopes and makes them available on a Prometheus endpoint. The Metrics Agent performs a similar function to the Loggregator Agent in the Loggregator system.
 
  * Metrics Discovery Registrar:
-The Metrics Discovery Registrar publishes the location of the Prometheus endpoint defined by the Metrics Agent and Service Metrics Agent to NATs. This is helpful for configuring automation to scrape metric data from the endpoint. For more information about automating metric scraping, see Telegraf Reference Architecture (Beta).
+The Metrics Discovery Registrar publishes the location of the Prometheus endpoint defined by the Metrics Agent and Service Metrics Agent to NATs. This is helpful for configuring automation to scrape metric data from the endpoint. For more information about automating metric scraping, see [Reference Architectures](#Reference-Architectures).
 
 ### Log Components 
 This section describes the Log and Metric Agent Architecture components that allow you to access logs on your foundation.
