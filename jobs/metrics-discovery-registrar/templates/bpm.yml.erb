@@ -1,5 +1,5 @@
 <%
-  nats_host = "nats.service.cf.internal"
+  nats_host = link('nats-tls').address(status: 'all')
   nats_port = link('nats-tls').p("nats.port")
   nats_user = link('nats-tls').p("nats.user")
   nats_password = link('nats-tls').p("nats.password")
