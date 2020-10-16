@@ -299,13 +299,6 @@ jobs:
       toolsmiths-env: cf-env
       ops-files: metrics-discovery-release
       vars-files: generated-cf-deployment
-    # params:
-    #   OPS_FILES: |
-        # Windows ops files?
-        # need this task so that it deploys a dev release to actually test
-        # against
-        # manifests/operations/cf-add-metrics-discovery.yml
-        # manifests/operations/cf-add-metrics-discovery-windows.yml
 
 
 ################################################################################################################
