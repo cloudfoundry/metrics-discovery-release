@@ -1,5 +1,5 @@
 <%
-  nats_host = "nats.service.cf.internal"
+  nats_host = link('nats-tls').p("nats.hostname")
   if spec.name == p("nats_instance_group")
     nats_host = "#{spec.id}.#{nats_host}"
   end
