@@ -57,7 +57,7 @@ resources:
 
 - name: cf-deployment
   source:
-    branch: master
+    branch: release-candidate
     private_key: ((cf-loggregator-oauth-bot-key))
     uri: https://github.com/cloudfoundry/cf-deployment
   type: git
