@@ -194,6 +194,7 @@ jobs:
 #                                              CLAIM ENV AND DEPLOY
 ################################################################################################################
 - name: claim-cfd
+  serial: true
   plan:
   - get: metrics-discovery-release
     passed: ["metrics-discovery-tests"]
@@ -205,6 +206,7 @@ jobs:
       action: claim
 
 - name: cf-deploy
+  serial: true
   plan:
   - in_parallel:
     - get: loggregator-ci
@@ -390,6 +392,7 @@ jobs:
   - bosh-cf-cats
 
 - name: unclaim-cfd
+  serial: true
   plan:
   - get: cf-env
     passed:
