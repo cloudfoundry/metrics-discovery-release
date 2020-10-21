@@ -241,9 +241,8 @@ jobs:
         - |
           set -eo pipefail
           eval "$(bbl print-env --metadata-file cf-env/metadata)"
-
-          echo "Grab CF manifest"
-          bosh -d cf manifest > generated-cf-deployment/cf-tmp.yml
+          env_name=$(cat cf-env/name)
+          system_domain="api.${env_name}.cf-app.com"
 
           echo "Delete CF deployment"
           bosh delete-deployment -d cf -n
@@ -284,12 +283,12 @@ jobs:
           EOT
 
           echo "Update CF manifest with Windows ops-files"
-          bosh int generated-cf-deployment/cf-tmp.yml \
+          bosh int cf-deployment.yml \
           -o release-ops.yml \
           -o cf-deployment/operations/windows2019-cell.yml \
           -o cf-deployment/operations/use-latest-stemcell.yml \
           -o cf-deployment/operations/use-latest-windows2019-stemcell.yml \
-          -o cf-deployment/operations/use-online-windows2019fs.yml > generated-cf-deployment/cf-deployment.yml
+          -o cf-deployment/operations/use-online-windows2019fs.yml -v system_domain="${system_domain}" > generated-cf-deployment/cf-deployment.yml
 
   - task: deploy-metrics-discovery
     file: cf-deployment-concourse-tasks/bosh-deploy-with-created-release/task.yml
