@@ -285,7 +285,7 @@ jobs:
           EOT
 
           echo "Update CF manifest with Windows ops-files"
-          bosh int cf-deployment.yml \
+          bosh int cf-deployment/cf-deployment.yml \
           -o release-ops.yml \
           -o cf-deployment/operations/windows2019-cell.yml \
           -o cf-deployment/operations/use-latest-stemcell.yml \
