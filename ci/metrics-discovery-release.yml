@@ -244,7 +244,7 @@ jobs:
           set -eo pipefail
           eval "$(bbl print-env --metadata-file cf-env/metadata)"
           env_name=$(cat cf-env/name)
-          system_domain="api.${env_name}.cf-app.com"
+          system_domain="${env_name}.cf-app.com"
 
           echo "Delete CF deployment"
           bosh delete-deployment -d cf -n
