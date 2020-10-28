@@ -9,7 +9,7 @@ groups:
     - test-releases-can-be-exported
     - metrics-discovery-promotion
     - unclaim-cfd
-    - metrics-discovery-master-promotion
+    - metrics-discovery-main-promotion
 
 - name: release
   jobs:
@@ -113,10 +113,10 @@ resources:
     uri: git@github.com:cloudfoundry/metrics-discovery-release.git
   type: git
 
-- name: metrics-discovery-release-master
+- name: metrics-discovery-release-main
   type: github-release
   source:
-    branch: master
+    branch: main
     disable_ci_skip: true
     private_key: ((cf-loggregator-oauth-bot-key))
     uri: git@github.com:cloudfoundry/metrics-discovery-release.git
@@ -142,15 +142,15 @@ resources:
   source:
     driver: git
     uri: git@github.com:cloudfoundry/metrics-discovery-release
-    branch: master
+    branch: main
     file: src/version
     private_key: ((cf-loggregator-oauth-bot-key))
 
-- name: metrics-discovery-release-master-version
+- name: metrics-discovery-release-main-version
   type: git
   source:
     uri: git@github.com:cloudfoundry/metrics-discovery-release
-    branch: master
+    branch: main
     clean_tags: true
     private_key: ((cf-loggregator-oauth-bot-key))
     paths:
@@ -425,7 +425,7 @@ jobs:
       repository: develop
     put: metrics-discovery-release-elect
   serial: true
-- name: metrics-discovery-master-promotion
+- name: metrics-discovery-main-promotion
   plan:
   - in_parallel:
     - get: 24h
@@ -434,20 +434,20 @@ jobs:
       passed:
       - metrics-discovery-promotion
       trigger: true
-    - get: metrics-discovery-release-master
+    - get: metrics-discovery-release-main
     - get: loggregator-ci
   - file: loggregator-ci/tasks/bumper/task.yml
     input_mapping:
-      dest: metrics-discovery-release-master
+      dest: metrics-discovery-release-main
       source: metrics-discovery-release-elect
     params:
-      DEST_BRANCH: master
+      DEST_BRANCH: main
       SOURCE_BRANCH: release-elect
       TRACKER_API_TOKEN: 9a8e6bb0f9edf884e3880a540de40ad4
     task: bumper
   - params:
       repository: merged-dest
-    put: metrics-discovery-release-master
+    put: metrics-discovery-release-main
 
 ################################################################################################################
 #                                               Cut Releases
@@ -457,13 +457,13 @@ jobs:
   - in_parallel:
       steps:
       - get: loggregator-ci
-      - get: metrics-discovery-release-master
+      - get: metrics-discovery-release-main
         trigger: true
       - get: metrics-discovery-github-release-published
   - file: loggregator-ci/tasks/bumper-check/task.yml
     input_mapping:
       published-release: metrics-discovery-github-release-published
-      release: metrics-discovery-release-master
+      release: metrics-discovery-release-main
     params:
       SSH_KEY: ((loggregator-key))
       TRACKER_API_TOKEN: ((metric-egress-tracker-api-token))
@@ -492,11 +492,11 @@ jobs:
   plan:
   - in_parallel:
       steps:
-      - get: metrics-discovery-release-master-version
+      - get: metrics-discovery-release-main-version
       - get: loggregator-ci
   - file: loggregator-ci/tasks/create-final-release/main/task.yml
     input_mapping:
-      main-repo: metrics-discovery-release-master-version
+      main-repo: metrics-discovery-release-main-version
     params:
       S3_ACCESS_KEY: ((s3-access-key-id))
       S3_SECRET_KEY: ((s3-secret-access-key))
@@ -514,7 +514,7 @@ jobs:
   - params:
       rebase: false
       repository: repos/main-repo
-    put: metrics-discovery-release-master
+    put: metrics-discovery-release-main
   - try:
       file: loggregator-ci/tasks/create-final-release/should-publish/task.yml
       on_failure:
@@ -541,7 +541,7 @@ jobs:
   - in_parallel:
       steps:
       - get: metrics-discovery-release
-      - get: metrics-discovery-release-master
+      - get: metrics-discovery-release-main
         passed:
         - metrics-discovery-create-final-release
         trigger: true
@@ -577,16 +577,16 @@ jobs:
           fi
         path: /bin/bash
     input_mapping:
-      main-repo: metrics-discovery-release-master
+      main-repo: metrics-discovery-release-main
       published-release: metrics-discovery-github-release-published
     task: wait-for-releases-to-match
   - file: loggregator-ci/tasks/merge-to-develop/task.yml
     input_mapping:
       develop-repo: metrics-discovery-release
-      master-repo: metrics-discovery-release-master
+      master-repo: metrics-discovery-release-main
     params:
       DEVELOP_BRANCH: develop
-      MASTER_BRANCH: master
+      MASTER_BRANCH: main
       SSH_KEY: ((loggregator-key))
     task: merge-back-to-develop
   - params:
