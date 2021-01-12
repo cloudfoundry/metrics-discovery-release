@@ -43,7 +43,7 @@ resources:
 
 - name: cf-acceptance-tests
   source:
-    branch: master
+    branch: main
     uri: https://github.com/cloudfoundry/cf-acceptance-tests.git
   type: git
 
