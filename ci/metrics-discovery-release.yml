@@ -36,14 +36,6 @@ resources:
   tags:
   - vsphere-nimbus
 
-# - name: golang-release
-#   type: git
-#   source:
-#     branch: master
-#     uri: git@github.com:bosh-packages/golang-release
-#     tag_filter: v*
-#     private_key: ((cf-loggregator-oauth-bot-key))
-
 - name: 24h
   source:
     interval: 24h
@@ -157,12 +149,6 @@ resources:
     - src/version
 
 jobs:
-################################################################################################################
-#                                                Dependencies
-################################################################################################################
-# - name: bump-dependencies
-# - name: bump-golang-release
-
 
 ################################################################################################################
 #                                              Unit Tests
