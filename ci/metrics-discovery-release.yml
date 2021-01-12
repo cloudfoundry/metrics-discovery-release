@@ -34,7 +34,7 @@ resources:
     hostname: environments.toolsmiths.cf-app.com
     pool_name: cf-deployment
   tags:
-  - cf-denver-shared-vsphere
+  - vsphere-nimbus
 
 # - name: golang-release
 #   type: git
@@ -201,7 +201,7 @@ jobs:
     trigger: true
   - put: cf-env
     tags:
-    - cf-denver-shared-vsphere
+    - vsphere-nimbus
     params:
       action: claim
 
@@ -214,7 +214,7 @@ jobs:
       passed: [claim-cfd]
       trigger: true
       tags:
-      - cf-denver-shared-vsphere
+      - vsphere-nimbus
     - get: cf-deployment
       trigger: true
     - get: cf-deployment-concourse-tasks
@@ -313,7 +313,7 @@ jobs:
     - get: cf-env
       passed: [cf-deploy]
       tags:
-      - cf-denver-shared-vsphere
+      - vsphere-nimbus
     - get: metrics-discovery-release
       passed:
       - cf-deploy
@@ -345,7 +345,7 @@ jobs:
     - get: cf-env
       passed: [cf-deploy]
       tags:
-      - cf-denver-shared-vsphere
+      - vsphere-nimbus
     - get: metrics-discovery-release
       passed:
       - cf-deploy
@@ -365,7 +365,7 @@ jobs:
     - get: cf-env
       passed: [cf-deploy]
       tags:
-      - cf-denver-shared-vsphere
+      - vsphere-nimbus
     - get: loggregator-ci
     - get: cf-acceptance-tests
     - get: metrics-discovery-release
@@ -401,10 +401,10 @@ jobs:
     - test-releases-can-be-exported
     trigger: true
     tags:
-    - cf-denver-shared-vsphere
+    - vsphere-nimbus
   - put: cf-env
     tags:
-    - cf-denver-shared-vsphere
+    - vsphere-nimbus
     params:
       env_file: cf-env/metadata
       action: unclaim
