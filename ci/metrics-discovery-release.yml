@@ -243,31 +243,31 @@ jobs:
           - type: replace
             path: /releases/name=diego
             value:
-              name: diego
-              version: 2.48.0
-              url: https://bosh.io/d/github.com/cloudfoundry/diego-release?v=2.48.0
-              sha1: fbf8ebfeda1f326f5d6834b9a621b88a548e06e3
+              name: "diego"
+              version: "2.49.0"
+              url: "https://bosh.io/d/github.com/cloudfoundry/diego-release?v=2.49.0"
+              sha1: "5e8e6600cc6cf69dd25ce76bda6a144cc00bfdd7"
           - type: replace
             path: /releases/name=garden-runc
             value:
-              name: garden-runc
-              version: 1.19.16
-              sha1: c5bb4211adb7e94750b56e81eda9bb8e09eab3a0
-              url: https://bosh.io/d/github.com/cloudfoundry/garden-runc-release?v=1.19.16
+              name: "garden-runc"
+              version: "1.19.21"
+              url: "https://bosh.io/d/github.com/cloudfoundry/garden-runc-release?v=1.19.21"
+              sha1: "8589619bb08625a2a54d1af4df3540ce893c0ff3"
           - type: replace
             path: /releases/name=loggregator-agent
             value:
-              name: loggregator-agent
-              version: 6.1.2
-              sha1: 7bd4ca5ab7f4b6cd3fefa1a8043bdf9ff9c94900
-              url: https://bosh.io/d/github.com/cloudfoundry/loggregator-agent-release?v=6.1.2
+              name: "loggregator-agent"
+              version: "6.2.0"
+              url: "https://bosh.io/d/github.com/cloudfoundry/loggregator-agent-release?v=6.2.0"
+              sha1: "7210bac9c456bf20fd6de2175c562e443f249249"
           - type: replace
             path: /releases/name=metrics-discovery
             value:
-              name: metrics-discovery
-              version: 3.0.1
-              sha1: 4219b58972d20f6fccf1a4a167d915e34d86ee8a
-              url: https://bosh.io/d/github.com/cloudfoundry/metrics-discovery-release?v=3.0.1
+              name: "metrics-discovery"
+              version: "3.0.3"
+              url: "https://bosh.io/d/github.com/cloudfoundry/metrics-discovery-release?v=3.0.3"
+              sha1: "c414dd33b34231dfb8f655ed77c54a2fc21775fa"
           EOT
 
           echo "Update CF manifest with Windows ops-files"

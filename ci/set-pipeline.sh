@@ -19,9 +19,9 @@ function set_pipeline {
 
     fly -t ${TARGET} set-pipeline -p "$pipeline_name" \
         -c <(erb ${pipeline_file}) \
-        -l <(lpass show 'Shared-Loggregator (Pivotal Only)/pipeline-secrets.yml' --notes) \
-        -l <(lpass show 'Shared-CF- Log Cache (Pivotal ONLY)/release-credentials.yml' --notes) \
-        -l <(lpass show 'Shared-Pivotal Common/pas-releng-fetch-releases' --notes)
+        -l <(lpass show --notes 'Shared-TAS-Runtime/logging-pipeline-secrets') \
+        -l <(lpass show --notes 'Shared-TAS-Runtime/release-credentials-log-cache.yml') \
+        -l <(lpass show --notes 'Shared-Pivotal Common/pas-releng-fetch-releases' --notes)
 }
 
 function sync_fly {
