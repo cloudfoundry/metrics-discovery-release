@@ -179,8 +179,8 @@ jobs:
         RELEASE_NAME:  metrics-discovery
         GIT_USER_NAME: cf-loggregator-oauth-bot
         GIT_USER_EMAIL: cf-loggregator@pivotal.io
-        BLOBSTORE_ACCESS_KEY_ID: ((eats-s3-access-key))
-        BLOBSTORE_SECRET_ACCESS_KEY: ((eats-s3-access-secret))
+        BLOBSTORE_ACCESS_KEY_ID: ((s3-access-key-id))
+        BLOBSTORE_SECRET_ACCESS_KEY: ((s3-secret-access-key))
     - put: metrics-discovery-release
       params:
         repository: output-repo
