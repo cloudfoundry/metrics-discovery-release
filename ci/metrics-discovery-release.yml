@@ -1,6 +1,7 @@
 groups:
 - name: metrics-discovery
   jobs:
+    - bump-golang-release
     - metrics-discovery-tests
     - claim-cfd
     - cf-deploy
@@ -148,7 +149,42 @@ resources:
     paths:
     - src/version
 
+- name: golang-release
+  type: git
+  source:
+    uri: git@github.com:bosh-packages/golang-release
+    branch: master
+    tag_filter: v*
+    private_key: ((loggregator-pivotal-ci-key))
+
 jobs:
+
+################################################################################################################
+#                                                Dependencies                                                  #
+################################################################################################################
+
+- name: bump-golang-release
+  build_logs_to_retain: 25
+  plan:
+    - in_parallel:
+        - get: release
+          resource: metrics-discovery-release
+        - get: concourse-tasks
+          resource: concourse-tasks
+        - get: golang-release
+          trigger: true
+    - task: bump-golang
+      file: concourse-tasks/go/bump-vendored-golang/task.yml
+      params:
+        RELEASE_NAME:  metrics-discovery
+        GIT_USER_NAME: cf-loggregator-oauth-bot
+        GIT_USER_EMAIL: cf-loggregator@pivotal.io
+        BLOBSTORE_ACCESS_KEY_ID: ((eats-s3-access-key))
+        BLOBSTORE_SECRET_ACCESS_KEY: ((eats-s3-access-secret))
+    - put: metrics-discovery-release
+      params:
+        repository: output-repo
+        rebase: true
 
 ################################################################################################################
 #                                              Unit Tests
