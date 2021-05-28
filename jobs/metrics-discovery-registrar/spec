@@ -24,7 +24,7 @@ properties:
     default: 15s
   targets_glob:
     description: "Files matching the glob are expected to contain targets to Prometheus metrics endpoints"
-    default: "/var/vcap/**/**/metric_targets.yml"
+    default: "/var/vcap/**/**"
   target_refresh_interval:
     description: "Interval to refresh the Prometheus endpoint targets"
     default: 15s
