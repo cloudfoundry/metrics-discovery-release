@@ -1,0 +1,80 @@
+name: metrics-discovery
+version: 3.0.5
+commit_hash: 586ca12
+uncommitted_changes: false
+jobs:
+- name: metrics-agent
+  version: 0d3c0af970c3b94053f458590e7c038d1210bcde798ab21ffa0c11d1666e6a42
+  fingerprint: 0d3c0af970c3b94053f458590e7c038d1210bcde798ab21ffa0c11d1666e6a42
+  sha1: sha256:a7f35852d6c2c60575f456a3c74b23ec57b5bf30fcd5eff7c446120986498aed
+  packages:
+  - metrics-agent
+- name: metrics-agent-windows
+  version: 542fbf68e62e6016dabb6facdc68e5afde6fc9bd3773183d9a38301a91422187
+  fingerprint: 542fbf68e62e6016dabb6facdc68e5afde6fc9bd3773183d9a38301a91422187
+  sha1: sha256:5878273a6bbccb7fb3029504ab59d1bacf0a0b8a316dab2e7777cb815c9774db
+  packages:
+  - metrics-agent-windows
+- name: metrics-discovery-registrar
+  version: fb1abd9ea913cc0fee1c80674b29655d3f0919023eb40c96a5b0c1a9983de9fe
+  fingerprint: fb1abd9ea913cc0fee1c80674b29655d3f0919023eb40c96a5b0c1a9983de9fe
+  sha1: sha256:4601f082446925e91aa5475d34462ae617ed3e7f1ce35975ead7f38b43c76f8a
+  packages:
+  - metrics-discovery-registrar
+- name: metrics-discovery-registrar-windows
+  version: ee97af62bbdf227ccbe7deaf2aa3ca360c3a893e1ef6646af4c31989cd9870f5
+  fingerprint: ee97af62bbdf227ccbe7deaf2aa3ca360c3a893e1ef6646af4c31989cd9870f5
+  sha1: sha256:9896a5d3c6425e7ef67a96e5d08eb55f368617a262c96831ee4677581534de2f
+  packages:
+  - metrics-discovery-registrar-windows
+- name: scrape-config-generator
+  version: 8c74d17d745f765745be338ac379173f8bd20897e6621b3f7d80e88b14b2b3ea
+  fingerprint: 8c74d17d745f765745be338ac379173f8bd20897e6621b3f7d80e88b14b2b3ea
+  sha1: sha256:aad3db447f174531b55ede9429ccd492caf340df827b00beffb95d8116183074
+  packages:
+  - scrape-config-generator
+packages:
+- name: golang-1-linux
+  version: 92acc26a97deb3429611aeef37c7f2d2697fd45dc0e8c14d62231d569112dd7b
+  fingerprint: 92acc26a97deb3429611aeef37c7f2d2697fd45dc0e8c14d62231d569112dd7b
+  sha1: sha256:9e93e306346dace521ffc5178080fb5bcf9322f89c833609418eb878cb95d94a
+  dependencies: []
+- name: golang-1-windows
+  version: f8f089adbdd50a89383f6df73e1c9cc03caac2ff2d71d51b2f55d080a04e302c
+  fingerprint: f8f089adbdd50a89383f6df73e1c9cc03caac2ff2d71d51b2f55d080a04e302c
+  sha1: sha256:df56c467e79fe45e3cb77490d6ef9ce3d35c2950c37eb5a4e08fed38ea962766
+  dependencies: []
+- name: metrics-agent
+  version: efeee8daadd943b8a08b2fe2c9c96ead9845c3c46e1ffd25b70e386cbe5c0a1e
+  fingerprint: efeee8daadd943b8a08b2fe2c9c96ead9845c3c46e1ffd25b70e386cbe5c0a1e
+  sha1: sha256:7293bb853900112c69cce2a6e6b28b3cd54749a852a2ec5e9c2cc25ecd19d3e3
+  dependencies:
+  - golang-1-linux
+- name: metrics-agent-windows
+  version: f1bff5d05e320850639abc0a734b71a98b93b4559de10f23359f3643ce02662a
+  fingerprint: f1bff5d05e320850639abc0a734b71a98b93b4559de10f23359f3643ce02662a
+  sha1: sha256:e7a5a5f0bf288005e4663e00b9234b0cecb3745f74467f4b92bdf688bed312b7
+  dependencies:
+  - golang-1-windows
+- name: metrics-discovery-registrar
+  version: 906457c7b152b3bd9739370e372ec1c78bb3a47b38617c75164bbc3384e603bf
+  fingerprint: 906457c7b152b3bd9739370e372ec1c78bb3a47b38617c75164bbc3384e603bf
+  sha1: sha256:93d58b6f5889204d52df819e33273badd15159df49cc20393990df805996c55c
+  dependencies:
+  - golang-1-linux
+- name: metrics-discovery-registrar-windows
+  version: 946a8b4ac007bc5f662705cd7160a9b73781379ff51acda819b9d25b696b376a
+  fingerprint: 946a8b4ac007bc5f662705cd7160a9b73781379ff51acda819b9d25b696b376a
+  sha1: sha256:4ead9082224a27fe63aad1160858155ffc4a46aa88b9be2e809844e0e868a7d4
+  dependencies:
+  - golang-1-windows
+- name: scrape-config-generator
+  version: 4c006be0d75a37f56be294458bdbd935315ecd41925bacbd3791b12a817bea39
+  fingerprint: 4c006be0d75a37f56be294458bdbd935315ecd41925bacbd3791b12a817bea39
+  sha1: sha256:e7f87d261838ebae229a3bee1de0594427608131c01c2696a4016d0211ed32f4
+  dependencies:
+  - golang-1-linux
+license:
+  version: d2660bcbd0571d7cf1652800677e81ede2425417a8955856e1440035205167c9
+  fingerprint: d2660bcbd0571d7cf1652800677e81ede2425417a8955856e1440035205167c9
+  sha1: sha256:5d9d9be92bb408ac52e43467ad600b2abc5e8ab7655a18d88396965ebbbad21f
