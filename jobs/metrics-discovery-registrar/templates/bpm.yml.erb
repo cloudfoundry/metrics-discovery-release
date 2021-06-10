@@ -18,7 +18,7 @@
     "executable" => "/var/vcap/packages/metrics-discovery-registrar/discovery-registrar",
     "unsafe" => {
       "unrestricted_volumes" => [
-        { "path" => "/var/vcap/**/**", "mount_only" => true },
+        { "path" => p("targets_glob"), "mount_only" => true },
       ],
     },
     "env" => {
@@ -27,7 +27,7 @@
       "NATS_CA_PATH" => "#{certs_dir}/nats_ca.crt",
       "NATS_CERT_PATH" => "#{certs_dir}/nats.crt",
       "NATS_KEY_PATH" => "#{certs_dir}/nats.key",
-      "TARGETS_GLOB" => p("targets_glob"),
+      "TARGETS_GLOB" => "#{p("targets_glob")}/metric_targets.yml",
       "TARGET_REFRESH_INTERVAL" => "#{p("target_refresh_interval")}",
       "METRICS_CA_PATH" => "#{certs_dir}/metrics_ca.crt",
       "METRICS_CERT_PATH" => "#{certs_dir}/metrics.crt",
