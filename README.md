@@ -14,7 +14,7 @@ The Metrics Discovery Registrar publishes scrape configs to CF NATS to be consum
 
 ### Configuration
 Interested jobs should provide a `metric_targets.yml` file and place it in the location described by the `targets_glob`
-property -- by default `var/vcap/jobs/*/metric_targets.yml`.
+property -- by default `var/vcap/data/*/metric_targets.yml`.
 
 The `metric_targets.yml` should provide information
 about the endpoint to be scraped using the [Prometheus format](https://prometheus.io/docs/prometheus/latest/configuration/configuration/).
