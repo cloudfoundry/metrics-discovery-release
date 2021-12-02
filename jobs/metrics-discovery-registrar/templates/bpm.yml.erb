@@ -5,11 +5,22 @@
   end
 
   nats_port = link('nats-tls').p("nats.port")
-  nats_user = link('nats-tls').p("nats.user")
-  nats_password = link('nats-tls').p("nats.password")
+  nats_user = nil
+  link('nats-tls').if_p("nats.user") do |prop|
+    nats_user = prop
+  end
 
-  nats_str = "nats://#{nats_user}:#{nats_password}@#{nats_host}:#{nats_port}"
+  nats_password = nil
+  link('nats-tls').if_p("nats.password") do |prop|
+    nats_password = prop
+  end
 
+  nats_str = nil
+  if nats_user and nats_password
+    nats_str = "nats://#{nats_user}:#{nats_password}@#{nats_host}:#{nats_port}"
+  else
+    nats_str = "nats://#{nats_host}:#{nats_port}"
+  end
 
   certs_dir="/var/vcap/jobs/metrics-discovery-registrar/config/certs"
 

@@ -1,11 +1,25 @@
 <%
     nats_ips = link('nats-tls').instances.map { |instance| instance.address }
     nats_port = link('nats-tls').p("nats.port")
-    nats_user = link('nats-tls').p("nats.user")
-    nats_password = link('nats-tls').p("nats.password")
+    nats_user = nil
+    link('nats-tls').if_p("nats.user") do |prop|
+      nats_user = prop
+    end
 
-    nats_hosts = nats_ips.map do |h|
-      "nats://#{nats_user}:#{nats_password}@#{h}:#{nats_port}"
+    nats_password = nil
+    link('nats-tls').if_p("nats.password") do |prop|
+      nats_password = prop
+    end
+
+    nats_hosts = nil
+    if nats_user and nats_password
+      nats_hosts = nats_ips.map do |h|
+        "nats://#{nats_user}:#{nats_password}@#{h}:#{nats_port}"
+      end
+    else
+      nats_hosts = nats_ips.map do |h|
+        "nats://#{h}:#{nats_port}"
+      end
     end
 
     nats_str = nats_hosts.join(",")
