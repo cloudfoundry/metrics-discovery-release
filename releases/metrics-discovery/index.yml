@@ -31,6 +31,8 @@ builds:
     version: 3.0.5
   da280c33-019a-4ee4-7ec1-8ae293875dc7:
     version: 3.0.0
+  db512065-3c5a-47a1-63bf-f1a96a554421:
+    version: 3.0.8
   e6bf2c14-4016-42df-564c-f4f8db5d7df4:
     version: 2.0.8
 format-version: "2"
