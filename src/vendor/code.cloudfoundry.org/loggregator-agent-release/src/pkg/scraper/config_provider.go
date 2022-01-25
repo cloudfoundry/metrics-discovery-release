@@ -2,11 +2,13 @@ package scraper
 
 import (
 	"fmt"
-	"gopkg.in/yaml.v2"
-	"io/ioutil"
 	"log"
+	"os"
 	"path/filepath"
+	"strconv"
 	"time"
+
+	"gopkg.in/yaml.v2"
 )
 
 type PromScraperConfig struct {
@@ -44,7 +46,12 @@ func (p *ConfigProvider) Configs() ([]PromScraperConfig, error) {
 		if err != nil {
 			return nil, err
 		}
-		targets = append(targets, scraperConfig)
+		portInt, err := strconv.Atoi(scraperConfig.Port)
+		if err != nil || portInt <= 0 || portInt > 65536 {
+			p.log.Println(fmt.Sprintf("Prom scraper config at %s does not have a valid port - skipping this config file\n", f))
+		} else {
+			targets = append(targets, scraperConfig)
+		}
 	}
 
 	return targets, nil
@@ -66,7 +73,7 @@ func (p *ConfigProvider) filesForGlobs() []string {
 }
 
 func (p *ConfigProvider) parseConfig(file string) (PromScraperConfig, error) {
-	yamlFile, err := ioutil.ReadFile(file)
+	yamlFile, err := os.ReadFile(file)
 	if err != nil {
 		return PromScraperConfig{}, fmt.Errorf("cannot read file: %s", err)
 	}

@@ -1,7 +1,7 @@
 package v2
 
 import (
-	"code.cloudfoundry.org/go-loggregator/rpc/loggregator_v2"
+	"code.cloudfoundry.org/go-loggregator/v8/rpc/loggregator_v2"
 )
 
 type TimerTagFilterer struct {
@@ -25,7 +25,7 @@ func (t TimerTagFilterer) Filter(env *loggregator_v2.Envelope) {
 	}
 
 	for tag := range env.GetTags() {
-		if ! t.whitelisted(tag) {
+		if !t.whitelisted(tag) {
 			delete(env.Tags, tag)
 		}
 	}

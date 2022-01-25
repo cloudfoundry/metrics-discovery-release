@@ -1,18 +1,19 @@
 package scraper
 
 import (
-	metrics "code.cloudfoundry.org/go-metric-registry"
 	"fmt"
-	"github.com/prometheus/client_model/go"
-	"github.com/prometheus/common/expfmt"
 	"io"
-	"io/ioutil"
+	"log"
 	"net/http"
 	"strconv"
 	"sync"
 	"time"
 
-	"code.cloudfoundry.org/go-loggregator"
+	metrics "code.cloudfoundry.org/go-metric-registry"
+	io_prometheus_client "github.com/prometheus/client_model/go"
+	"github.com/prometheus/common/expfmt"
+
+	"code.cloudfoundry.org/go-loggregator/v8"
 )
 
 type Scraper struct {
@@ -147,12 +148,12 @@ func (s *Scraper) scrape(target Target) (map[string]*io_prometheus_client.Metric
 	}
 
 	defer func() {
-		io.Copy(ioutil.Discard, resp.Body)
+		io.Copy(io.Discard, resp.Body)
 		resp.Body.Close()
 	}()
 
 	if resp.StatusCode != http.StatusOK {
-		body, _ := ioutil.ReadAll(resp.Body)
+		body, _ := io.ReadAll(resp.Body)
 		return nil, fmt.Errorf("unexpected status code %d: %s", resp.StatusCode, body)
 	}
 
@@ -181,16 +182,17 @@ func (s *Scraper) emitMetrics(res map[string]*io_prometheus_client.MetricFamily,
 				s.emitHistogram(sourceID, t.InstanceID, name, tags, metric)
 			case io_prometheus_client.MetricType_SUMMARY:
 				s.emitSummary(sourceID, t.InstanceID, name, tags, metric)
+			case io_prometheus_client.MetricType_UNTYPED:
+				s.emitUntyped(sourceID, t.InstanceID, name, tags, metric)
 			default:
-				return
+				log.Printf("unexpected metric type %v for metric: %s\n", family.GetType(), name)
+				continue
 			}
 		}
 	}
 }
 
-func (s *Scraper) emitGauge(sourceID, instanceID, name string, tags map[string]string, metric *io_prometheus_client.Metric) {
-	val := metric.GetGauge().GetValue()
-
+func (s *Scraper) emitValueAsGauge(sourceID, instanceID, name string, tags map[string]string, val float64) {
 	var unit string
 	tagUnit, ok := tags["unit"]
 	if ok {
@@ -203,6 +205,18 @@ func (s *Scraper) emitGauge(sourceID, instanceID, name string, tags map[string]s
 		loggregator.WithGaugeSourceInfo(sourceID, instanceID),
 		loggregator.WithEnvelopeTags(tags),
 	)
+}
+
+func (s *Scraper) emitGauge(sourceID, instanceID, name string, tags map[string]string, metric *io_prometheus_client.Metric) {
+	val := metric.GetGauge().GetValue()
+	s.emitValueAsGauge(sourceID, instanceID, name, tags, val)
+}
+
+func (s *Scraper) emitUntyped(sourceID, instanceID, name string, tags map[string]string, metric *io_prometheus_client.Metric) {
+	// Loggregator API doesn't have Untyped type, emit as
+	// most permissive type
+	val := metric.GetUntyped().GetValue()
+	s.emitValueAsGauge(sourceID, instanceID, name, tags, val)
 }
 
 func (s *Scraper) emitCounter(sourceID, instanceID, name string, tags map[string]string, metric *io_prometheus_client.Metric) {
