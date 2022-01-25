@@ -1,23 +1,24 @@
 package v2
 
 import (
-	"code.cloudfoundry.org/go-loggregator/rpc/loggregator_v2"
+	"code.cloudfoundry.org/go-loggregator/v8/rpc/loggregator_v2"
 )
 
 type counterID struct {
 	name     string
+	sourceID string
 	tagsHash string
 }
 
 type CounterAggregator struct {
 	counterTotals map[counterID]uint64
-	processor func(env *loggregator_v2.Envelope)
+	processor     func(env *loggregator_v2.Envelope)
 }
 
 func NewCounterAggregator(processor func(env *loggregator_v2.Envelope)) *CounterAggregator {
 	return &CounterAggregator{
 		counterTotals: make(map[counterID]uint64),
-		processor:        processor,
+		processor:     processor,
 	}
 }
 
@@ -32,10 +33,11 @@ func (ca *CounterAggregator) Process(env *loggregator_v2.Envelope) error {
 
 		id := counterID{
 			name:     c.Name,
+			sourceID: env.GetSourceId(),
 			tagsHash: HashTags(env.GetTags()),
 		}
 
-		if c.GetTotal() == 0 {
+		if c.GetTotal() == 0 && c.GetDelta() != 0 {
 			ca.counterTotals[id] = ca.counterTotals[id] + c.GetDelta()
 		} else {
 			ca.counterTotals[id] = c.GetTotal()

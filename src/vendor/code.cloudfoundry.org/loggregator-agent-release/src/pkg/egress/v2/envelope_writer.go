@@ -1,6 +1,6 @@
 package v2
 
-import "code.cloudfoundry.org/go-loggregator/rpc/loggregator_v2"
+import "code.cloudfoundry.org/go-loggregator/v8/rpc/loggregator_v2"
 
 type Writer interface {
 	Write(*loggregator_v2.Envelope) error
@@ -11,13 +11,13 @@ type EnvelopeProcessor interface {
 }
 
 type EnvelopeWriter struct {
-	writer     Writer
+	writer    Writer
 	processor EnvelopeProcessor
 }
 
 func NewEnvelopeWriter(w Writer, ps EnvelopeProcessor) EnvelopeWriter {
 	return EnvelopeWriter{
-		writer:     w,
+		writer:    w,
 		processor: ps,
 	}
 }

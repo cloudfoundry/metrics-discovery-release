@@ -1,7 +1,7 @@
 package loggregator
 
 import (
-	"code.cloudfoundry.org/go-loggregator/rpc/loggregator_v2"
+	"code.cloudfoundry.org/go-loggregator/v8/rpc/loggregator_v2"
 
 	gendiodes "code.cloudfoundry.org/go-diodes"
 )
@@ -42,5 +42,8 @@ func (d *OneToOneEnvelopeBatch) TryNext() ([]*loggregator_v2.Envelope, bool) {
 // read.
 func (d *OneToOneEnvelopeBatch) Next() []*loggregator_v2.Envelope {
 	data := d.d.Next()
+	if data == nil {
+		return nil
+	}
 	return *(*[]*loggregator_v2.Envelope)(data)
 }
