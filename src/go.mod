@@ -6,7 +6,7 @@ require (
 	cloud.google.com/go v0.59.0 // indirect
 	code.cloudfoundry.org/go-diodes v0.0.0-20190809170250-f77fb823c7ee
 	code.cloudfoundry.org/go-envstruct v1.5.0
-	code.cloudfoundry.org/go-loggregator v0.0.0-20190809213911-969cb33bee6a // pinned
+	code.cloudfoundry.org/go-loggregator/v8 v8.0.5
 	code.cloudfoundry.org/go-metric-registry v0.0.0-20200413202920-40d97c8804ec
 	code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20220125214742-1467340092ba
 	code.cloudfoundry.org/tlsconfig v0.0.0-20200131000646-bbe0f8da39b3
@@ -27,8 +27,6 @@ require (
 	github.com/prometheus/common v0.10.0
 	github.com/prometheus/prometheus v2.13.1+incompatible // pinned
 	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9 // indirect
-	google.golang.org/genproto v0.0.0-20200624020401-64a14ca9d1ad // indirect
 	google.golang.org/grpc v1.30.0
-	google.golang.org/protobuf v1.25.0 // indirect
 	gopkg.in/yaml.v2 v2.3.0
 )
