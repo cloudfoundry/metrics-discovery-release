@@ -1,11 +1,12 @@
 package target
 
 import (
-	"code.cloudfoundry.org/loggregator-agent-release/src/pkg/scraper"
 	"fmt"
-	"gopkg.in/yaml.v2"
 	"log"
 	"os"
+
+	"code.cloudfoundry.org/loggregator-agent-release/src/pkg/scraper"
+	"gopkg.in/yaml.v2"
 )
 
 type WriterConfig struct {
@@ -70,10 +71,8 @@ func appendScrapeConfigLabels(labels map[string]string, sc scraper.PromScraperCo
 func copyMap(original map[string]string) map[string]string {
 	copied := map[string]string{}
 
-	if original != nil {
-		for k, v := range original {
-			copied[k] = v
-		}
+	for k, v := range original {
+		copied[k] = v
 	}
 
 	return copied
