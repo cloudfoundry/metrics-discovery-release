@@ -1,6 +1,11 @@
 package gatherer_test
 
 import (
+	"log"
+	"net/http"
+	"net/http/httptest"
+	"strings"
+
 	metrichelpers "code.cloudfoundry.org/go-metric-registry/testhelpers"
 	"code.cloudfoundry.org/loggregator-agent-release/src/pkg/scraper"
 	"code.cloudfoundry.org/metrics-discovery/internal/gatherer"
@@ -10,10 +15,6 @@ import (
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/types"
 	io_prometheus_client "github.com/prometheus/client_model/go"
-	"log"
-	"net/http"
-	"net/http/httptest"
-	"strings"
 )
 
 var _ = Describe("Proxy", func() {
@@ -255,34 +256,6 @@ func gaugeWith(value float64, labels map[string]string) types.GomegaMatcher {
 	)
 }
 
-func counterWith(value float64, labels map[string]string) types.GomegaMatcher {
-	return And(
-		WithTransform(func(m *io_prometheus_client.Metric) float64 {
-			counter := m.GetCounter()
-			Expect(counter).ToNot(BeNil())
-			return counter.GetValue()
-		}, Equal(value)),
-		WithTransform(func(m *io_prometheus_client.Metric) map[string]string {
-			labels := map[string]string{}
-			for _, labelPair := range m.GetLabel() {
-				labels[labelPair.GetName()] = labelPair.GetValue()
-			}
-
-			return labels
-		}, Equal(labels)),
-	)
-}
-
-func getMetricsForFamily(name string, mfs []*io_prometheus_client.MetricFamily) []*io_prometheus_client.Metric {
-	for _, mf := range mfs {
-		if mf.GetName() == name {
-			return mf.Metric
-		}
-	}
-
-	return nil
-}
-
 const promOutput = `
 # HELP metric1 The first counter.
 # TYPE metric1 counter
@@ -294,10 +267,4 @@ metric2 2
 # TYPE metric3 gauge
 metric3 {direction="ingress"} 11
 metric3 {direction="egress"} 22
-`
-
-const promOutput2 = `
-# HELP second_prom_server A metric from the second prom server.
-# TYPE second_prom_server counter
-second_prom_server 1
 `
