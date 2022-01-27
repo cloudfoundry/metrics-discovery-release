@@ -115,13 +115,6 @@ func (fp *fakePublisher) targets() [][]byte {
 	return dst
 }
 
-func (fp *fakePublisher) callsToPublish() int {
-	fp.Lock()
-	defer fp.Unlock()
-
-	return fp.called
-}
-
 func (fp *fakePublisher) publishedToQueue() string {
 	fp.Lock()
 	defer fp.Unlock()
