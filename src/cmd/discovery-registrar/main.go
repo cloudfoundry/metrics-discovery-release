@@ -3,13 +3,14 @@ package main
 import (
 	"crypto/tls"
 	"crypto/x509"
-	"github.com/nats-io/nats.go"
 	"io/ioutil"
 	"log"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/nats-io/nats.go"
 
 	metrics "code.cloudfoundry.org/go-metric-registry"
 	"code.cloudfoundry.org/metrics-discovery/cmd/discovery-registrar/app"
@@ -97,7 +98,7 @@ func closedCB(logger *log.Logger) func(conn *nats.Conn) {
 
 func reconnectedCB(logger *log.Logger) func(conn *nats.Conn) {
 	return func(conn *nats.Conn) {
-		logger.Printf("Reconnected to %s\n", conn.ConnectedUrl())
+		logger.Println("Nats Reconnected")
 	}
 }
 

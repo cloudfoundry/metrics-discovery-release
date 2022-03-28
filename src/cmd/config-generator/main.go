@@ -86,7 +86,7 @@ func closedCB(log *log.Logger) func(conn *nats.Conn) {
 
 func reconnectedCB(log *log.Logger) func(conn *nats.Conn) {
 	return func(conn *nats.Conn) {
-		log.Printf("Reconnected to %s\n", conn.ConnectedUrl())
+		log.Println("Nats Reconnected")
 	}
 }
 
