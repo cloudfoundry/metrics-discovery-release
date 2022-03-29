@@ -10,7 +10,7 @@ require (
 	code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20220125214742-1467340092ba
 	code.cloudfoundry.org/tlsconfig v0.0.0-20200131000646-bbe0f8da39b3
 	github.com/benjamintf1/unmarshalledmatchers v0.0.0-20190408201839-bb1c1f34eaea
-	github.com/gogo/protobuf v1.3.1 // pinned
+	github.com/gogo/protobuf v1.3.2 // pinned
 	github.com/nats-io/nats.go v1.13.1-0.20220121202836-972a071d373d
 	github.com/onsi/ginkgo v1.13.0
 	github.com/onsi/gomega v1.10.1
