@@ -1,6 +1,13 @@
 package app
 
 import (
+	"context"
+	"crypto/tls"
+	"fmt"
+	"log"
+	"net/http"
+	"time"
+
 	gendiodes "code.cloudfoundry.org/go-diodes"
 	metrics "code.cloudfoundry.org/go-metric-registry"
 	"code.cloudfoundry.org/loggregator-agent-release/src/pkg/diodes"
@@ -11,16 +18,10 @@ import (
 	"code.cloudfoundry.org/metrics-discovery/internal/gatherer"
 	"code.cloudfoundry.org/metrics-discovery/internal/target"
 	"code.cloudfoundry.org/tlsconfig"
-	"context"
-	"crypto/tls"
-	"fmt"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
-	"log"
-	"net/http"
-	"time"
 )
 
 type MetricsAgent struct {
@@ -106,6 +107,7 @@ func (m *MetricsAgent) startIngressServer(diode *diodes.ManyToOneEnvelopeV2) {
 		fmt.Sprintf("127.0.0.1:%d", m.cfg.GRPC.Port),
 		receiver,
 		grpc.Creds(credentials.NewTLS(tlsConfig)),
+		grpc.MaxRecvMsgSize(10*1024*1024),
 	)
 
 	server.Start()
