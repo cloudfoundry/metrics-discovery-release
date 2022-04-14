@@ -43,4 +43,6 @@ processes:
     METRICS_CA_PATH: "/var/vcap/jobs/scrape-config-generator/config/certs/metrics_ca.crt"
     METRICS_CERT_PATH: "/var/vcap/jobs/scrape-config-generator/config/certs/metrics.crt"
     METRICS_KEY_PATH: "/var/vcap/jobs/scrape-config-generator/config/certs/metrics.key"
+    DEBUG_METRICS: "<%= p("metrics.debug") %>"
+    PPROF_PORT: "<%=p("metrics.pprof_port") %>"
   ephemeral_disk: true

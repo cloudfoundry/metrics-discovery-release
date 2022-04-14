@@ -34,7 +34,7 @@ func main() {
 	)
 
 	registrar := app.NewDynamicRegistrar(targetProvider.GetTargets, natsConn, cfg.TargetRefreshInterval, m, logger)
-	go registrar.Start()
+	go registrar.Start(cfg.DebugMetrics, cfg.PprofPort)
 	defer registrar.Stop()
 
 	waitForTermination()

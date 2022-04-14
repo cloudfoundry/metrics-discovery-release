@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	_ "net/http/pprof"
 	"time"
 
 	gendiodes "code.cloudfoundry.org/go-diodes"
@@ -30,12 +31,16 @@ type MetricsAgent struct {
 	metrics       Metrics
 	metricsServer *http.Server
 	scrapeConfigs map[string]scraper.PromScraperConfig
+	pprofPort     uint16
+	pprofServer   *http.Server
+	debugMetrics  bool
 }
 
 type ScrapeConfigProvider func() ([]scraper.PromScraperConfig, error)
 
 type Metrics interface {
 	NewCounter(name, helpText string, options ...metrics.MetricOption) metrics.Counter
+	RegisterDebugMetrics()
 }
 
 func NewMetricsAgent(cfg Config, scrapeConfigProvider ScrapeConfigProvider, metrics Metrics, log *log.Logger) *MetricsAgent {
@@ -49,6 +54,8 @@ func NewMetricsAgent(cfg Config, scrapeConfigProvider ScrapeConfigProvider, metr
 		log:           log,
 		metrics:       metrics,
 		scrapeConfigs: make(map[string]scraper.PromScraperConfig, len(scrapeConfigs)),
+		pprofPort:     cfg.MetricsServer.PprofPort,
+		debugMetrics:  cfg.MetricsServer.DebugMetrics,
 	}
 
 	for _, sc := range scrapeConfigs {
@@ -56,7 +63,8 @@ func NewMetricsAgent(cfg Config, scrapeConfigProvider ScrapeConfigProvider, metr
 	}
 
 	target.WriteFile(target.WriterConfig{
-		MetricsHost:   fmt.Sprintf("%s:%d", cfg.Addr, cfg.MetricsExporter.Port),
+		MetricsHost: fmt.Sprintf("%s:%d", cfg.Addr, cfg.MetricsExporter.Port),
+
 		DefaultLabels: cfg.Tags,
 		InstanceID:    cfg.InstanceID,
 		File:          cfg.MetricsTargetFile,
@@ -67,6 +75,11 @@ func NewMetricsAgent(cfg Config, scrapeConfigProvider ScrapeConfigProvider, metr
 }
 
 func (m *MetricsAgent) Run() {
+	if m.debugMetrics {
+		m.metrics.RegisterDebugMetrics()
+		m.pprofServer = &http.Server{Addr: fmt.Sprintf("127.0.0.1:%d", m.pprofPort), Handler: http.DefaultServeMux}
+		go func() { m.log.Println("PPROF SERVER STOPPED " + m.pprofServer.ListenAndServe().Error()) }()
+	}
 	envelopeBuffer := m.envelopeDiode()
 	go m.startIngressServer(envelopeBuffer)
 
@@ -222,6 +235,9 @@ func (m *MetricsAgent) proxyHandlers() map[string]http.Handler {
 }
 
 func (m *MetricsAgent) Stop() {
+	if m.pprofServer != nil {
+		m.pprofServer.Close()
+	}
 	ctx, cancelFunc := context.WithDeadline(context.Background(), time.Now().Add(15*time.Second))
 
 	go func() {

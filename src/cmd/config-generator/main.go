@@ -51,7 +51,7 @@ func main() {
 		logger,
 	)
 
-	generator.Start()
+	generator.Start(config.DebugMetrics, config.PprofPort)
 	defer generator.Stop()
 }
 

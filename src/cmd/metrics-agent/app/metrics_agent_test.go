@@ -37,6 +37,9 @@ var _ = Describe("MetricsAgent", func() {
 		metricsPort  uint16
 		testCerts    *testhelpers.TestCerts
 		targetsFile  string
+		metricsSpy   *metrichelpers.SpyMetricsRegistry
+		cfg          app.Config
+		testLogger   *log.Logger
 
 		ingressClient            *loggregator.IngressClient
 		fakeScrapeConfigProvider app.ScrapeConfigProvider
@@ -48,7 +51,7 @@ var _ = Describe("MetricsAgent", func() {
 		targetsFile = os.TempDir() + "/metrics_targets.yml"
 		grpcPort = getFreePort()
 		metricsPort = getFreePort()
-		cfg := app.Config{
+		cfg = app.Config{
 			MetricsExporter: app.MetricsExporterConfig{
 				Port:                 metricsPort,
 				ExpirationInterval:   time.Minute,
@@ -91,10 +94,8 @@ var _ = Describe("MetricsAgent", func() {
 			}}, nil
 		}
 
-		testLogger := log.New(GinkgoWriter, "", log.LstdFlags)
-		metricsAgent = app.NewMetricsAgent(cfg, fakeScrapeConfigProvider, metrichelpers.NewMetricsRegistry(), testLogger)
-		go metricsAgent.Run()
-		waitForMetricsEndpoint(metricsPort, testCerts)
+		testLogger = log.New(GinkgoWriter, "", log.LstdFlags)
+		metricsSpy = metrichelpers.NewMetricsRegistry()
 	})
 
 	AfterEach(func() {
@@ -103,6 +104,10 @@ var _ = Describe("MetricsAgent", func() {
 	})
 
 	It("creates a metrics_targets.yml file with the agent as a target.", func() {
+		metricsAgent = app.NewMetricsAgent(cfg, fakeScrapeConfigProvider, metricsSpy, testLogger)
+		go metricsAgent.Run()
+		waitForMetricsEndpoint(metricsPort, testCerts)
+
 		f, err := ioutil.ReadFile(targetsFile)
 		Expect(err).ToNot(HaveOccurred())
 
@@ -136,6 +141,10 @@ var _ = Describe("MetricsAgent", func() {
 	})
 
 	It("exposes metrics on a prometheus endpoint", func() {
+		metricsAgent = app.NewMetricsAgent(cfg, fakeScrapeConfigProvider, metricsSpy, testLogger)
+		go metricsAgent.Run()
+		waitForMetricsEndpoint(metricsPort, testCerts)
+
 		cancel := doUntilCancelled(func() {
 			ingressClient.EmitCounter("total_counter", loggregator.WithTotal(22))
 		})
@@ -147,7 +156,35 @@ var _ = Describe("MetricsAgent", func() {
 		Expect(metric.GetCounter().GetValue()).To(BeNumerically("==", 22))
 	})
 
+	It("does not emit debug metrics by default", func() {
+		cfg.MetricsServer.PprofPort = 1236
+		metricsAgent = app.NewMetricsAgent(cfg, fakeScrapeConfigProvider, metricsSpy, testLogger)
+		go metricsAgent.Run()
+		waitForMetricsEndpoint(metricsPort, testCerts)
+
+		Consistently(metricsSpy.GetDebugMetricsEnabled, 3).ShouldNot(BeTrue())
+		_, err := http.Get(fmt.Sprintf("http://127.0.0.1:%d/debug/pprof/", cfg.MetricsServer.PprofPort))
+		Expect(err).ToNot(BeNil())
+	})
+
+	It("can enable debug metrics", func() {
+		cfg.MetricsServer.DebugMetrics = true
+		cfg.MetricsServer.PprofPort = 1237
+		metricsAgent = app.NewMetricsAgent(cfg, fakeScrapeConfigProvider, metricsSpy, testLogger)
+		go metricsAgent.Run()
+		waitForMetricsEndpoint(metricsPort, testCerts)
+
+		Eventually(metricsSpy.GetDebugMetricsEnabled, 3).Should(BeTrue())
+		resp, err := http.Get(fmt.Sprintf("http://127.0.0.1:%d/debug/pprof/", cfg.MetricsServer.PprofPort))
+		Expect(err).To(BeNil())
+		Expect(resp.StatusCode).To(Equal(200))
+	})
+
 	It("filters timer tags not in whitelist", func() {
+		metricsAgent = app.NewMetricsAgent(cfg, fakeScrapeConfigProvider, metricsSpy, testLogger)
+		go metricsAgent.Run()
+		waitForMetricsEndpoint(metricsPort, testCerts)
+
 		cancel := doUntilCancelled(func() {
 			ingressClient.EmitTimer("timer", time.Now().Add(-time.Second), time.Now(),
 				loggregator.WithTimerSourceInfo("source-id-from-source-info", "instance-id-from-source-info"),
@@ -177,6 +214,10 @@ var _ = Describe("MetricsAgent", func() {
 	})
 
 	It("filters out blacklisted source id envelopes", func() {
+		metricsAgent = app.NewMetricsAgent(cfg, fakeScrapeConfigProvider, metricsSpy, testLogger)
+		go metricsAgent.Run()
+		waitForMetricsEndpoint(metricsPort, testCerts)
+
 		cancel := doUntilCancelled(func() {
 			ingressClient.EmitCounter("prom_scraped",
 				loggregator.WithTotal(22),
@@ -195,10 +236,18 @@ var _ = Describe("MetricsAgent", func() {
 	})
 
 	It("proxies to prom endpoints", func() {
+		metricsAgent = app.NewMetricsAgent(cfg, fakeScrapeConfigProvider, metricsSpy, testLogger)
+		go metricsAgent.Run()
+		waitForMetricsEndpoint(metricsPort, testCerts)
+
 		Eventually(getMetricFamilies(metricsPort, "source_id_scraped", testCerts), 3).Should(HaveKey("proxyMetric"))
 	})
 
 	It("only returns the metrics for the given ID", func() {
+		metricsAgent = app.NewMetricsAgent(cfg, fakeScrapeConfigProvider, metricsSpy, testLogger)
+		go metricsAgent.Run()
+		waitForMetricsEndpoint(metricsPort, testCerts)
+
 		cancel := doUntilCancelled(func() {
 			ingressClient.EmitCounter("total_counter", loggregator.WithTotal(22))
 		})
@@ -213,6 +262,10 @@ var _ = Describe("MetricsAgent", func() {
 	})
 
 	It("returns a 404 for unknown IDs", func() {
+		metricsAgent = app.NewMetricsAgent(cfg, fakeScrapeConfigProvider, metricsSpy, testLogger)
+		go metricsAgent.Run()
+		waitForMetricsEndpoint(metricsPort, testCerts)
+
 		cancel := doUntilCancelled(func() {
 			ingressClient.EmitCounter("total_counter", loggregator.WithTotal(22))
 		})
@@ -223,6 +276,10 @@ var _ = Describe("MetricsAgent", func() {
 	})
 
 	It("aggregates delta counters", func() {
+		metricsAgent = app.NewMetricsAgent(cfg, fakeScrapeConfigProvider, metricsSpy, testLogger)
+		go metricsAgent.Run()
+		waitForMetricsEndpoint(metricsPort, testCerts)
+
 		cancel := doUntilCancelled(func() {
 			ingressClient.EmitCounter("delta_counter", loggregator.WithDelta(2))
 		})
@@ -267,7 +324,7 @@ func waitForMetricsEndpoint(port uint16, testCerts *testhelpers.TestCerts) {
 	Eventually(func() error {
 		_, err := getMetricsResponse(port, "", testCerts)
 		return err
-	}).Should(Succeed())
+	}, 10).Should(Succeed())
 }
 
 func getMetricsResponse(port uint16, id string, testCerts *testhelpers.TestCerts) (*http.Response, error) {

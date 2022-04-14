@@ -22,6 +22,9 @@ type Config struct {
 	MetricsKeyPath  string `env:"METRICS_KEY_PATH, required, report"`
 
 	MetricsPort int `env:"METRICS_PORT, report"`
+
+	DebugMetrics bool   `env:"DEBUG_METRICS, report"`
+	PprofPort    uint16 `env:"PPROF_PORT, report"`
 }
 
 func LoadConfig(log *log.Logger) Config {

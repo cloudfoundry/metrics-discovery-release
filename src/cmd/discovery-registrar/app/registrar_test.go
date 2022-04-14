@@ -1,6 +1,9 @@
 package app_test
 
 import (
+	"fmt"
+	"net/http"
+
 	"code.cloudfoundry.org/go-metric-registry/testhelpers"
 	"code.cloudfoundry.org/metrics-discovery/cmd/discovery-registrar/app"
 	"code.cloudfoundry.org/metrics-discovery/internal/target"
@@ -17,12 +20,13 @@ var _ = Describe("Dynamic Registrar", func() {
 	type testContext struct {
 		publisher      *fakePublisher
 		targetProvider *fakeTargetProvider
+		pprofPort      uint16
 		metrics        *testhelpers.SpyMetricsRegistry
 		logger         *log.Logger
 		registrar      *app.DynamicRegistrar
 	}
 
-	var setup = func(publishInterval time.Duration) *testContext {
+	var setup = func(publishInterval time.Duration, debugMetrics bool) *testContext {
 		tc := &testContext{
 			publisher: newFakePublisher(),
 			targetProvider: &fakeTargetProvider{
@@ -32,12 +36,13 @@ var _ = Describe("Dynamic Registrar", func() {
 					},
 				},
 			},
-			metrics: testhelpers.NewMetricsRegistry(),
-			logger:  log.New(GinkgoWriter, "", 0),
+			pprofPort: 1234,
+			metrics:   testhelpers.NewMetricsRegistry(),
+			logger:    log.New(GinkgoWriter, "", 0),
 		}
 
 		tc.registrar = app.NewDynamicRegistrar(tc.targetProvider.GetTargets, tc.publisher, publishInterval, tc.metrics, tc.logger)
-		go tc.registrar.Start()
+		go tc.registrar.Start(debugMetrics, tc.pprofPort)
 
 		return tc
 	}
@@ -47,7 +52,7 @@ var _ = Describe("Dynamic Registrar", func() {
 	}
 
 	It("publishes targets from the target provider", func() {
-		tc := setup(time.Second)
+		tc := setup(time.Second, false)
 		defer teardown(tc)
 
 		Eventually(tc.publisher.targets).Should(HaveLen(1))
@@ -61,7 +66,7 @@ var _ = Describe("Dynamic Registrar", func() {
 	})
 
 	It("publishes targets from the target provider on an interval", func() {
-		tc := setup(300 * time.Millisecond)
+		tc := setup(300*time.Millisecond, false)
 		defer teardown(tc)
 
 		Eventually(tc.targetProvider.timesCalled).Should(BeNumerically(">=", 4))
@@ -72,12 +77,32 @@ var _ = Describe("Dynamic Registrar", func() {
 	})
 
 	It("increments a delivered metric", func() {
-		tc := setup(300 * time.Millisecond)
+		tc := setup(300*time.Millisecond, false)
 		defer teardown(tc)
 
 		Eventually(func() int {
 			return int(tc.metrics.GetMetric("sent", map[string]string{}).Value())
 		}).Should(BeNumerically(">=", 1))
+	})
+
+	It("does not emit debug metrics by default", func() {
+		tc := setup(300*time.Millisecond, false)
+		defer teardown(tc)
+
+		Consistently(tc.metrics.GetDebugMetricsEnabled, 3).ShouldNot(BeTrue())
+		_, err := http.Get(fmt.Sprintf("http://127.0.0.1:%d/debug/pprof/", tc.pprofPort))
+		Expect(err).ToNot(BeNil())
+	})
+
+	It("can enable debug metrics", func() {
+		tc := setup(300*time.Millisecond, true)
+		defer teardown(tc)
+
+		Eventually(tc.metrics.GetDebugMetricsEnabled, 3).Should(BeTrue())
+		resp, err := http.Get(fmt.Sprintf("http://127.0.0.1:%d/debug/pprof/", tc.pprofPort))
+		Expect(err).To(BeNil())
+		Expect(resp.StatusCode).To(Equal(200))
+		Eventually(tc.publisher.targets).Should(HaveLen(1))
 	})
 })
 
