@@ -20,6 +20,8 @@
     "METRICS_CERT_PATH" => "#{certs_dir}/metrics.crt",
     "METRICS_KEY_PATH" => "#{certs_dir}/metrics.key",
     "METRICS_PORT" => "#{p("metrics.port")}",
+    "DEBUG_METRICS" => "#{p("metrics.debug")}",
+    "PPROF_PORT" => "#{p("metrics.pprof_port")}",
   }
 
   monit = {

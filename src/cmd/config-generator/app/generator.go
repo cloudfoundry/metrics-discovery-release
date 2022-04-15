@@ -2,8 +2,11 @@ package app
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
+	"net/http"
+	_ "net/http/pprof"
 	"os"
 	"sync"
 	"time"
@@ -24,17 +27,20 @@ type ConfigGenerator struct {
 	configTTL                time.Duration
 	configExpirationInterval time.Duration
 
-	subscriber Subscriber
-	done       chan struct{}
-	stop       chan struct{}
-	delivered  metrics.Counter
-	logger     *log.Logger
+	subscriber  Subscriber
+	done        chan struct{}
+	stop        chan struct{}
+	delivered   metrics.Counter
+	metrics     metricsRegistry
+	pprofServer *http.Server
+	logger      *log.Logger
 
 	timestampedTargets map[string]timestampedTarget
 }
 
 type metricsRegistry interface {
 	NewCounter(name, helpText string, opts ...metrics.MetricOption) metrics.Counter
+	RegisterDebugMetrics()
 }
 
 type timestampedTarget struct {
@@ -61,6 +67,7 @@ func NewConfigGenerator(
 		logger:     logger,
 		subscriber: subscriber,
 		delivered:  m.NewCounter("delivered", "Total number of messages successfully delivered from NATs."),
+		metrics:    m,
 		stop:       make(chan struct{}),
 		done:       make(chan struct{}),
 	}
@@ -74,7 +81,13 @@ func NewConfigGenerator(
 	return configGenerator
 }
 
-func (cg *ConfigGenerator) Start() {
+func (cg *ConfigGenerator) Start(debugMetrics bool, pprofPort uint16) {
+	if debugMetrics {
+		cg.metrics.RegisterDebugMetrics()
+		cg.pprofServer = &http.Server{Addr: fmt.Sprintf("127.0.0.1:%d", pprofPort), Handler: http.DefaultServeMux}
+		go func() { cg.logger.Println("PPROF SERVER STOPPED " + cg.pprofServer.ListenAndServe().Error()) }()
+	}
+
 	expirationTicker := time.NewTicker(cg.configExpirationInterval)
 	writeTicker := time.NewTicker(cg.writeFrequency)
 	for {

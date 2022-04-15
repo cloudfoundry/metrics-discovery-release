@@ -1,12 +1,16 @@
 package app
 
 import (
+	"fmt"
+	"log"
+	"net/http"
+	_ "net/http/pprof"
+	"time"
+
 	metrics "code.cloudfoundry.org/go-metric-registry"
 	"code.cloudfoundry.org/metrics-discovery/internal/registry"
 	"code.cloudfoundry.org/metrics-discovery/internal/target"
 	"gopkg.in/yaml.v2"
-	"log"
-	"time"
 )
 
 type TargetProvider func() []*target.Target
@@ -24,12 +28,15 @@ type DynamicRegistrar struct {
 	stop chan struct{}
 	done chan struct{}
 
-	logger *log.Logger
-	sent   metrics.Counter
+	logger      *log.Logger
+	sent        metrics.Counter
+	metrics     metricsRegistry
+	pprofServer *http.Server
 }
 
 type metricsRegistry interface {
 	NewCounter(name, helpText string, opts ...metrics.MetricOption) metrics.Counter
+	RegisterDebugMetrics()
 }
 
 func NewDynamicRegistrar(tp TargetProvider, p Publisher, publishInterval time.Duration, m metricsRegistry, log *log.Logger) *DynamicRegistrar {
@@ -38,12 +45,18 @@ func NewDynamicRegistrar(tp TargetProvider, p Publisher, publishInterval time.Du
 		publisher:       p,
 		publishInterval: publishInterval,
 		sent:            m.NewCounter("sent", "Total number of messages successfully sent to NATs."),
+		metrics:         m,
 		stop:            make(chan struct{}),
 		done:            make(chan struct{}),
 	}
 }
 
-func (r *DynamicRegistrar) Start() {
+func (r *DynamicRegistrar) Start(debugMetrics bool, pprofPort uint16) {
+	if debugMetrics {
+		r.metrics.RegisterDebugMetrics()
+		r.pprofServer = &http.Server{Addr: fmt.Sprintf("127.0.0.1:%d", pprofPort), Handler: http.DefaultServeMux}
+		go func() { r.pprofServer.ListenAndServe() }()
+	}
 	ticker := time.NewTicker(r.publishInterval)
 
 	r.publishTargets()
@@ -78,6 +91,9 @@ func (r *DynamicRegistrar) publishTargets() {
 }
 
 func (r *DynamicRegistrar) Stop() {
+	if r.pprofServer != nil {
+		r.pprofServer.Close()
+	}
 	close(r.stop)
 	<-r.done
 

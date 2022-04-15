@@ -1,16 +1,18 @@
 package app_test
 
 import (
+	"fmt"
+	"io/ioutil"
+	"log"
+	"net/http"
+	"time"
+
 	"code.cloudfoundry.org/go-metric-registry/testhelpers"
 	"code.cloudfoundry.org/metrics-discovery/cmd/config-generator/app"
-	"fmt"
 	. "github.com/benjamintf1/unmarshalledmatchers"
 	"github.com/nats-io/nats.go"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"io/ioutil"
-	"log"
-	"time"
 )
 
 var _ = Describe("Config generator", func() {
@@ -48,14 +50,14 @@ var _ = Describe("Config generator", func() {
 
 		generator := app.NewConfigGenerator(
 			tc.subscriber.Subscribe,
-			100 * time.Millisecond,
+			100*time.Millisecond,
 			time.Hour,
 			time.Hour,
 			tc.configPath,
 			testhelpers.NewMetricsRegistry(),
 			tc.logger,
 		)
-		go generator.Start()
+		go generator.Start(false, 1234)
 
 		tc.subscriber.callback(&nats.Msg{
 			Data: target("job1"),
@@ -97,7 +99,7 @@ var _ = Describe("Config generator", func() {
 			testhelpers.NewMetricsRegistry(),
 			tc.logger,
 		)
-		go generator.Start()
+		go generator.Start(false, 1234)
 
 		tc.subscriber.callback(&nats.Msg{
 			Data: target("job1"),
@@ -117,14 +119,14 @@ var _ = Describe("Config generator", func() {
 
 		generator := app.NewConfigGenerator(
 			tc.subscriber.Subscribe,
-			100 * time.Millisecond,
+			100*time.Millisecond,
 			time.Hour,
 			time.Hour,
 			tc.configPath,
 			testhelpers.NewMetricsRegistry(),
 			tc.logger,
 		)
-		go generator.Start()
+		go generator.Start(false, 1234)
 
 		tc.subscriber.callback(&nats.Msg{
 			Data: target("job1"),
@@ -153,14 +155,14 @@ var _ = Describe("Config generator", func() {
 
 		generator := app.NewConfigGenerator(
 			tc.subscriber.Subscribe,
-			100 * time.Millisecond,
+			100*time.Millisecond,
 			200*time.Millisecond,
 			100*time.Millisecond,
 			tc.configPath,
 			testhelpers.NewMetricsRegistry(),
 			tc.logger,
 		)
-		go generator.Start()
+		go generator.Start(false, 1234)
 
 		tc.subscriber.callback(&nats.Msg{
 			Data: target("ephemeral"),
@@ -219,14 +221,14 @@ var _ = Describe("Config generator", func() {
 		spyMetrics := testhelpers.NewMetricsRegistry()
 		generator := app.NewConfigGenerator(
 			tc.subscriber.Subscribe,
-			100 * time.Millisecond,
+			100*time.Millisecond,
 			600*time.Millisecond,
 			100*time.Millisecond,
 			tc.configPath,
 			spyMetrics,
 			tc.logger,
 		)
-		go generator.Start()
+		go generator.Start(false, 1234)
 
 		tc.subscriber.callback(&nats.Msg{
 			Data: target("ephemeral"),
@@ -235,6 +237,56 @@ var _ = Describe("Config generator", func() {
 		Eventually(func() int {
 			return int(spyMetrics.GetMetric("delivered", map[string]string{}).Value())
 		}).Should(Equal(1))
+	})
+
+	It("doesn't emit debug metrics by default", func() {
+		tc := setup()
+
+		pprofPort := uint16(1234)
+		spyMetrics := testhelpers.NewMetricsRegistry()
+		generator := app.NewConfigGenerator(
+			tc.subscriber.Subscribe,
+			100*time.Millisecond,
+			600*time.Millisecond,
+			100*time.Millisecond,
+			tc.configPath,
+			spyMetrics,
+			tc.logger,
+		)
+		go generator.Start(false, pprofPort)
+
+		tc.subscriber.callback(&nats.Msg{
+			Data: target("ephemeral"),
+		})
+
+		Consistently(spyMetrics.GetDebugMetricsEnabled()).Should(BeFalse())
+		_, err := http.Get(fmt.Sprintf("http://127.0.0.1:%d/debug/pprof/", pprofPort))
+		Expect(err).ToNot(BeNil())
+	})
+	It("can emit debug metrics", func() {
+		tc := setup()
+
+		pprofPort := uint16(1235)
+		spyMetrics := testhelpers.NewMetricsRegistry()
+		generator := app.NewConfigGenerator(
+			tc.subscriber.Subscribe,
+			100*time.Millisecond,
+			600*time.Millisecond,
+			100*time.Millisecond,
+			tc.configPath,
+			spyMetrics,
+			tc.logger,
+		)
+		go generator.Start(true, pprofPort)
+
+		tc.subscriber.callback(&nats.Msg{
+			Data: target("ephemeral"),
+		})
+
+		Eventually(spyMetrics.GetDebugMetricsEnabled, 3).Should(BeTrue())
+		resp, err := http.Get(fmt.Sprintf("http://127.0.0.1:%d/debug/pprof/", pprofPort))
+		Expect(err).To(BeNil())
+		Expect(resp.StatusCode).To(Equal(200))
 	})
 })
 

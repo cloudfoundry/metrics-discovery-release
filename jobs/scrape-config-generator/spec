@@ -42,6 +42,12 @@ properties:
   metrics.port:
     description: "Port to host metrics endpoint"
     default: 15822
+  metrics.debug:
+    description: "Enables go_ and process_ metrics along with a pprof endpoint"
+    default: false
+  metrics.pprof_port:
+    description: "If debug metrics is enabled, pprof will start at this port, ideally set to something other then 0"
+    default: 0
 
   nats_client.cert:
     description: "TLS certificate to communicate with the NATs server signed by the NATs CA"
