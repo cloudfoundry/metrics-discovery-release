@@ -90,8 +90,10 @@ var _ = Describe("Dynamic Registrar", func() {
 		defer teardown(tc)
 
 		Consistently(tc.metrics.GetDebugMetricsEnabled, 3).ShouldNot(BeTrue())
-		_, err := http.Get(fmt.Sprintf("http://127.0.0.1:%d/debug/pprof/", tc.pprofPort))
-		Expect(err).ToNot(BeNil())
+		Consistently(func() error {
+			_, err := http.Get(fmt.Sprintf("http://127.0.0.1:%d/debug/pprof/", tc.pprofPort))
+			return err
+		}).ShouldNot(BeNil())
 	})
 
 	It("can enable debug metrics", func() {
@@ -99,8 +101,12 @@ var _ = Describe("Dynamic Registrar", func() {
 		defer teardown(tc)
 
 		Eventually(tc.metrics.GetDebugMetricsEnabled, 3).Should(BeTrue())
-		resp, err := http.Get(fmt.Sprintf("http://127.0.0.1:%d/debug/pprof/", tc.pprofPort))
-		Expect(err).To(BeNil())
+		var resp *http.Response
+		Eventually(func() error {
+			var err error
+			resp, err = http.Get(fmt.Sprintf("http://127.0.0.1:%d/debug/pprof/", tc.pprofPort))
+			return err
+		}).Should(BeNil())
 		Expect(resp.StatusCode).To(Equal(200))
 		Eventually(tc.publisher.targets).Should(HaveLen(1))
 	})

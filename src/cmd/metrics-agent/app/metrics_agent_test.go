@@ -163,8 +163,10 @@ var _ = Describe("MetricsAgent", func() {
 		waitForMetricsEndpoint(metricsPort, testCerts)
 
 		Consistently(metricsSpy.GetDebugMetricsEnabled, 3).ShouldNot(BeTrue())
-		_, err := http.Get(fmt.Sprintf("http://127.0.0.1:%d/debug/pprof/", cfg.MetricsServer.PprofPort))
-		Expect(err).ToNot(BeNil())
+		Consistently(func() error {
+			_, err := http.Get(fmt.Sprintf("http://127.0.0.1:%d/debug/pprof/", cfg.MetricsServer.PprofPort))
+			return err
+		}).ShouldNot(BeNil())
 	})
 
 	It("can enable debug metrics", func() {
@@ -175,8 +177,12 @@ var _ = Describe("MetricsAgent", func() {
 		waitForMetricsEndpoint(metricsPort, testCerts)
 
 		Eventually(metricsSpy.GetDebugMetricsEnabled, 3).Should(BeTrue())
-		resp, err := http.Get(fmt.Sprintf("http://127.0.0.1:%d/debug/pprof/", cfg.MetricsServer.PprofPort))
-		Expect(err).To(BeNil())
+		var resp *http.Response
+		Eventually(func() error {
+			var err error
+			resp, err = http.Get(fmt.Sprintf("http://127.0.0.1:%d/debug/pprof/", cfg.MetricsServer.PprofPort))
+			return err
+		}).Should(BeNil())
 		Expect(resp.StatusCode).To(Equal(200))
 	})
 
