@@ -260,8 +260,10 @@ var _ = Describe("Config generator", func() {
 		})
 
 		Consistently(spyMetrics.GetDebugMetricsEnabled()).Should(BeFalse())
-		_, err := http.Get(fmt.Sprintf("http://127.0.0.1:%d/debug/pprof/", pprofPort))
-		Expect(err).ToNot(BeNil())
+		Consistently(func() error {
+			_, err := http.Get(fmt.Sprintf("http://127.0.0.1:%d/debug/pprof/", pprofPort))
+			return err
+		}).ShouldNot(BeNil())
 	})
 	It("can emit debug metrics", func() {
 		tc := setup()
@@ -284,8 +286,12 @@ var _ = Describe("Config generator", func() {
 		})
 
 		Eventually(spyMetrics.GetDebugMetricsEnabled, 3).Should(BeTrue())
-		resp, err := http.Get(fmt.Sprintf("http://127.0.0.1:%d/debug/pprof/", pprofPort))
-		Expect(err).To(BeNil())
+		var resp *http.Response
+		Eventually(func() error {
+			var err error
+			resp, err = http.Get(fmt.Sprintf("http://127.0.0.1:%d/debug/pprof/", pprofPort))
+			return err
+		}).Should(BeNil())
 		Expect(resp.StatusCode).To(Equal(200))
 	})
 })
