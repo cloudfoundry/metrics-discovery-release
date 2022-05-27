@@ -1,14 +1,15 @@
 package target_test
 
 import (
-	"code.cloudfoundry.org/metrics-discovery/internal/target"
 	"fmt"
-	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
 	"io/ioutil"
 	"log"
 	"os"
 	"time"
+
+	"code.cloudfoundry.org/metrics-discovery/internal/target"
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("FileProvider", func() {

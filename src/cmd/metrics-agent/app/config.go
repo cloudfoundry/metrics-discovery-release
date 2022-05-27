@@ -1,10 +1,11 @@
 package app
 
 import (
-	"code.cloudfoundry.org/go-envstruct"
-	"code.cloudfoundry.org/loggregator-agent-release/src/pkg/config"
 	"fmt"
 	"time"
+
+	"code.cloudfoundry.org/go-envstruct"
+	"code.cloudfoundry.org/loggregator-agent-release/src/pkg/config"
 )
 
 // Config holds the configuration for the metrics agent
