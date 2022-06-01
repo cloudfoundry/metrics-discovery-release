@@ -336,10 +336,10 @@ type pubOpts struct {
 	ctx context.Context
 	ttl time.Duration
 	id  string
-	lid string // Expected last msgId
-	str string // Expected stream name
-	seq uint64 // Expected last sequence
-	lss uint64 // Expected last sequence per subject
+	lid string  // Expected last msgId
+	str string  // Expected stream name
+	seq *uint64 // Expected last sequence
+	lss *uint64 // Expected last sequence per subject
 
 	// Publish retries for NoResponders err.
 	rwait time.Duration // Retry wait between attempts
@@ -371,6 +371,13 @@ const (
 	ExpectedLastSubjSeqHdr = "Nats-Expected-Last-Subject-Sequence"
 	ExpectedLastMsgIdHdr   = "Nats-Expected-Last-Msg-Id"
 	MsgRollup              = "Nats-Rollup"
+)
+
+// Headers for republished messages.
+const (
+	JSStream       = "Nats-Stream"
+	JSSequence     = "Nats-Sequence"
+	JSLastSequence = "Nats-Last-Sequence"
 )
 
 // MsgSize is a header that will be part of a consumer's delivered message if HeadersOnly requested.
@@ -415,11 +422,11 @@ func (js *js) PublishMsg(m *Msg, opts ...PubOpt) (*PubAck, error) {
 	if o.str != _EMPTY_ {
 		m.Header.Set(ExpectedStreamHdr, o.str)
 	}
-	if o.seq > 0 {
-		m.Header.Set(ExpectedLastSeqHdr, strconv.FormatUint(o.seq, 10))
+	if o.seq != nil {
+		m.Header.Set(ExpectedLastSeqHdr, strconv.FormatUint(*o.seq, 10))
 	}
-	if o.lss > 0 {
-		m.Header.Set(ExpectedLastSubjSeqHdr, strconv.FormatUint(o.lss, 10))
+	if o.lss != nil {
+		m.Header.Set(ExpectedLastSubjSeqHdr, strconv.FormatUint(*o.lss, 10))
 	}
 
 	var resp *Msg
@@ -749,11 +756,11 @@ func (js *js) PublishMsgAsync(m *Msg, opts ...PubOpt) (PubAckFuture, error) {
 	if o.str != _EMPTY_ {
 		m.Header.Set(ExpectedStreamHdr, o.str)
 	}
-	if o.seq > 0 {
-		m.Header.Set(ExpectedLastSeqHdr, strconv.FormatUint(o.seq, 10))
+	if o.seq != nil {
+		m.Header.Set(ExpectedLastSeqHdr, strconv.FormatUint(*o.seq, 10))
 	}
-	if o.lss > 0 {
-		m.Header.Set(ExpectedLastSubjSeqHdr, strconv.FormatUint(o.lss, 10))
+	if o.lss != nil {
+		m.Header.Set(ExpectedLastSubjSeqHdr, strconv.FormatUint(*o.lss, 10))
 	}
 
 	// Reply
@@ -822,7 +829,7 @@ func ExpectStream(stream string) PubOpt {
 // ExpectLastSequence sets the expected sequence in the response from the publish.
 func ExpectLastSequence(seq uint64) PubOpt {
 	return pubOptFn(func(opts *pubOpts) error {
-		opts.seq = seq
+		opts.seq = &seq
 		return nil
 	})
 }
@@ -830,7 +837,7 @@ func ExpectLastSequence(seq uint64) PubOpt {
 // ExpectLastSequencePerSubject sets the expected sequence per subject in the response from the publish.
 func ExpectLastSequencePerSubject(seq uint64) PubOpt {
 	return pubOptFn(func(opts *pubOpts) error {
-		opts.lss = seq
+		opts.lss = &seq
 		return nil
 	})
 }
@@ -851,7 +858,7 @@ func RetryWait(dur time.Duration) PubOpt {
 	})
 }
 
-// RetryAttempts sets the retry number of attemopts when ErrNoResponders is encountered.
+// RetryAttempts sets the retry number of attempts when ErrNoResponders is encountered.
 func RetryAttempts(num int) PubOpt {
 	return pubOptFn(func(opts *pubOpts) error {
 		opts.rnum = num
@@ -961,8 +968,6 @@ func (d nakDelay) configureAck(opts *ackOpts) error {
 type ConsumerConfig struct {
 	Durable         string          `json:"durable_name,omitempty"`
 	Description     string          `json:"description,omitempty"`
-	DeliverSubject  string          `json:"deliver_subject,omitempty"`
-	DeliverGroup    string          `json:"deliver_group,omitempty"`
 	DeliverPolicy   DeliverPolicy   `json:"deliver_policy"`
 	OptStartSeq     uint64          `json:"opt_start_seq,omitempty"`
 	OptStartTime    *time.Time      `json:"opt_start_time,omitempty"`
@@ -984,8 +989,17 @@ type ConsumerConfig struct {
 	MaxRequestBatch   int           `json:"max_batch,omitempty"`
 	MaxRequestExpires time.Duration `json:"max_expires,omitempty"`
 
+	// Push based consumers.
+	DeliverSubject string `json:"deliver_subject,omitempty"`
+	DeliverGroup   string `json:"deliver_group,omitempty"`
+
 	// Ephemeral inactivity threshold.
 	InactiveThreshold time.Duration `json:"inactive_threshold,omitempty"`
+
+	// Generally inherited by parent stream and other markers, now can be configured directly.
+	Replicas int `json:"num_replicas"`
+	// Force memory storage.
+	MemoryStorage bool `json:"mem_storage,omitempty"`
 }
 
 // ConsumerInfo is the info from a JetStream consumer.
@@ -2414,12 +2428,20 @@ func PullMaxWaiting(n int) SubOpt {
 	})
 }
 
-var errNoMessages = errors.New("nats: no messages")
+var (
+	// errNoMessages is an error that a Fetch request using no_wait can receive to signal
+	// that there are no more messages available.
+	errNoMessages = errors.New("nats: no messages")
+
+	// errRequestsPending is an error that represents a sub.Fetch requests that was using
+	// no_wait and expires time got discarded by the server.
+	errRequestsPending = errors.New("nats: requests pending")
+)
 
 // Returns if the given message is a user message or not, and if
 // `checkSts` is true, returns appropriate error based on the
 // content of the status (404, etc..)
-func checkMsg(msg *Msg, checkSts bool) (usrMsg bool, err error) {
+func checkMsg(msg *Msg, checkSts, isNoWait bool) (usrMsg bool, err error) {
 	// Assume user message
 	usrMsg = true
 
@@ -2448,11 +2470,17 @@ func checkMsg(msg *Msg, checkSts bool) (usrMsg bool, err error) {
 		// 404 indicates that there are no messages.
 		err = errNoMessages
 	case reqTimeoutSts:
-		// Older servers may send a 408 when a request in the server was expired
-		// and interest is still found, which will be the case for our
-		// implementation. Regardless, ignore 408 errors until receiving at least
-		// one message.
-		err = ErrTimeout
+		// In case of a fetch request with no wait request and expires time,
+		// need to skip 408 errors and retry.
+		if isNoWait {
+			err = errRequestsPending
+		} else {
+			// Older servers may send a 408 when a request in the server was expired
+			// and interest is still found, which will be the case for our
+			// implementation. Regardless, ignore 408 errors until receiving at least
+			// one message when making requests without no_wait.
+			err = ErrTimeout
+		}
 	default:
 		err = fmt.Errorf("nats: %s", msg.Header.Get(descrHdr))
 	}
@@ -2567,7 +2595,7 @@ func (sub *Subscription) Fetch(batch int, opts ...PullOpt) ([]*Msg, error) {
 		// or status message, however, we don't care about values of status
 		// messages at this point in the Fetch() call, so checkMsg can't
 		// return an error.
-		if usrMsg, _ := checkMsg(msg, false); usrMsg {
+		if usrMsg, _ := checkMsg(msg, false, false); usrMsg {
 			msgs = append(msgs, msg)
 		}
 	}
@@ -2610,11 +2638,11 @@ func (sub *Subscription) Fetch(batch int, opts ...PullOpt) ([]*Msg, error) {
 			if err == nil {
 				var usrMsg bool
 
-				usrMsg, err = checkMsg(msg, true)
+				usrMsg, err = checkMsg(msg, true, noWait)
 				if err == nil && usrMsg {
 					msgs = append(msgs, msg)
-				} else if noWait && (err == errNoMessages) && len(msgs) == 0 {
-					// If we have a 404 for our "no_wait" request and have
+				} else if noWait && (err == errNoMessages || err == errRequestsPending) && len(msgs) == 0 {
+					// If we have a 404/408 for our "no_wait" request and have
 					// not collected any message, then resend request to
 					// wait this time.
 					noWait = false
