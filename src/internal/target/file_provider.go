@@ -1,12 +1,13 @@
 package target
 
 import (
-	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"log"
 	"path/filepath"
 	"sync"
 	"time"
+
+	"gopkg.in/yaml.v2"
 )
 
 type fileProvider struct {

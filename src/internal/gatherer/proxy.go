@@ -1,18 +1,19 @@
 package gatherer
 
 import (
-	metrics "code.cloudfoundry.org/go-metric-registry"
-	"code.cloudfoundry.org/loggregator-agent-release/src/pkg/scraper"
-	"code.cloudfoundry.org/tlsconfig"
 	"fmt"
-	io_prometheus_client "github.com/prometheus/client_model/go"
-	"github.com/prometheus/common/expfmt"
 	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"strings"
 	"time"
+
+	metrics "code.cloudfoundry.org/go-metric-registry"
+	"code.cloudfoundry.org/loggregator-agent-release/src/pkg/scraper"
+	"code.cloudfoundry.org/tlsconfig"
+	io_prometheus_client "github.com/prometheus/client_model/go"
+	"github.com/prometheus/common/expfmt"
 )
 
 type ProxyGatherer struct {
