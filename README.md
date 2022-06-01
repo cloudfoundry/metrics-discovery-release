@@ -1,10 +1,10 @@
 # Metrics Discovery Release
-[![slack.cloudfoundry.org][slack-badge]][loggregator-slack]
-[![CI Badge][ci-badge]][ci-pipeline]
 
 The Metrics Discovery Release is intended to give release authors an easy way to discover Prometheus Exposition formatted
 metrics endpoints in their Cloudfoundry Deployments. It consists of two components: The Metrics Discovery Registrar and
 the Scrape Config Generator.
+
+If you have any questions, or want to get attention for a PR or issue please reach out on the [#logging-and-metrics channel in the cloudfoundry slack](https://cloudfoundry.slack.com/archives/CUW93AF3M)
 
 ![architecture]
 
@@ -34,16 +34,6 @@ for changes.
 An agent that proxies to components with a `prom_scraper_config.yml` and
 receives metrics from the Forwarder Agent and exposes them on a prometheus-scrapable endpoint.
 More information can be found in the [docs][metrics-agent]
-
-### CI Pipeline
-The configuration for the Concourse pipeline lives in the `ci` directory. To
-fly and set up the pipeline, use the `./ci/set-pipeline.sh` script. This will
-set `ci/metrics-discovery-release.yml` pipeline config.
-
-[slack-badge]:         https://slack.cloudfoundry.org/badge.svg
-[loggregator-slack]:   https://cloudfoundry.slack.com/archives/loggregator
-[ci-badge]:            https://concourse.cf-denver.com/teams/loggregator/pipelines/metrics-discovery-release/badge
-[ci-pipeline]:         https://concourse.cf-denver.com/teams/loggregator/pipelines/metrics-discovery-release
 
 [metrics-agent]:        docs/metrics-agent.md
 [architecture]:         docs/metrics_discovery_release_architecture.png
