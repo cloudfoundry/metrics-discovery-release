@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	_ "net/http/pprof"
+	_ "net/http/pprof" // nolint:gosec
 	"time"
 
 	gendiodes "code.cloudfoundry.org/go-diodes"
@@ -244,7 +244,7 @@ func (m *MetricsAgent) Stop() {
 		defer cancelFunc()
 
 		if m.metricsServer != nil {
-			m.metricsServer.Shutdown(ctx)
+			_ = m.metricsServer.Shutdown(ctx)
 		}
 	}()
 

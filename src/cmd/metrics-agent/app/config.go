@@ -1,7 +1,7 @@
 package app
 
 import (
-	"fmt"
+	"log"
 	"time"
 
 	"code.cloudfoundry.org/go-envstruct"
@@ -59,11 +59,14 @@ func LoadConfig() Config {
 			ExpirationInterval: time.Minute,
 		},
 	}
+
 	if err := envstruct.Load(&cfg); err != nil {
-		panic(fmt.Sprintf("Failed to load config from environment: %s", err))
+		log.Fatal(err)
 	}
 
-	envstruct.WriteReport(&cfg)
+	if err := envstruct.WriteReport(&cfg); err != nil {
+		log.Fatal(err)
+	}
 
 	return cfg
 }

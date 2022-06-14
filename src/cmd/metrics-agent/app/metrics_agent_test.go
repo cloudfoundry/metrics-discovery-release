@@ -432,7 +432,8 @@ func newStubPromServer() *stubPromServer {
 func (s *stubPromServer) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	s.requestHeaders <- req.Header
 	s.requestPaths <- req.URL.Path
-	w.Write([]byte(s.resp))
+	_, err := w.Write([]byte(s.resp))
+	Expect(err).ToNot(HaveOccurred())
 }
 
 const promOutput = `

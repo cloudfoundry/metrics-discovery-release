@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	_ "net/http/pprof"
+	_ "net/http/pprof" // nolint:gosec
 	"time"
 
 	metrics "code.cloudfoundry.org/go-metric-registry"
@@ -55,7 +55,12 @@ func (r *DynamicRegistrar) Start(debugMetrics bool, pprofPort uint16) {
 	if debugMetrics {
 		r.metrics.RegisterDebugMetrics()
 		r.pprofServer = &http.Server{Addr: fmt.Sprintf("127.0.0.1:%d", pprofPort), Handler: http.DefaultServeMux}
-		go func() { r.pprofServer.ListenAndServe() }()
+		go func() {
+			err := r.pprofServer.ListenAndServe()
+			if err != http.ErrServerClosed {
+				log.Fatalf("pprof error: %s", err)
+			}
+		}()
 	}
 	ticker := time.NewTicker(r.publishInterval)
 
@@ -75,7 +80,7 @@ func (r *DynamicRegistrar) Start(debugMetrics bool, pprofPort uint16) {
 func (r *DynamicRegistrar) publishTargets() {
 	targets := r.targetProvider()
 	for _, t := range targets {
-		bytes, err := yaml.Marshal(&t)
+		bytes, err := yaml.Marshal(t)
 		if err != nil {
 			r.logger.Printf("unable to marshal target(%s): %s\n", t.Source, err)
 			continue

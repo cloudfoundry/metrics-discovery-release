@@ -108,7 +108,7 @@ func (c *ProxyGatherer) scrape(scrapeConfig scraper.PromScraperConfig) ([]*io_pr
 	}
 
 	defer func() {
-		io.Copy(ioutil.Discard, resp.Body)
+		_, _ = io.Copy(ioutil.Discard, resp.Body)
 		resp.Body.Close()
 	}()
 
