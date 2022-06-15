@@ -15,6 +15,7 @@ import (
 	metrics "code.cloudfoundry.org/go-metric-registry"
 	"code.cloudfoundry.org/metrics-discovery/cmd/discovery-registrar/app"
 	"code.cloudfoundry.org/metrics-discovery/internal/target"
+	"code.cloudfoundry.org/tlsconfig"
 )
 
 func main() {
@@ -78,10 +79,17 @@ func getTLSConfig(cfg app.Config) *tls.Config {
 		log.Fatalf("Failed to load certificate from cert: %s and key: %s", cfg.NatsCertPath, cfg.NatsKeyPath)
 	}
 
-	return &tls.Config{
-		Certificates: []tls.Certificate{cert},
-		RootCAs:      caCertPool,
+	config, err := tlsconfig.Build(
+		tlsconfig.WithInternalServiceDefaults(),
+		tlsconfig.WithIdentity(cert),
+	).Client(
+		tlsconfig.WithAuthority(caCertPool),
+	)
+	if err != nil {
+		log.Fatalf("Failed to build TLS config: %s", err)
 	}
+
+	return config
 }
 
 func waitForTermination() {
