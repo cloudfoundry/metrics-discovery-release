@@ -11,7 +11,7 @@ import (
 	"code.cloudfoundry.org/metrics-discovery/internal/gatherer"
 	"code.cloudfoundry.org/metrics-discovery/internal/testhelpers"
 	"code.cloudfoundry.org/tlsconfig"
-	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/types"
 	io_prometheus_client "github.com/prometheus/client_model/go"
