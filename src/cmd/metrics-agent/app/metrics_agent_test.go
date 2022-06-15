@@ -23,7 +23,7 @@ import (
 	"code.cloudfoundry.org/metrics-discovery/internal/testhelpers"
 	"code.cloudfoundry.org/tlsconfig"
 	"github.com/gogo/protobuf/proto"
-	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	dto "github.com/prometheus/client_model/go"
 	"github.com/prometheus/common/expfmt"

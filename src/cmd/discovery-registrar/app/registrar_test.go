@@ -7,7 +7,7 @@ import (
 	"code.cloudfoundry.org/go-metric-registry/testhelpers"
 	"code.cloudfoundry.org/metrics-discovery/cmd/discovery-registrar/app"
 	"code.cloudfoundry.org/metrics-discovery/internal/target"
-	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	"gopkg.in/yaml.v2"
 
