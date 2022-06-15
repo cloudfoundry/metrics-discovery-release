@@ -53,4 +53,6 @@ properties:
     description: "TLS certificate to communicate with the NATs server signed by the NATs CA"
   nats_client.key:
     description: "TLS private key to communicate with the NATs server signed by the NATs CA"
-
+  nats_instance_group:
+    description: "When deployed to this instance group, connect to the same instance via its IP address rather than via DNS lookup"
+    default: ""

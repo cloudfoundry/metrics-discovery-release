@@ -1,0 +1,31 @@
+- type: replace
+  path: /instance_groups/name=doppler/jobs/name=scrape-config-generator?
+  value:
+    name: scrape-config-generator
+    release: metrics-discovery
+    properties:
+      metrics:
+        ca_cert: "((scrape_config_generator_metrics_tls.ca))"
+        cert: "((scrape_config_generator_metrics_tls.certificate))"
+        key: "((scrape_config_generator_metrics_tls.private_key))"
+        server_name: scrape_config_generator_metrics
+      nats_client:
+        cert: "((nats_client_cert.certificate))"
+        key: "((nats_client_cert.private_key))"
+
+- type: replace
+  path: /releases/name=metrics-discovery?
+  value:
+    name: metrics-discovery
+    version: latest
+
+- type: replace
+  path: /variables/name=scrape_config_generator_metrics_tls?
+  value:
+    name: scrape_config_generator_metrics_tls
+    type: certificate
+    options:
+      ca: metric_scraper_ca
+      common_name: scrape_config_generator_metrics
+      extended_key_usage:
+      - server_auth
