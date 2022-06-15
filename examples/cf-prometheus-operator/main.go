@@ -1,6 +1,8 @@
 package main
 
 import (
+	"crypto/tls"
+	"crypto/x509"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -12,6 +14,7 @@ import (
 	"syscall"
 	"time"
 
+	"code.cloudfoundry.org/tlsconfig"
 	"github.com/nats-io/nats.go"
 	"gopkg.in/yaml.v2"
 )
@@ -99,7 +102,7 @@ func buildNatsConn(logger *log.Logger) *nats.Conn {
 
 	var natsServers []string
 	for _, natsHost := range natsHosts {
-		natsServers = append(natsServers, fmt.Sprintf("nats://nats:%s@%s:4222", natsPassword, natsHost))
+		natsServers = append(natsServers, fmt.Sprintf("nats://nats:%s@%s:4224", natsPassword, natsHost))
 	}
 	opts := nats.Options{
 		Servers:           natsServers,
@@ -110,6 +113,7 @@ func buildNatsConn(logger *log.Logger) *nats.Conn {
 		ClosedCB:          closedCB(logger),
 		DisconnectedErrCB: disconnectErrHandler(logger),
 		ReconnectedCB:     reconnectedCB(logger),
+		TLSConfig:         getTLSConfig(),
 	}
 
 	natsConn, err := opts.Connect()
@@ -128,7 +132,7 @@ func (cg *configGenerator) writeConfigToFile() {
 		return
 	}
 
-	if ! cg.configModified(newCfgBytes) {
+	if !cg.configModified(newCfgBytes) {
 		return
 	}
 
@@ -260,6 +264,34 @@ func (cg *configGenerator) generate(message *nats.Msg) {
 	}
 
 	cg.addTarget(scrapeTarget)
+}
+
+func getTLSConfig() *tls.Config {
+	caCert := []byte(os.Getenv("NATS_CA_CERT"))
+	clientCert := []byte(os.Getenv("NATS_CLIENT_CERT"))
+	clientKey := []byte(os.Getenv("NATS_CLIENT_KEY"))
+	caCertPool := x509.NewCertPool()
+
+	if !caCertPool.AppendCertsFromPEM(caCert) {
+		log.Fatalf("Failed to load CA certificate")
+	}
+
+	cert, err := tls.X509KeyPair(clientCert, clientKey)
+	if err != nil {
+		log.Fatalf("Failed to load client certificate %s", err)
+	}
+
+	config, err := tlsconfig.Build(
+		tlsconfig.WithInternalServiceDefaults(),
+		tlsconfig.WithIdentity(cert),
+	).Client(
+		tlsconfig.WithAuthority(caCertPool),
+	)
+	if err != nil {
+		log.Fatalf("Failed to build TLS config: %s", err)
+	}
+
+	return config
 }
 
 func (cg *configGenerator) unmarshalScrapeTarget(message *nats.Msg) (*Target, bool) {
