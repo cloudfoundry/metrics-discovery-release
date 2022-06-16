@@ -8,13 +8,13 @@ import (
 )
 
 type Config struct {
-	NatsHosts                []string      `env:"NATS_HOSTS,              required, report"`
-	NatsCAPath               string        `env:"NATS_CA_PATH,            required, report"`
-	NatsCertPath             string        `env:"NATS_CERT_PATH,          required, report"`
-	NatsKeyPath              string        `env:"NATS_KEY_PATH,           required, report"`
+	NatsHosts                []string      `env:"NATS_HOSTS, required"`
+	NatsCAPath               string        `env:"NATS_CA_PATH, required, report"`
+	NatsCertPath             string        `env:"NATS_CERT_PATH, required, report"`
+	NatsKeyPath              string        `env:"NATS_KEY_PATH, required, report"`
 	ScrapeConfigFilePath     string        `env:"SCRAPE_CONFIG_FILE_PATH, required, report"`
-	ConfigExpirationInterval time.Duration `env:"CONFIG_EXPIRATION_INTERVAL,        report"`
-	ConfigTimeToLive         time.Duration `env:"CONFIG_TTL,                        report"`
+	ConfigExpirationInterval time.Duration `env:"CONFIG_EXPIRATION_INTERVAL, report"`
+	ConfigTimeToLive         time.Duration `env:"CONFIG_TTL, report"`
 	WriteFrequency           time.Duration `env:"WRITE_FREQUENCY, report"`
 
 	MetricsPort     int    `env:"METRICS_PORT, report"`
