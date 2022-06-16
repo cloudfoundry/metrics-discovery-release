@@ -20,7 +20,7 @@ require (
 	gopkg.in/yaml.v2 v2.4.0
 )
 
-require github.com/onsi/ginkgo/v2 v2.1.3
+require github.com/onsi/ginkgo/v2 v2.1.4
 
 require (
 	code.cloudfoundry.org/go-batching v0.0.0-20171020220229-924d2a9b48ac // indirect
@@ -41,7 +41,7 @@ require (
 	golang.org/x/sys v0.0.0-20220412211240-33da011f77ad // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/time v0.0.0-20220411224347-583f2d630306 // indirect
-	golang.org/x/tools v0.0.0-20210106214847-113979e3529a // indirect
+	golang.org/x/tools v0.1.10 // indirect
 	google.golang.org/genproto v0.0.0-20200825200019-8632dd797987 // indirect
 	google.golang.org/protobuf v1.28.0 // indirect
 )
