@@ -10,7 +10,6 @@ require (
 	code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20220414165629-2e7c7acd0371
 	code.cloudfoundry.org/tlsconfig v0.0.0-20220621140725-0e6fbd869921
 	github.com/benjamintf1/unmarshalledmatchers v0.0.0-20190408201839-bb1c1f34eaea
-	github.com/gogo/protobuf v1.3.2 // pinned
 	github.com/nats-io/nats.go v1.16.0
 	github.com/onsi/gomega v1.19.0
 	github.com/prometheus/client_golang v1.12.2
@@ -20,7 +19,10 @@ require (
 	gopkg.in/yaml.v2 v2.4.0
 )
 
-require github.com/onsi/ginkgo/v2 v2.1.4
+require (
+	github.com/onsi/ginkgo/v2 v2.1.4
+	google.golang.org/protobuf v1.28.0
+)
 
 require (
 	code.cloudfoundry.org/go-batching v0.0.0-20171020220229-924d2a9b48ac // indirect
@@ -46,6 +48,5 @@ require (
 	golang.org/x/time v0.0.0-20220411224347-583f2d630306 // indirect
 	golang.org/x/tools v0.1.11 // indirect
 	google.golang.org/genproto v0.0.0-20220627200112-0a929928cb33 // indirect
-	google.golang.org/protobuf v1.28.0 // indirect
 	gopkg.in/tomb.v1 v1.0.0-20141024135613-dd632973f1e7 // indirect
 )
