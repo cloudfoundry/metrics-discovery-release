@@ -1,10 +1,11 @@
 package v2
 
 import (
-	"code.cloudfoundry.org/go-metric-registry"
 	"log"
 
-	"code.cloudfoundry.org/go-loggregator/v8/rpc/loggregator_v2"
+	metrics "code.cloudfoundry.org/go-metric-registry"
+
+	"code.cloudfoundry.org/go-loggregator/v9/rpc/loggregator_v2"
 	"golang.org/x/net/context"
 )
 
@@ -18,6 +19,8 @@ type MetricClient interface {
 }
 
 type Receiver struct {
+	loggregator_v2.UnimplementedIngressServer
+
 	dataSetter           DataSetter
 	ingressMetric        func(uint64)
 	originMappingsMetric func(uint64)
