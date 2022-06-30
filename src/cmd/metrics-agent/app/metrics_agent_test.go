@@ -14,7 +14,7 @@ import (
 	"sync"
 	"time"
 
-	"code.cloudfoundry.org/go-loggregator/v8"
+	"code.cloudfoundry.org/go-loggregator/v9"
 	metrichelpers "code.cloudfoundry.org/go-metric-registry/testhelpers"
 	"code.cloudfoundry.org/loggregator-agent-release/src/pkg/config"
 	"code.cloudfoundry.org/loggregator-agent-release/src/pkg/scraper"
