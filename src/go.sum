@@ -39,10 +39,12 @@ code.cloudfoundry.org/go-envstruct v1.5.0 h1:GmDS5Kbckkoxy39JGRwD/13jO1OROqf69B2
 code.cloudfoundry.org/go-envstruct v1.5.0/go.mod h1:E2S/gzRZpZ51PZnIv7Bo7QvcgH18yio19upkrRk0xLU=
 code.cloudfoundry.org/go-loggregator/v8 v8.0.6-0.20220628021345-c05fa6657b2b h1:dJ0th4P8qv9Yhyru5cA5v3p7u24hSc6Yhq1SSRxV4rQ=
 code.cloudfoundry.org/go-loggregator/v8 v8.0.6-0.20220628021345-c05fa6657b2b/go.mod h1:OtLDPvZl6ecd3EJkqW9VTCGInELuYAh2iHjoVnp+gUk=
+code.cloudfoundry.org/go-loggregator/v9 v9.0.0 h1:ZjQZORL0YTOYTSHJo7qw2GYnipRJZE61jjYOYpiLiqM=
+code.cloudfoundry.org/go-loggregator/v9 v9.0.0/go.mod h1:iksssq0GqoXWjH4MZWhFdgHW0zGaEQOqcC+5eqVtZ1A=
 code.cloudfoundry.org/go-metric-registry v0.0.0-20220413184115-9d3f03df39ef h1:0UMRQKUhCtC4ZzxEgBOHaKUJtmXAYR6rd7NAvO5ojA8=
 code.cloudfoundry.org/go-metric-registry v0.0.0-20220413184115-9d3f03df39ef/go.mod h1:3SnTkcKdl8WhBG/4HaTaPYbL9vSn9v/GTWSlCUDs3OA=
-code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20220414165629-2e7c7acd0371 h1:7PtVBzsF4ATvoG3Nltu71qnAFF91s87RIyOGy1cPy3Q=
-code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20220414165629-2e7c7acd0371/go.mod h1:lHM7epnSvFiUBoC8lGmFZPk1/dVqlQTDwNSF3UdbXQQ=
+code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20220628224457-d1d2a9f24c9a h1:H9mAvQ8exXEAB6j8LlvaKb/2ZvDNRiLgLKUEqleKDLI=
+code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20220628224457-d1d2a9f24c9a/go.mod h1:4nA5EqYeqFu6RTUzOafguqAw+8u+ZYHAdEW0KxsNVAM=
 code.cloudfoundry.org/tlsconfig v0.0.0-20200131000646-bbe0f8da39b3/go.mod h1:eTbFJpyXRGuFVyg5+oaj9B2eIbIc+0/kZjH8ftbtdew=
 code.cloudfoundry.org/tlsconfig v0.0.0-20220621140725-0e6fbd869921 h1:1PLAuQR56K2pw0lnlcXe+37uOaGg939W1Lqv8wxYpu4=
 code.cloudfoundry.org/tlsconfig v0.0.0-20220621140725-0e6fbd869921/go.mod h1:oItDsgL/IixCV1BTTY9XqyhGojI5wyEgyPcBwXfKbvs=

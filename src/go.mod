@@ -7,7 +7,7 @@ require (
 	code.cloudfoundry.org/go-envstruct v1.5.0
 	code.cloudfoundry.org/go-loggregator/v8 v8.0.6-0.20220628021345-c05fa6657b2b
 	code.cloudfoundry.org/go-metric-registry v0.0.0-20220413184115-9d3f03df39ef
-	code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20220414165629-2e7c7acd0371
+	code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20220628224457-d1d2a9f24c9a
 	code.cloudfoundry.org/tlsconfig v0.0.0-20220621140725-0e6fbd869921
 	github.com/benjamintf1/unmarshalledmatchers v0.0.0-20190408201839-bb1c1f34eaea
 	github.com/nats-io/nats.go v1.16.0
@@ -26,6 +26,7 @@ require (
 
 require (
 	code.cloudfoundry.org/go-batching v0.0.0-20171020220229-924d2a9b48ac // indirect
+	code.cloudfoundry.org/go-loggregator/v9 v9.0.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/fsnotify/fsnotify v1.5.4 // indirect
