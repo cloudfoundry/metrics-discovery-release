@@ -77,7 +77,11 @@ func NewMetricsAgent(cfg Config, scrapeConfigProvider ScrapeConfigProvider, metr
 func (m *MetricsAgent) Run() {
 	if m.debugMetrics {
 		m.metrics.RegisterDebugMetrics()
-		m.pprofServer = &http.Server{Addr: fmt.Sprintf("127.0.0.1:%d", m.pprofPort), Handler: http.DefaultServeMux}
+		m.pprofServer = &http.Server{
+			Addr:              fmt.Sprintf("127.0.0.1:%d", m.pprofPort),
+			Handler:           http.DefaultServeMux,
+			ReadHeaderTimeout: 2 * time.Second,
+		}
 		go func() { m.log.Println("PPROF SERVER STOPPED " + m.pprofServer.ListenAndServe().Error()) }()
 	}
 	envelopeBuffer := m.envelopeDiode()
@@ -176,11 +180,12 @@ func (m *MetricsAgent) startMetricsServer(envelopeCollector *collector.EnvelopeC
 		m.cfg.MetricsServer.CAFile,
 	)
 	m.metricsServer = &http.Server{
-		Addr:         fmt.Sprintf(":%d", m.cfg.MetricsExporter.Port),
-		ReadTimeout:  15 * time.Second,
-		WriteTimeout: 15 * time.Second,
-		Handler:      router,
-		TLSConfig:    tlsConfig,
+		Addr:              fmt.Sprintf(":%d", m.cfg.MetricsExporter.Port),
+		ReadTimeout:       15 * time.Second,
+		WriteTimeout:      15 * time.Second,
+		Handler:           router,
+		TLSConfig:         tlsConfig,
+		ReadHeaderTimeout: 15 * time.Second,
 	}
 
 	log.Printf("Metrics server closing: %s", m.metricsServer.ListenAndServeTLS("", ""))

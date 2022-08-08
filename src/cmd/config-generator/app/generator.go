@@ -84,7 +84,11 @@ func NewConfigGenerator(
 func (cg *ConfigGenerator) Start(debugMetrics bool, pprofPort uint16) {
 	if debugMetrics {
 		cg.metrics.RegisterDebugMetrics()
-		cg.pprofServer = &http.Server{Addr: fmt.Sprintf("127.0.0.1:%d", pprofPort), Handler: http.DefaultServeMux}
+		cg.pprofServer = &http.Server{
+			Addr:              fmt.Sprintf("127.0.0.1:%d", pprofPort),
+			Handler:           http.DefaultServeMux,
+			ReadHeaderTimeout: 2 * time.Second,
+		}
 		go func() { cg.logger.Println("PPROF SERVER STOPPED " + cg.pprofServer.ListenAndServe().Error()) }()
 	}
 

@@ -54,7 +54,11 @@ func NewDynamicRegistrar(tp TargetProvider, p Publisher, publishInterval time.Du
 func (r *DynamicRegistrar) Start(debugMetrics bool, pprofPort uint16) {
 	if debugMetrics {
 		r.metrics.RegisterDebugMetrics()
-		r.pprofServer = &http.Server{Addr: fmt.Sprintf("127.0.0.1:%d", pprofPort), Handler: http.DefaultServeMux}
+		r.pprofServer = &http.Server{
+			Addr:              fmt.Sprintf("127.0.0.1:%d", pprofPort),
+			Handler:           http.DefaultServeMux,
+			ReadHeaderTimeout: 2 * time.Second,
+		}
 		go func() {
 			err := r.pprofServer.ListenAndServe()
 			if err != http.ErrServerClosed {
