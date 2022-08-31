@@ -20,7 +20,7 @@ require (
 
 require (
 	code.cloudfoundry.org/go-loggregator/v9 v9.0.2
-	github.com/onsi/ginkgo/v2 v2.1.5
+	github.com/onsi/ginkgo/v2 v2.1.6
 	google.golang.org/protobuf v1.28.1
 )
 
