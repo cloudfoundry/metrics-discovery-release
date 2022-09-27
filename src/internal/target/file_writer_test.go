@@ -1,7 +1,6 @@
 package target_test
 
 import (
-	"io/ioutil"
 	"log"
 	"os"
 
@@ -46,7 +45,7 @@ var _ = Describe("File Writer", func() {
 	}
 
 	var readTargetsFromFile = func(tc *testContext) []target.Target {
-		f, err := ioutil.ReadFile(tc.targetsFile)
+		f, err := os.ReadFile(tc.targetsFile)
 		Expect(err).ToNot(HaveOccurred())
 
 		var targets []target.Target

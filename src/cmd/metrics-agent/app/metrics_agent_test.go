@@ -4,7 +4,6 @@ import (
 	"context"
 	b64 "encoding/base64"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net"
 	"net/http"
@@ -108,7 +107,7 @@ var _ = Describe("MetricsAgent", func() {
 		go metricsAgent.Run()
 		waitForMetricsEndpoint(metricsPort, testCerts)
 
-		f, err := ioutil.ReadFile(targetsFile)
+		f, err := os.ReadFile(targetsFile)
 		Expect(err).ToNot(HaveOccurred())
 
 		var targets []target.Target

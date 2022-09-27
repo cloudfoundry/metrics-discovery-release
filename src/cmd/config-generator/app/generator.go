@@ -3,7 +3,6 @@ package app
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	_ "net/http/pprof" // nolint:gosec
@@ -153,7 +152,7 @@ func (cg *ConfigGenerator) writeConfigToFile() {
 		return
 	}
 
-	err = ioutil.WriteFile(cg.path, data, os.ModePerm)
+	err = os.WriteFile(cg.path, data, os.ModePerm)
 	if err != nil {
 		cg.logger.Printf("failed to write scrape config file: %s\n", err)
 	}

@@ -3,7 +3,6 @@ package main
 import (
 	"crypto/tls"
 	"crypto/x509"
-	"io/ioutil"
 	"log"
 	"os"
 	"os/signal"
@@ -63,7 +62,7 @@ func connectToNATS(cfg app.Config, logger *log.Logger) *nats.Conn {
 }
 
 func getTLSConfig(cfg app.Config) *tls.Config {
-	caCert, err := ioutil.ReadFile(cfg.NatsCAPath)
+	caCert, err := os.ReadFile(cfg.NatsCAPath)
 	if err != nil {
 		log.Fatal(err)
 	}
