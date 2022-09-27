@@ -3,7 +3,6 @@ package main
 import (
 	"crypto/tls"
 	"crypto/x509"
-	"io/ioutil"
 	"log"
 	"os"
 	"time"
@@ -57,7 +56,7 @@ func main() {
 }
 
 func getTLSConfig(cfg app.Config) *tls.Config {
-	caCert, err := ioutil.ReadFile(cfg.NatsCAPath)
+	caCert, err := os.ReadFile(cfg.NatsCAPath)
 	if err != nil {
 		log.Fatal(err)
 	}

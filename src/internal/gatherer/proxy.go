@@ -3,7 +3,6 @@ package gatherer
 import (
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"strings"
@@ -108,12 +107,12 @@ func (c *ProxyGatherer) scrape(scrapeConfig scraper.PromScraperConfig) ([]*io_pr
 	}
 
 	defer func() {
-		_, _ = io.Copy(ioutil.Discard, resp.Body)
+		_, _ = io.Copy(io.Discard, resp.Body)
 		resp.Body.Close()
 	}()
 
 	if resp.StatusCode != http.StatusOK {
-		body, _ := ioutil.ReadAll(resp.Body)
+		body, _ := io.ReadAll(resp.Body)
 		return nil, fmt.Errorf("unexpected status code %d: %s", resp.StatusCode, body)
 	}
 

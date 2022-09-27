@@ -2,7 +2,6 @@ package target_test
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"time"
@@ -79,12 +78,12 @@ var _ = Describe("FileProvider", func() {
 })
 
 func targetConfigFile(fileName string) *os.File {
-	dir, err := ioutil.TempDir("", "")
+	dir, err := os.MkdirTemp("", "")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	f, err := ioutil.TempFile(dir, fileName)
+	f, err := os.CreateTemp(dir, fileName)
 	if err != nil {
 		log.Fatal(err)
 	}

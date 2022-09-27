@@ -2,9 +2,9 @@ package app_test
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"code.cloudfoundry.org/go-metric-registry/testhelpers"
@@ -23,7 +23,7 @@ var _ = Describe("Config generator", func() {
 	}
 
 	var setup = func() *testContext {
-		tmpDir, err := ioutil.TempDir("", "")
+		tmpDir, err := os.MkdirTemp("", "")
 		Expect(err).ToNot(HaveOccurred())
 
 		return &testContext{
@@ -37,7 +37,7 @@ var _ = Describe("Config generator", func() {
 		var fileData []byte
 
 		Eventually(func() string {
-			fileData, _ = ioutil.ReadFile(tc.configPath)
+			fileData, _ = os.ReadFile(tc.configPath)
 
 			return string(fileData)
 		}).ShouldNot(Equal(""))
@@ -109,7 +109,7 @@ var _ = Describe("Config generator", func() {
 		})
 
 		Consistently(func() error {
-			_, err := ioutil.ReadFile(tc.configPath)
+			_, err := os.ReadFile(tc.configPath)
 			return err
 		}).ShouldNot(Succeed())
 	})

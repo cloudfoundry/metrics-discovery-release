@@ -1,8 +1,8 @@
 package target
 
 import (
-	"io/ioutil"
 	"log"
+	"os"
 	"path/filepath"
 	"sync"
 	"time"
@@ -48,7 +48,7 @@ func (fp *fileProvider) populateTargets() {
 	}
 
 	for _, f := range files {
-		yamlFile, err := ioutil.ReadFile(f)
+		yamlFile, err := os.ReadFile(f)
 		if err != nil {
 			fp.logger.Printf("cannot read file: %s", err)
 			continue
