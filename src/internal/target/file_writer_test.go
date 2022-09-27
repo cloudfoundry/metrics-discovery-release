@@ -12,40 +12,30 @@ import (
 )
 
 var _ = Describe("File Writer", func() {
-	type testContext struct {
-		targetsFile string
-		metricsHost string
-		cfg         target.WriterConfig
-		logger      *log.Logger
-	}
+	const host = "127.0.0.1:9991"
 
-	var setup = func(scrapeConfigs []scraper.PromScraperConfig) *testContext {
-		tc := &testContext{
-			targetsFile: os.TempDir() + "/metrics_targets.yml",
-			metricsHost: "127.0.0.1:9991",
-			logger:      log.New(GinkgoWriter, "", 0),
-		}
+	var (
+		scrapeCfgs []scraper.PromScraperConfig
+		tmpDir     string
+	)
 
-		tc.cfg = target.WriterConfig{
-			MetricsHost: tc.metricsHost,
+	JustBeforeEach(func() {
+		tmpDir = GinkgoT().TempDir()
+		cfg := target.WriterConfig{
+			MetricsHost: host,
 			DefaultLabels: map[string]string{
 				"a": "1",
 				"b": "2",
 			},
 			InstanceID:    "instance_id",
-			File:          tc.targetsFile,
-			ScrapeConfigs: scrapeConfigs,
+			File:          tmpDir + "/metrics_targets.yml",
+			ScrapeConfigs: scrapeCfgs,
 		}
+		target.WriteFile(cfg, log.New(GinkgoWriter, "", 0))
+	})
 
-		return tc
-	}
-
-	var teardown = func(tc *testContext) {
-		os.Remove(tc.targetsFile)
-	}
-
-	var readTargetsFromFile = func(tc *testContext) []target.Target {
-		f, err := os.ReadFile(tc.targetsFile)
+	var readTargetsFromFile = func(tmpDir string) []target.Target {
+		f, err := os.ReadFile(tmpDir + "/metrics_targets.yml")
 		Expect(err).ToNot(HaveOccurred())
 
 		var targets []target.Target
@@ -55,15 +45,10 @@ var _ = Describe("File Writer", func() {
 		return targets
 	}
 
-	It("creates a metrics_targets.yml file with the agent as a target.", func() {
-		tc := setup(nil)
-		defer teardown(tc)
-
-		target.WriteFile(tc.cfg, tc.logger)
-
-		Expect(readTargetsFromFile(tc)).To(ConsistOf(
+	It("creates a metrics_targets.yml file with the agent as a target", func() {
+		Expect(readTargetsFromFile(tmpDir)).To(ConsistOf(
 			target.Target{
-				Targets: []string{tc.metricsHost},
+				Targets: []string{host},
 				Labels: map[string]string{
 					"a":           "1",
 					"b":           "2",
@@ -74,31 +59,32 @@ var _ = Describe("File Writer", func() {
 		))
 	})
 
-	It("adds default labels from scrape config and global config to target", func() {
-		tc := setup([]scraper.PromScraperConfig{{
-			SourceID:   "source_id_scraped",
-			InstanceID: "ignore this",
-			Labels: map[string]string{
-				"scrape_config_label": "lemons",
-			},
-		}})
-		defer teardown(tc)
-
-		target.WriteFile(tc.cfg, tc.logger)
-
-		Expect(readTargetsFromFile(tc)).To(ContainElement(
-			target.Target{
-				Targets: []string{tc.metricsHost},
+	Context("when other prom scraper configs are provided", func() {
+		BeforeEach(func() {
+			scrapeCfgs = []scraper.PromScraperConfig{{
+				SourceID:   "source_id_scraped",
+				InstanceID: "ignore this",
 				Labels: map[string]string{
-					"__param_id":          "source_id_scraped",
-					"a":                   "1",
-					"b":                   "2",
 					"scrape_config_label": "lemons",
-					"source_id":           "source_id_scraped",
-					"instance_id":         "instance_id",
 				},
-				Source: "source_id_scraped__instance_id",
-			},
-		))
+			}}
+		})
+
+		It("adds default labels from those prom scraper configs to the target", func() {
+			Expect(readTargetsFromFile(tmpDir)).To(ContainElement(
+				target.Target{
+					Targets: []string{host},
+					Labels: map[string]string{
+						"__param_id":          "source_id_scraped",
+						"a":                   "1",
+						"b":                   "2",
+						"scrape_config_label": "lemons",
+						"source_id":           "source_id_scraped",
+						"instance_id":         "instance_id",
+					},
+					Source: "source_id_scraped__instance_id",
+				},
+			))
+		})
 	})
 })
