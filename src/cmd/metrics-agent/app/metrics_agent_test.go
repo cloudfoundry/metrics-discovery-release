@@ -47,9 +47,8 @@ var _ = Describe("MetricsAgent", func() {
 	BeforeEach(func() {
 		testCerts = testhelpers.GenerateCerts("loggregatorCA")
 
-		targetsFile = os.TempDir() + "/metrics_targets.yml"
-		grpcPort = getFreePort()
-		metricsPort = getFreePort()
+		targetsFile = GinkgoT().TempDir() + "/metrics_targets.yml"
+		grpcPort, metricsPort = getFreePorts()
 		cfg = app.Config{
 			MetricsExporter: app.MetricsExporterConfig{
 				Port:                 metricsPort,
@@ -99,7 +98,6 @@ var _ = Describe("MetricsAgent", func() {
 
 	AfterEach(func() {
 		metricsAgent.Stop()
-		_ = os.Remove(targetsFile)
 	})
 
 	It("creates a metrics_targets.yml file with the agent as a target.", func() {
@@ -395,14 +393,20 @@ func newTestingIngressClient(grpcPort int, testCerts *testhelpers.TestCerts) *lo
 	return ingressClient
 }
 
-func getFreePort() uint16 {
+func getFreePorts() (uint16, uint16) {
 	l, err := net.Listen("tcp", "localhost:0")
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	defer l.Close()
-	return uint16(l.Addr().(*net.TCPAddr).Port)
+
+	l2, err := net.Listen("tcp", "localhost:0")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer l2.Close()
+
+	return uint16(l.Addr().(*net.TCPAddr).Port), uint16(l2.Addr().(*net.TCPAddr).Port)
 }
 
 type stubPromServer struct {
