@@ -19,8 +19,12 @@ var _ = Describe("File Writer", func() {
 		tmpDir     string
 	)
 
-	JustBeforeEach(func() {
+	BeforeEach(func() {
+		scrapeCfgs = []scraper.PromScraperConfig{}
 		tmpDir = GinkgoT().TempDir()
+	})
+
+	JustBeforeEach(func() {
 		cfg := target.WriterConfig{
 			MetricsHost: host,
 			DefaultLabels: map[string]string{
