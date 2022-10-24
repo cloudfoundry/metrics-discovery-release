@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	code.cloudfoundry.org/go-diodes v0.0.0-20220601181242-ac2da19efd60
-	code.cloudfoundry.org/go-envstruct v1.5.0
+	code.cloudfoundry.org/go-envstruct v1.6.0
 	code.cloudfoundry.org/go-metric-registry v0.0.0-20220413184115-9d3f03df39ef
 	code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20220628224457-d1d2a9f24c9a
 	code.cloudfoundry.org/tlsconfig v0.0.0-20220621140725-0e6fbd869921
