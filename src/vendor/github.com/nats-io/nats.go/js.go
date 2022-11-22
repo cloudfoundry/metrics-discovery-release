@@ -1529,7 +1529,7 @@ func (js *js) subscribe(subj, queue string, cb MsgHandler, ch chan *Msg, isSync,
 
 	// Find the stream mapped to the subject if not bound to a stream already.
 	if o.stream == _EMPTY_ {
-		stream, err = js.lookupStreamBySubject(subj)
+		stream, err = js.StreamNameBySubject(subj)
 		if err != nil {
 			return nil, err
 		}
@@ -2144,30 +2144,6 @@ type streamNamesResponse struct {
 	Streams []string `json:"streams"`
 }
 
-func (js *js) lookupStreamBySubject(subj string) (string, error) {
-	var slr streamNamesResponse
-	req := &streamRequest{subj}
-	j, err := json.Marshal(req)
-	if err != nil {
-		return _EMPTY_, err
-	}
-	resp, err := js.nc.Request(js.apiSubj(apiStreams), j, js.opts.wait)
-	if err != nil {
-		if err == ErrNoResponders {
-			err = ErrJetStreamNotEnabled
-		}
-		return _EMPTY_, err
-	}
-	if err := json.Unmarshal(resp.Data, &slr); err != nil {
-		return _EMPTY_, err
-	}
-
-	if slr.Error != nil || len(slr.Streams) != 1 {
-		return _EMPTY_, ErrNoMatchingStream
-	}
-	return slr.Streams[0], nil
-}
-
 type subOpts struct {
 	// For attaching.
 	stream, consumer string
@@ -2599,6 +2575,12 @@ func checkMsg(msg *Msg, checkSts, isNoWait bool) (usrMsg bool, err error) {
 			// one message when making requests without no_wait.
 			err = ErrTimeout
 		}
+	case jetStream409Sts:
+		if strings.Contains(strings.ToLower(string(msg.Header.Get(descrHdr))), "consumer deleted") {
+			err = ErrConsumerDeleted
+			break
+		}
+		fallthrough
 	default:
 		err = fmt.Errorf("nats: %s", msg.Header.Get(descrHdr))
 	}
