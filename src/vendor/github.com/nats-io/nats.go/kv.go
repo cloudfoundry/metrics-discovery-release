@@ -25,9 +25,7 @@ import (
 	"time"
 )
 
-// Notice: Experimental Preview
-//
-// This functionality is EXPERIMENTAL and may be changed in later releases.
+// KeyValueManager is used to manage KeyValue stores.
 type KeyValueManager interface {
 	// KeyValue will lookup and bind to an existing KeyValue store.
 	KeyValue(bucket string) (KeyValue, error)
@@ -41,9 +39,7 @@ type KeyValueManager interface {
 	KeyValueStores() <-chan KeyValueStatus
 }
 
-// Notice: Experimental Preview
-//
-// This functionality is EXPERIMENTAL and may be changed in later releases.
+// KeyValue contains methods to operate on a KeyValue store.
 type KeyValue interface {
 	// Get returns the latest value for the key.
 	Get(key string) (entry KeyValueEntry, err error)
@@ -297,6 +293,10 @@ var (
 	ErrKeyDeleted             = errors.New("nats: key was deleted")
 	ErrHistoryToLarge         = errors.New("nats: history limited to a max of 64")
 	ErrNoKeysFound            = errors.New("nats: no keys found")
+)
+
+var (
+	ErrKeyExists JetStreamError = &jsError{apiErr: &APIError{ErrorCode: JSErrCodeStreamWrongLastSequence, Code: 400}, message: "key exists"}
 )
 
 const (
@@ -629,6 +629,13 @@ func (kv *kvs) Create(key string, value []byte) (revision uint64, err error) {
 		return kv.Update(key, value, e.Revision())
 	}
 
+	// Check if the expected last subject sequence is not zero which implies
+	// the key already exists.
+	if errors.Is(err, ErrKeyExists) {
+		jserr := ErrKeyExists.(*jsError)
+		return 0, fmt.Errorf("%w: %s", err, jserr.message)
+	}
+
 	return 0, err
 }
 
@@ -665,7 +672,11 @@ func (kv *kvs) Delete(key string, opts ...DeleteOpt) error {
 	if kv.useJSPfx {
 		b.WriteString(kv.js.opts.pre)
 	}
-	b.WriteString(kv.pre)
+	if kv.putPre != _EMPTY_ {
+		b.WriteString(kv.putPre)
+	} else {
+		b.WriteString(kv.pre)
+	}
 	b.WriteString(key)
 
 	// DEL op marker. For watch functionality.
@@ -922,7 +933,7 @@ func (kv *kvs) Watch(keys string, opts ...WatchOpt) (KeyWatcher, error) {
 	}
 
 	// Used ordered consumer to deliver results.
-	subOpts := []SubOpt{OrderedConsumer()}
+	subOpts := []SubOpt{BindStream(kv.stream), OrderedConsumer()}
 	if !o.includeHistory {
 		subOpts = append(subOpts, DeliverLastPerSubject())
 	}
@@ -1009,7 +1020,7 @@ func (js *js) KeyValueStoreNames() <-chan string {
 		defer close(ch)
 		for l.Next() {
 			for _, info := range l.Page() {
-				if !strings.HasPrefix(info.Config.Name, "KV_") {
+				if !strings.HasPrefix(info.Config.Name, kvBucketNamePre) {
 					continue
 				}
 				ch <- info.Config.Name
@@ -1029,10 +1040,10 @@ func (js *js) KeyValueStores() <-chan KeyValueStatus {
 		defer close(ch)
 		for l.Next() {
 			for _, info := range l.Page() {
-				if !strings.HasPrefix(info.Config.Name, "KV_") {
+				if !strings.HasPrefix(info.Config.Name, kvBucketNamePre) {
 					continue
 				}
-				ch <- &KeyValueBucketStatus{nfo: info, bucket: strings.TrimPrefix(info.Config.Name, "KV_")}
+				ch <- &KeyValueBucketStatus{nfo: info, bucket: strings.TrimPrefix(info.Config.Name, kvBucketNamePre)}
 			}
 		}
 	}()
