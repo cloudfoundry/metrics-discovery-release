@@ -1,5 +1,5 @@
 name: metrics-discovery
 blobstore:
-  provider: s3
+  provider: gcs
   options:
     bucket_name: metrics-discovery-release-blobs
