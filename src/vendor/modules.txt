@@ -79,7 +79,7 @@ github.com/nats-io/nkeys
 # github.com/nats-io/nuid v1.0.1
 ## explicit
 github.com/nats-io/nuid
-# github.com/onsi/ginkgo/v2 v2.7.0
+# github.com/onsi/ginkgo/v2 v2.7.1
 ## explicit; go 1.18
 github.com/onsi/ginkgo/v2
 github.com/onsi/ginkgo/v2/config
@@ -178,7 +178,7 @@ golang.org/x/text/unicode/bidi
 golang.org/x/text/unicode/norm
 # golang.org/x/time v0.0.0-20220411224347-583f2d630306
 ## explicit
-# golang.org/x/tools v0.4.0
+# golang.org/x/tools v0.5.0
 ## explicit; go 1.18
 golang.org/x/tools/go/ast/inspector
 golang.org/x/tools/internal/typeparams
