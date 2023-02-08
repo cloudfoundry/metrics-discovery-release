@@ -24,18 +24,23 @@ var (
 
 type sourceIDBucket struct {
 	lastUpdate time.Time
-	metrics    map[string]prometheus.Metric
+	metrics    map[string]metricWithExpiry
+}
+
+type metricWithExpiry struct {
+	lastUpdate time.Time
+	metric     prometheus.Metric
 }
 
 func newSourceIDBucket() *sourceIDBucket {
 	return &sourceIDBucket{
 		lastUpdate: time.Now(),
-		metrics:    map[string]prometheus.Metric{},
+		metrics:    map[string]metricWithExpiry{},
 	}
 }
 
 func (b *sourceIDBucket) addMetric(id string, metric prometheus.Metric) {
-	b.metrics[id] = metric
+	b.metrics[id] = metricWithExpiry{metric: metric, lastUpdate: time.Now()}
 	b.lastUpdate = time.Now()
 }
 
@@ -96,6 +101,11 @@ func (c *EnvelopeCollector) expireMetrics() {
 			if bucket.lastUpdate.Before(tooOld) {
 				delete(c.metricBuckets, sourceID)
 			}
+			for id, metric := range bucket.metrics {
+				if metric.lastUpdate.Before(tooOld) {
+					delete(bucket.metrics, id)
+				}
+			}
 		}
 		c.Unlock()
 	}
@@ -112,12 +122,12 @@ func (c *EnvelopeCollector) Collect(ch chan<- prometheus.Metric) {
 
 	for _, bucket := range c.metricBuckets {
 		for _, metric := range bucket.metrics {
-			ch <- metric
+			ch <- metric.metric
 		}
 	}
 }
 
-//Write implements v2.Writer
+// Write implements v2.Writer
 func (c *EnvelopeCollector) Write(env *loggregator_v2.Envelope) error {
 	metrics, err := c.convertEnvelope(env)
 	if err != nil {
@@ -247,10 +257,12 @@ func (c *EnvelopeCollector) convertTimer(env *loggregator_v2.Envelope) (metricID
 
 	c.Lock()
 	bucket := c.getOrCreateBucket(env.GetSourceId())
-	metric, ok := bucket.metrics[id]
+	metricWithExpiry, ok := bucket.metrics[id]
 	c.Unlock()
 
-	if !ok {
+	if ok {
+		metric = metricWithExpiry.metric
+	} else {
 		metric = prometheus.NewHistogram(prometheus.HistogramOpts{
 			Name:        name,
 			Help:        help,
@@ -258,7 +270,6 @@ func (c *EnvelopeCollector) convertTimer(env *loggregator_v2.Envelope) (metricID
 			ConstLabels: labelTags(labelNames, labelValues),
 		})
 	}
-
 	metric.(prometheus.Histogram).Observe(durationInSeconds(timer))
 
 	return id, metric, nil

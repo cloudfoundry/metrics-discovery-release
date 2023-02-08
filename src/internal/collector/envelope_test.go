@@ -424,6 +424,30 @@ var _ = Describe("EnvelopeCollector", func() {
 				haveName("counter_to_keep"),
 			))
 		})
+		It("removes individual metrics that haven't been updated recently", func() {
+			envelopeCollector := collector.NewEnvelopeCollector(testhelpers.NewMetricsRegistry(), collector.WithSourceIDExpiration(time.Second, time.Millisecond))
+
+			Expect(envelopeCollector.Write(counterWithSourceID("counter_to_keep", "sourceID"))).To(Succeed())
+			go func() {
+				for range time.Tick(100 * time.Millisecond) {
+					Expect(envelopeCollector.Write(counterWithSourceID("counter_to_keep", "sourceID"))).To(Succeed())
+				}
+			}()
+
+			Expect(envelopeCollector.Write(counterWithSourceID("counter_to_expire", "sourceID"))).To(Succeed())
+			Expect(envelopeCollector.Write(gaugeWithSourceID("gauge_to_expire", "sourceID"))).To(Succeed())
+			Expect(collectMetrics(envelopeCollector)).To(receiveInAnyOrder(
+				haveName("counter_to_expire"),
+				haveName("gauge_to_expire"),
+				haveName("counter_to_keep"),
+			))
+
+			Eventually(func() chan prometheus.Metric {
+				return collectMetrics(envelopeCollector)
+			}, 2).Should(receiveOnly(
+				haveName("counter_to_keep"),
+			))
+		})
 	})
 })
 
