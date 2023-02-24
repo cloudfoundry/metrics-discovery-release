@@ -27,8 +27,8 @@ code.cloudfoundry.org/loggregator-agent-release/src/pkg/scraper
 ## explicit; go 1.17
 code.cloudfoundry.org/tlsconfig
 code.cloudfoundry.org/tlsconfig/certtest
-# github.com/benjamintf1/unmarshalledmatchers v0.0.0-20190408201839-bb1c1f34eaea
-## explicit
+# github.com/benjamintf1/unmarshalledmatchers v1.0.0
+## explicit; go 1.14
 github.com/benjamintf1/unmarshalledmatchers
 # github.com/beorn7/perks v1.0.1
 ## explicit; go 1.11
