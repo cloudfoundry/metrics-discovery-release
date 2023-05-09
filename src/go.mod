@@ -11,9 +11,9 @@ require (
 	github.com/benjamintf1/unmarshalledmatchers v1.0.0
 	github.com/nats-io/nats.go v1.25.0
 	github.com/onsi/gomega v1.27.6
-	github.com/prometheus/client_golang v1.15.0
-	github.com/prometheus/client_model v0.3.0
-	github.com/prometheus/common v0.42.0
+	github.com/prometheus/client_golang v1.15.1
+	github.com/prometheus/client_model v0.4.0
+	github.com/prometheus/common v0.43.0
 	google.golang.org/grpc v1.55.0
 	gopkg.in/yaml.v2 v2.4.0
 )
@@ -39,7 +39,6 @@ require (
 	github.com/nats-io/nkeys v0.4.4 // indirect
 	github.com/nats-io/nuid v1.0.1 // indirect
 	github.com/prometheus/procfs v0.9.0 // indirect
-	github.com/rogpeppe/go-internal v1.10.0 // indirect
 	github.com/square/certstrap v1.2.0 // indirect
 	golang.org/x/crypto v0.6.0 // indirect
 	golang.org/x/net v0.9.0 // indirect
