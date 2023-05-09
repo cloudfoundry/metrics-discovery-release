@@ -11,7 +11,7 @@ require (
 	github.com/benjamintf1/unmarshalledmatchers v1.0.0
 	github.com/nats-io/nats.go v1.25.0
 	github.com/onsi/gomega v1.27.6
-	github.com/prometheus/client_golang v1.15.0
+	github.com/prometheus/client_golang v1.15.1
 	github.com/prometheus/client_model v0.3.0
 	github.com/prometheus/common v0.42.0
 	google.golang.org/grpc v1.55.0
