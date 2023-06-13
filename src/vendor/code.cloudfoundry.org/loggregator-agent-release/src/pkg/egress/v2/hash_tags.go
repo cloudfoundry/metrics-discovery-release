@@ -1,7 +1,7 @@
 package v2
 
 import (
-	"crypto/sha1"
+	"crypto/sha256"
 	"fmt"
 	"io"
 	"sort"
@@ -15,9 +15,9 @@ func HashTags(tags map[string]string) string {
 	}
 	sort.Sort(byKey(elements))
 	for _, element := range elements {
-		kHash, vHash := sha1.New(), sha1.New()
-		io.WriteString(kHash, element.k)
-		io.WriteString(vHash, element.v)
+		kHash, vHash := sha256.New(), sha256.New()
+		io.WriteString(kHash, element.k) //nolint:errcheck
+		io.WriteString(vHash, element.v) //nolint:errcheck
 		hash += fmt.Sprintf("%x%x", kHash.Sum(nil), vHash.Sum(nil))
 	}
 	return hash
