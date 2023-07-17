@@ -6,6 +6,7 @@ templates:
   grpc_ca.crt.erb: config/certs/grpc_ca.crt
   grpc.crt.erb: config/certs/grpc.crt
   grpc.key.erb: config/certs/grpc.key
+  ingress_port.yml.erb: config/ingress_port.yml
   prom_scraper_config.yml.erb: config/prom_scraper_config.yml
   metrics_ca.crt.erb: config/certs/metrics_ca.crt
   metrics.crt.erb: config/certs/metrics.crt
