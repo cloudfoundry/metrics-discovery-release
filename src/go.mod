@@ -5,23 +5,20 @@ go 1.20
 require (
 	code.cloudfoundry.org/go-diodes v0.0.0-20230606195509-9853201afab8
 	code.cloudfoundry.org/go-envstruct v1.6.0
+	code.cloudfoundry.org/go-loggregator/v9 v9.0.7
 	code.cloudfoundry.org/go-metric-registry v0.0.0-20230607145746-0cddddb73783
 	code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20230608175423-4394b5447a85
 	code.cloudfoundry.org/tlsconfig v0.0.0-20230612153104-23c0622de227
 	github.com/benjamintf1/unmarshalledmatchers v1.0.0
 	github.com/nats-io/nats.go v1.28.0
+	github.com/onsi/ginkgo/v2 v2.11.0
 	github.com/onsi/gomega v1.27.10
 	github.com/prometheus/client_golang v1.16.0
 	github.com/prometheus/client_model v0.4.0
 	github.com/prometheus/common v0.44.0
 	google.golang.org/grpc v1.57.0
-	gopkg.in/yaml.v2 v2.4.0
-)
-
-require (
-	code.cloudfoundry.org/go-loggregator/v9 v9.0.7
-	github.com/onsi/ginkgo/v2 v2.11.0
 	google.golang.org/protobuf v1.31.0
+	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (
@@ -49,5 +46,5 @@ require (
 	golang.org/x/text v0.11.0 // indirect
 	golang.org/x/tools v0.9.3 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20230530153820-e85fd2cbaebc // indirect
-	gopkg.in/yaml.v3 v3.0.1 // indirect
+	gopkg.in/yaml.v2 v2.4.0 // indirect
 )

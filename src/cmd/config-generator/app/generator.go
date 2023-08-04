@@ -14,7 +14,7 @@ import (
 	"code.cloudfoundry.org/metrics-discovery/internal/registry"
 	"code.cloudfoundry.org/metrics-discovery/internal/target"
 	"github.com/nats-io/nats.go"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 )
 
 type Subscriber func(queue string, callback nats.MsgHandler) (*nats.Subscription, error)

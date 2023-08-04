@@ -8,7 +8,7 @@ import (
 	"code.cloudfoundry.org/metrics-discovery/internal/target"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 )
 
 var _ = Describe("File Writer", func() {
