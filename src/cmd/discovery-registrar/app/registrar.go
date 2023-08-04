@@ -10,7 +10,7 @@ import (
 	metrics "code.cloudfoundry.org/go-metric-registry"
 	"code.cloudfoundry.org/metrics-discovery/internal/registry"
 	"code.cloudfoundry.org/metrics-discovery/internal/target"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 )
 
 type TargetProvider func() []*target.Target

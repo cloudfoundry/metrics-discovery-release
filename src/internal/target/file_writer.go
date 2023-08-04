@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"code.cloudfoundry.org/loggregator-agent-release/src/pkg/scraper"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 )
 
 type WriterConfig struct {
