@@ -20,6 +20,10 @@ packages:
 - metrics-agent
 
 properties:
+  disable:
+    description: "Disable this job so that it will not run"
+    default: false
+
   port:
     description: "Port the agent is serving gRPC via mTLS"
     default: 3461

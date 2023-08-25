@@ -19,6 +19,10 @@ packages:
 - metrics-discovery-registrar-windows
 
 properties:
+  disable:
+    description: "Disable this job so that it will not run"
+    default: false
+
   publish_interval:
     description: "Interval to publish targets"
     default: 15s

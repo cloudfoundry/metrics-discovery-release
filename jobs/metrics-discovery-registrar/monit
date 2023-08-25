@@ -1,5 +1,7 @@
+<% unless p("disable") %>
 check process metrics-discovery-registrar
   with pidfile /var/vcap/sys/run/bpm/metrics-discovery-registrar/metrics-discovery-registrar.pid
   start program "/var/vcap/jobs/bpm/bin/bpm start metrics-discovery-registrar"
   stop program "/var/vcap/jobs/bpm/bin/bpm stop metrics-discovery-registrar"
   group vcap
+<% end %>

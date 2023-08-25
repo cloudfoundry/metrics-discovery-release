@@ -44,9 +44,10 @@
     process["env"]["SCRAPE_KEY_PATH"] = "#{certs_dir}/scrape.key"
   }
 
-  monit = {
-    "processes" => [process]
-  }
+  monit = { "processes" => [] }
+  unless p('disable')
+    monit["processes"] = [process]
+  end
 %>
 
 <%= JSON.pretty_generate(monit) %>
