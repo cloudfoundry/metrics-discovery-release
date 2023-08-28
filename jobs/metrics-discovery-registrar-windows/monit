@@ -24,16 +24,17 @@
     "PPROF_PORT" => "#{p("metrics.pprof_port")}",
   }
 
-  monit = {
-    "processes" => [
-      {
+  process = {
         "name" => "metrics-discovery-registrar-windows",
         "executable" => "/var/vcap/packages/metrics-discovery-registrar-windows/discovery-registrar.exe",
         "args" => [],
         "env" => env
-      }
-    ]
   }
+
+  monit = { "processes" => [] }
+  unless p('disable')
+    monit["processes"] = [process]
+  end
 %>
 
 <%= JSON.pretty_generate(monit) %>
