@@ -5,7 +5,7 @@ go 1.20
 require (
 	code.cloudfoundry.org/go-diodes v0.0.0-20230606195509-9853201afab8
 	code.cloudfoundry.org/go-envstruct v1.6.0
-	code.cloudfoundry.org/go-loggregator/v9 v9.0.7
+	code.cloudfoundry.org/go-loggregator/v9 v9.0.8
 	code.cloudfoundry.org/go-metric-registry v0.0.0-20230607145746-0cddddb73783
 	code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20230608175423-4394b5447a85
 	code.cloudfoundry.org/tlsconfig v0.0.0-20230612153104-23c0622de227
@@ -40,10 +40,10 @@ require (
 	github.com/prometheus/procfs v0.10.1 // indirect
 	github.com/square/certstrap v1.3.0 // indirect
 	go.step.sm/crypto v0.32.0 // indirect
-	golang.org/x/crypto v0.12.0 // indirect
-	golang.org/x/net v0.14.0 // indirect
+	golang.org/x/crypto v0.13.0 // indirect
+	golang.org/x/net v0.15.0 // indirect
 	golang.org/x/sys v0.12.0 // indirect
-	golang.org/x/text v0.12.0 // indirect
+	golang.org/x/text v0.13.0 // indirect
 	golang.org/x/tools v0.12.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20230711160842-782d3b101e98 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
