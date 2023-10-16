@@ -10,7 +10,7 @@ require (
 	code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20230608175423-4394b5447a85
 	code.cloudfoundry.org/tlsconfig v0.0.0-20230612153104-23c0622de227
 	github.com/benjamintf1/unmarshalledmatchers v1.0.0
-	github.com/nats-io/nats.go v1.30.2
+	github.com/nats-io/nats.go v1.31.0
 	github.com/onsi/ginkgo/v2 v2.13.0
 	github.com/onsi/gomega v1.28.0
 	github.com/prometheus/client_golang v1.17.0
@@ -33,7 +33,6 @@ require (
 	github.com/google/pprof v0.0.0-20230602150820-91b7bce49751 // indirect
 	github.com/klauspost/compress v1.17.0 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.4 // indirect
-	github.com/nats-io/nats-server/v2 v2.9.18 // indirect
 	github.com/nats-io/nkeys v0.4.5 // indirect
 	github.com/nats-io/nuid v1.0.1 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
