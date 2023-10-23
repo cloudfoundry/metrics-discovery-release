@@ -1,3 +1,8 @@
+# DEPRECATED
+
+This bosh release is deprecated by [RFC 0022](https://github.com/cloudfoundry/community/blob/main/toc/rfc/rfc-0022-deprecate-metrics-agent.md).
+This will be removed from CF Deployment after Nov 23, 2023 and will be archived after Jan 23, 2024.
+
 # Metrics Discovery Release
 
 The Metrics Discovery Release is intended to give release authors an easy way to discover Prometheus Exposition formatted
