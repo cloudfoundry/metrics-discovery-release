@@ -1,0 +1,80 @@
+name: metrics-discovery
+version: 3.2.21
+commit_hash: 02c845ad
+uncommitted_changes: false
+jobs:
+- name: metrics-agent
+  version: 32da6cc50210d76366b7c0d6e6e21716f24a73b170cb0d581fdd122fff8a6e2c
+  fingerprint: 32da6cc50210d76366b7c0d6e6e21716f24a73b170cb0d581fdd122fff8a6e2c
+  sha1: sha256:419cd1ac5fd9b4d8fcb53d75ab490777198bcb8983aa1ecbe7e02f4f36e727ed
+  packages:
+  - metrics-agent
+- name: metrics-agent-windows
+  version: f255693a25facf537af6c2196b32221d00f9c80038694982d2fb2711cc863c47
+  fingerprint: f255693a25facf537af6c2196b32221d00f9c80038694982d2fb2711cc863c47
+  sha1: sha256:a1226c618ee289a6777c7fc5ec6827cf42f8006f3778a9b714a1c2db48ab7c0c
+  packages:
+  - metrics-agent-windows
+- name: metrics-discovery-registrar
+  version: 068649bf5567c96ba1235e67b44bc0b4054a9491d71c9eb3bf92ac791157fcd1
+  fingerprint: 068649bf5567c96ba1235e67b44bc0b4054a9491d71c9eb3bf92ac791157fcd1
+  sha1: sha256:01f7b9193be28950e426cf2e0ea13b068fe8661b403025ec74cb363a28290e41
+  packages:
+  - metrics-discovery-registrar
+- name: metrics-discovery-registrar-windows
+  version: 8283f7bad0152290edafbd9bcfdff7041877f92429e9ead4d4514ed0aa58a1a6
+  fingerprint: 8283f7bad0152290edafbd9bcfdff7041877f92429e9ead4d4514ed0aa58a1a6
+  sha1: sha256:435f7bf7d06b47f720381fc866eae4938275d82c26993f88a33120444715b11e
+  packages:
+  - metrics-discovery-registrar-windows
+- name: scrape-config-generator
+  version: c74baf4d66b199d3171f47ebaafef16a745ef5cd471047095ac6693ee07381ae
+  fingerprint: c74baf4d66b199d3171f47ebaafef16a745ef5cd471047095ac6693ee07381ae
+  sha1: sha256:01d22c07d1ed8eee4f07e65bdef621d49aee2f6c695174cf62ce85128b0eeb7e
+  packages:
+  - scrape-config-generator
+packages:
+- name: golang-1.20-linux
+  version: d2ed2f3fc2fa5d1832997a1f08b879ca7b91ed6838e55c08ad6198ac74afb652
+  fingerprint: d2ed2f3fc2fa5d1832997a1f08b879ca7b91ed6838e55c08ad6198ac74afb652
+  sha1: sha256:b82ce9cca40328da5a46daf0bccdcd1d5b5ec955d784ca6cd15195727f7a964e
+  dependencies: []
+- name: golang-1.20-windows
+  version: e6719b14cb0070095ce72b7fb5908c335e8165b5f9f100ffd6dd3f1d9b0069c4
+  fingerprint: e6719b14cb0070095ce72b7fb5908c335e8165b5f9f100ffd6dd3f1d9b0069c4
+  sha1: sha256:5df7d79de7e11b134ad52122e5e7fc15dd3c187db6ae6384493bcc57f3a634a7
+  dependencies: []
+- name: metrics-agent
+  version: 7eec3fd7c279300e6a22614f15c8eee24c29a4a8258fdfa258ebe7eb07292fc1
+  fingerprint: 7eec3fd7c279300e6a22614f15c8eee24c29a4a8258fdfa258ebe7eb07292fc1
+  sha1: sha256:f4f185a98aae56707853f7c6b4490270c1509f0de9fc9085a277e58d093ba52f
+  dependencies:
+  - golang-1.20-linux
+- name: metrics-agent-windows
+  version: cb7de1fdd1eee94634cc0e797b1ab584052226d5cc0699b70d91413dc50c483d
+  fingerprint: cb7de1fdd1eee94634cc0e797b1ab584052226d5cc0699b70d91413dc50c483d
+  sha1: sha256:bed05f4e765e65776f2331833c8d81f8ec88c6f8299017526d5e3965657a0247
+  dependencies:
+  - golang-1.20-windows
+- name: metrics-discovery-registrar
+  version: 75d3673beda6b9108cf879e09fbffe599ef8c7b018cb0d9134ed6f7f418a6cc3
+  fingerprint: 75d3673beda6b9108cf879e09fbffe599ef8c7b018cb0d9134ed6f7f418a6cc3
+  sha1: sha256:c4609038425b7fdc8470b8cb0c84de442ad381ae3c711f33182ef52f7009e554
+  dependencies:
+  - golang-1.20-linux
+- name: metrics-discovery-registrar-windows
+  version: cb013365f1f4d5269b71c5241139aed96bfd81de3797a54ad35d2ce92f9a0ebb
+  fingerprint: cb013365f1f4d5269b71c5241139aed96bfd81de3797a54ad35d2ce92f9a0ebb
+  sha1: sha256:963da9637427cd250f1a458e44e7d1bad8bff5e6e8fd958323ec6ac1ff69edb3
+  dependencies:
+  - golang-1.20-windows
+- name: scrape-config-generator
+  version: 9702da1ddd359f22468b34ec246ded64f720a102e6a53227e652890ab2ce9fb2
+  fingerprint: 9702da1ddd359f22468b34ec246ded64f720a102e6a53227e652890ab2ce9fb2
+  sha1: sha256:ffcb0de65cff27114a16ec8df4ef7462cfb28476c4bcd5b1bff1a36a570ce080
+  dependencies:
+  - golang-1.20-linux
+license:
+  version: d2660bcbd0571d7cf1652800677e81ede2425417a8955856e1440035205167c9
+  fingerprint: d2660bcbd0571d7cf1652800677e81ede2425417a8955856e1440035205167c9
+  sha1: sha256:5d9d9be92bb408ac52e43467ad600b2abc5e8ab7655a18d88396965ebbbad21f
