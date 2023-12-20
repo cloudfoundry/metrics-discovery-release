@@ -1,0 +1,87 @@
+---
+- type: replace
+  path: /releases/name=metrics-discovery?
+  value:
+    name: metrics-discovery
+    version: latest
+    url: https://bosh.io/d/github.com/cloudfoundry/metrics-discovery-release
+- type: replace
+  path: /addons/name=metrics-discovery-registrar?
+  value:
+    name: metrics-discovery-registrar
+    exclude:
+      jobs:
+      - name: smoke_tests
+        release: cf-smoke-tests
+    include:
+      stemcell:
+      - os: ubuntu-bionic
+      - os: ubuntu-jammy
+    jobs:
+    - name: metrics-discovery-registrar
+      properties:
+        metrics:
+          ca_cert: ((metrics_discovery_metrics_tls.ca))
+          cert: ((metrics_discovery_metrics_tls.certificate))
+          key: ((metrics_discovery_metrics_tls.private_key))
+          server_name: metrics_discovery_metrics
+        nats_client:
+          cert: ((nats_client_cert.certificate))
+          key: ((nats_client_cert.private_key))
+      release: metrics-discovery
+- type: replace
+  path: /addons/name=metrics-agent?
+  value:
+    name: metrics-agent
+    exclude:
+      jobs:
+      - name: smoke_tests
+        release: cf-smoke-tests
+    include:
+      stemcell:
+      - os: ubuntu-bionic
+      - os: ubuntu-jammy
+    jobs:
+    - name: metrics-agent
+      properties:
+        grpc:
+          ca_cert: ((loggregator_tls_agent.ca))
+          cert: ((loggregator_tls_agent.certificate))
+          key: ((loggregator_tls_agent.private_key))
+        metrics:
+          ca_cert: ((metrics_agent_tls.ca))
+          cert: ((metrics_agent_tls.certificate))
+          key: ((metrics_agent_tls.private_key))
+          server_name: metrics_agent
+        scrape:
+          tls:
+            ca_cert: ((prom_scraper_scrape_tls.ca))
+            cert: ((prom_scraper_scrape_tls.certificate))
+            key: ((prom_scraper_scrape_tls.private_key))
+      release: metrics-discovery
+- type: replace
+  path: /variables/name=metrics_agent_tls?
+  value:
+    name: metrics_agent_tls
+    type: certificate
+    update_mode: converge
+    options:
+      ca: metric_scraper_ca
+      common_name: metrics_agent
+      alternative_names:
+      - metrics_agent
+      extended_key_usage:
+      - server_auth
+- type: replace
+  path: /variables/name=metrics_discovery_tls?
+  value:
+    name: metrics_discovery_metrics_tls
+    type: certificate
+    update_mode: converge
+    options:
+      ca: metric_scraper_ca
+      common_name: metrics_discovery_metrics
+      alternative_names:
+      - metrics_discovery_metrics
+      extended_key_usage:
+      - server_auth
