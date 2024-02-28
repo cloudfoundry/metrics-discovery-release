@@ -13,7 +13,7 @@ require (
 	github.com/nats-io/nats.go v1.33.1
 	github.com/onsi/ginkgo/v2 v2.15.0
 	github.com/onsi/gomega v1.31.1
-	github.com/prometheus/client_golang v1.18.0
+	github.com/prometheus/client_golang v1.19.0
 	github.com/prometheus/client_model v0.6.0
 	github.com/prometheus/common v0.48.0
 	google.golang.org/grpc v1.62.0
