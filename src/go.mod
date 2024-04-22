@@ -5,7 +5,7 @@ go 1.21
 require (
 	code.cloudfoundry.org/go-diodes v0.0.0-20230606195509-9853201afab8
 	code.cloudfoundry.org/go-envstruct v1.7.0
-	code.cloudfoundry.org/go-loggregator/v9 v9.2.0
+	code.cloudfoundry.org/go-loggregator/v9 v9.2.1
 	code.cloudfoundry.org/go-metric-registry v0.0.0-20230607145746-0cddddb73783
 	code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20230608175423-4394b5447a85
 	code.cloudfoundry.org/tlsconfig v0.0.0-20230612153104-23c0622de227
@@ -16,7 +16,7 @@ require (
 	github.com/prometheus/client_golang v1.19.0
 	github.com/prometheus/client_model v0.6.1
 	github.com/prometheus/common v0.52.2
-	google.golang.org/grpc v1.63.0
+	google.golang.org/grpc v1.63.2
 	google.golang.org/protobuf v1.33.0
 	gopkg.in/yaml.v3 v3.0.1
 )

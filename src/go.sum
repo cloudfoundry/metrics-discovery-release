@@ -4,8 +4,8 @@ code.cloudfoundry.org/go-diodes v0.0.0-20230606195509-9853201afab8 h1:A2wAkLyV7q
 code.cloudfoundry.org/go-diodes v0.0.0-20230606195509-9853201afab8/go.mod h1:ddTr0Stkt5lV0ql7lyVHXyxOLNaR//mvrSGCWydFI3o=
 code.cloudfoundry.org/go-envstruct v1.7.0 h1:6e90Z+lTPrI2jMJOoKErskL7a+Qm97GFiithcXeVWdk=
 code.cloudfoundry.org/go-envstruct v1.7.0/go.mod h1:xm6Eto/WB7Qq1iwEN29jUQXDeUCJ+nruwAnnrpY0s4E=
-code.cloudfoundry.org/go-loggregator/v9 v9.2.0 h1:YNVD654RhMWzG195DZm0gNnrWAJJhEw/gd/cc5Bv28s=
-code.cloudfoundry.org/go-loggregator/v9 v9.2.0/go.mod h1:AP7PmrWSpyC9ltOQHcwF16BVkAVXS96i8+8gwI4lXRY=
+code.cloudfoundry.org/go-loggregator/v9 v9.2.1 h1:S6Lgg5UJbhh2bt2TGQxs6R00CF8PrUA3GFPYDxy56Fk=
+code.cloudfoundry.org/go-loggregator/v9 v9.2.1/go.mod h1:FTFFruqGeOhVCDFvyLgl8EV8YW63NNwRzLhxJcporu8=
 code.cloudfoundry.org/go-metric-registry v0.0.0-20230607145746-0cddddb73783 h1:XLbe5e/tqt6aKVCXeAaBx9DVZy50oLxuuMP3CwuH6EQ=
 code.cloudfoundry.org/go-metric-registry v0.0.0-20230607145746-0cddddb73783/go.mod h1:6Y6gj4e6AbO5FKat0nZulw0wEnTjXJ5wv8nMejsmHxo=
 code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20230608175423-4394b5447a85 h1:VRjzgj3OveGkgGzXuGNWOx3RVrfTxlrCJcqlShtrEKE=
@@ -124,8 +124,8 @@ golang.org/x/tools v0.17.0/go.mod h1:xsh6VxdV005rRVaS6SSAf9oiAqljS7UZUacMZ8Bnsps
 golang.org/x/xerrors v0.0.0-20191204190536-9bdfabe68543/go.mod h1:I/5z698sn9Ka8TeJc9MKroUUfqBBauWjQqLJ2OPfmY0=
 google.golang.org/genproto/googleapis/rpc v0.0.0-20240227224415-6ceb2ff114de h1:cZGRis4/ot9uVm639a+rHCUaG0JJHEsdyzSQTMX+suY=
 google.golang.org/genproto/googleapis/rpc v0.0.0-20240227224415-6ceb2ff114de/go.mod h1:H4O17MA/PE9BsGx3w+a+W2VOLLD1Qf7oJneAoU6WktY=
-google.golang.org/grpc v1.63.0 h1:WjKe+dnvABXyPJMD7KDNLxtoGk5tgk+YFWN6cBWjZE8=
-google.golang.org/grpc v1.63.0/go.mod h1:WAX/8DgncnokcFUldAxq7GeB5DXHDbMF+lLvDomNkRA=
+google.golang.org/grpc v1.63.2 h1:MUeiw1B2maTVZthpU5xvASfTh3LDbxHd6IJ6QQVU+xM=
+google.golang.org/grpc v1.63.2/go.mod h1:WAX/8DgncnokcFUldAxq7GeB5DXHDbMF+lLvDomNkRA=
 google.golang.org/protobuf v0.0.0-20200109180630-ec00e32a8dfd/go.mod h1:DFci5gLYBciE7Vtevhsrf46CRTquxDuWsQurQQe4oz8=
 google.golang.org/protobuf v0.0.0-20200221191635-4d8936d0db64/go.mod h1:kwYJMbMJ01Woi6D6+Kah6886xMZcty6N08ah7+eCXa0=
 google.golang.org/protobuf v0.0.0-20200228230310-ab0ca4ff8a60/go.mod h1:cfTl7dwQJ+fmap5saPgwCLgHXTUD7jkjRqWcaiX5VyM=
