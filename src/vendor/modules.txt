@@ -15,7 +15,7 @@ code.cloudfoundry.org/go-loggregator/v9/rpc/loggregator_v2
 ## explicit; go 1.21
 code.cloudfoundry.org/go-metric-registry
 code.cloudfoundry.org/go-metric-registry/testhelpers
-# code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20240424070205-7cdc85d420e3
+# code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20240425160256-96cdf779d8ee
 ## explicit; go 1.21.0
 code.cloudfoundry.org/loggregator-agent-release/src/pkg/config
 code.cloudfoundry.org/loggregator-agent-release/src/pkg/diodes
