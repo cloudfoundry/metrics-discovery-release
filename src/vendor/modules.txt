@@ -23,7 +23,7 @@ code.cloudfoundry.org/loggregator-agent-release/src/pkg/egress/v2
 code.cloudfoundry.org/loggregator-agent-release/src/pkg/ingress/v2
 code.cloudfoundry.org/loggregator-agent-release/src/pkg/plumbing/batching
 code.cloudfoundry.org/loggregator-agent-release/src/pkg/scraper
-# code.cloudfoundry.org/tlsconfig v0.0.0-20240423163804-1b0dcf57fddb
+# code.cloudfoundry.org/tlsconfig v0.0.0-20240427164042-d6180ef19863
 ## explicit; go 1.19
 code.cloudfoundry.org/tlsconfig
 code.cloudfoundry.org/tlsconfig/certtest
@@ -44,9 +44,9 @@ github.com/cespare/xxhash/v2
 ## explicit; go 1.18
 github.com/go-logr/logr
 github.com/go-logr/logr/funcr
-# github.com/go-task/slim-sprig v0.0.0-20230315185526-52ccab3ef572
-## explicit; go 1.13
-github.com/go-task/slim-sprig
+# github.com/go-task/slim-sprig/v3 v3.0.0
+## explicit; go 1.20
+github.com/go-task/slim-sprig/v3
 # github.com/google/go-cmp v0.6.0
 ## explicit; go 1.13
 github.com/google/go-cmp/cmp
@@ -72,7 +72,7 @@ github.com/nats-io/nkeys
 # github.com/nats-io/nuid v1.0.1
 ## explicit
 github.com/nats-io/nuid
-# github.com/onsi/ginkgo/v2 v2.17.1
+# github.com/onsi/ginkgo/v2 v2.17.2
 ## explicit; go 1.20
 github.com/onsi/ginkgo/v2
 github.com/onsi/ginkgo/v2/config
@@ -131,12 +131,13 @@ github.com/prometheus/procfs/internal/util
 # github.com/square/certstrap v1.3.0
 ## explicit; go 1.18
 github.com/square/certstrap/pkix
-# go.step.sm/crypto v0.44.7
+# go.step.sm/crypto v0.44.8
 ## explicit; go 1.20
 go.step.sm/crypto/fingerprint
 go.step.sm/crypto/internal/bcrypt_pbkdf
 go.step.sm/crypto/internal/emoji
 go.step.sm/crypto/internal/utils
+go.step.sm/crypto/internal/utils/utfbom
 go.step.sm/crypto/keyutil
 go.step.sm/crypto/pemutil
 go.step.sm/crypto/randutil
