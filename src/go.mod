@@ -2,18 +2,18 @@ module code.cloudfoundry.org/metrics-discovery
 
 go 1.21.0
 
-toolchain go1.21.9
+toolchain go1.21.10
 
 require (
-	code.cloudfoundry.org/go-diodes v0.0.0-20240419195010-376885f5f3d4
+	code.cloudfoundry.org/go-diodes v0.0.0-20240507202434-96dd3c119b5c
 	code.cloudfoundry.org/go-envstruct v1.7.0
 	code.cloudfoundry.org/go-loggregator/v9 v9.2.1
-	code.cloudfoundry.org/go-metric-registry v0.0.0-20240325232813-eb1144b007e4
-	code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20240506070153-5859ee6fda7b
+	code.cloudfoundry.org/go-metric-registry v0.0.0-20240507185439-f0b17e194563
+	code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20240507163730-546fbdbd0267
 	code.cloudfoundry.org/tlsconfig v0.0.0-20240506165053-ee50c1ee9388
 	github.com/benjamintf1/unmarshalledmatchers v1.0.0
 	github.com/nats-io/nats.go v1.34.1
-	github.com/onsi/ginkgo/v2 v2.17.2
+	github.com/onsi/ginkgo/v2 v2.17.3
 	github.com/onsi/gomega v1.33.1
 	github.com/prometheus/client_golang v1.19.0
 	github.com/prometheus/client_model v0.6.1
@@ -24,14 +24,14 @@ require (
 )
 
 require (
-	code.cloudfoundry.org/go-batching v0.0.0-20240325232529-c21ea48767e2 // indirect
+	code.cloudfoundry.org/go-batching v0.0.0-20240507185452-b51464486eb5 // indirect
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/go-logr/logr v1.4.1 // indirect
 	github.com/go-task/slim-sprig/v3 v3.0.0 // indirect
 	github.com/google/go-cmp v0.6.0 // indirect
-	github.com/google/pprof v0.0.0-20240430035430-e4905b036c4e // indirect
+	github.com/google/pprof v0.0.0-20240507183855-6f11f98ebb1c // indirect
 	github.com/klauspost/compress v1.17.8 // indirect
 	github.com/nats-io/nkeys v0.4.7 // indirect
 	github.com/nats-io/nuid v1.0.1 // indirect
