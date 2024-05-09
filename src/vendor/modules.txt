@@ -15,7 +15,7 @@ code.cloudfoundry.org/go-loggregator/v9/rpc/loggregator_v2
 ## explicit; go 1.21
 code.cloudfoundry.org/go-metric-registry
 code.cloudfoundry.org/go-metric-registry/testhelpers
-# code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20240507163730-546fbdbd0267
+# code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20240508070104-098ad9601900
 ## explicit; go 1.21.0
 code.cloudfoundry.org/loggregator-agent-release/src/pkg/config
 code.cloudfoundry.org/loggregator-agent-release/src/pkg/diodes
@@ -54,7 +54,7 @@ github.com/google/go-cmp/cmp/internal/diff
 github.com/google/go-cmp/cmp/internal/flags
 github.com/google/go-cmp/cmp/internal/function
 github.com/google/go-cmp/cmp/internal/value
-# github.com/google/pprof v0.0.0-20240507183855-6f11f98ebb1c
+# github.com/google/pprof v0.0.0-20240508145209-1db217f89380
 ## explicit; go 1.19
 github.com/google/pprof/profile
 # github.com/klauspost/compress v1.17.8

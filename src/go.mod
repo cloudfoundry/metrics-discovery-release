@@ -9,7 +9,7 @@ require (
 	code.cloudfoundry.org/go-envstruct v1.7.0
 	code.cloudfoundry.org/go-loggregator/v9 v9.2.1
 	code.cloudfoundry.org/go-metric-registry v0.0.0-20240507185439-f0b17e194563
-	code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20240507163730-546fbdbd0267
+	code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20240508070104-098ad9601900
 	code.cloudfoundry.org/tlsconfig v0.0.0-20240506165053-ee50c1ee9388
 	github.com/benjamintf1/unmarshalledmatchers v1.0.0
 	github.com/nats-io/nats.go v1.34.1
@@ -31,7 +31,7 @@ require (
 	github.com/go-logr/logr v1.4.1 // indirect
 	github.com/go-task/slim-sprig/v3 v3.0.0 // indirect
 	github.com/google/go-cmp v0.6.0 // indirect
-	github.com/google/pprof v0.0.0-20240507183855-6f11f98ebb1c // indirect
+	github.com/google/pprof v0.0.0-20240508145209-1db217f89380 // indirect
 	github.com/klauspost/compress v1.17.8 // indirect
 	github.com/nats-io/nkeys v0.4.7 // indirect
 	github.com/nats-io/nuid v1.0.1 // indirect
