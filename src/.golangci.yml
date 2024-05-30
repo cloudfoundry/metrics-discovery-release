@@ -17,3 +17,9 @@ issues:
   max-issues-per-linter: 0
   # Disable max same issues.
   max-same-issues: 0
+  # Allow more permissive file permissions on the generated scrape target file only.
+  exclude-rules:
+  - path: cmd/config-generator/app/generator.go
+    text: "G306: Expect WriteFile permissions to be 0600 or less"
+    linters:
+    - gosec

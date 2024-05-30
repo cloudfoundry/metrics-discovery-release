@@ -85,6 +85,10 @@ var _ = Describe("Config generator", func() {
 				}
 			}
 		]`))
+
+		fi, err := os.Stat(tc.configPath)
+		Expect(err).ToNot(HaveOccurred())
+		Expect(fi.Mode()).To(BeNumerically("==", 0644))
 	})
 
 	It("generates the config at the given interval", func() {

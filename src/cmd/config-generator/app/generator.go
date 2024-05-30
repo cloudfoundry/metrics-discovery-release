@@ -152,7 +152,7 @@ func (cg *ConfigGenerator) writeConfigToFile() {
 		return
 	}
 
-	err = os.WriteFile(cg.path, data, os.ModePerm)
+	err = os.WriteFile(cg.path, data, 0644)
 	if err != nil {
 		cg.logger.Printf("failed to write scrape config file: %s\n", err)
 	}
