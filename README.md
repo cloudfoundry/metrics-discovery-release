@@ -30,7 +30,7 @@ about the endpoint to be scraped using the [Prometheus format](https://prometheu
 
 The Scrape Config Generator subscribes to CF NATS and consumes published metric targets. It aggregates the metric targets
 and saves a Prometheus-formatted [scrape config](https://prometheus.io/docs/prometheus/latest/configuration/configuration/)
-to the path defined by the `scrape_config_file_path` property -- by default `/var/vcap/data/scrape-config-generator/scrape_configs.yml`
+to the path defined by the `scrape_config_file_path` property -- by default `/var/vcap/data/scrape-config-generator/scrape_targets.json`.
 
 The scrape config will be modified as metric targets come and go. Interested metric scrapers should watch the scrape config file
 for changes.
