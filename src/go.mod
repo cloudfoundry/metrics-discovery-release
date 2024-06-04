@@ -9,7 +9,7 @@ require (
 	code.cloudfoundry.org/go-envstruct v1.7.0
 	code.cloudfoundry.org/go-loggregator/v9 v9.2.1
 	code.cloudfoundry.org/go-metric-registry v0.0.0-20240523160243-6c152ef80e25
-	code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20240531070121-45846c83d791
+	code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20240603070048-a90160e28495
 	code.cloudfoundry.org/tlsconfig v0.0.0-20240530171334-2593348de0c6
 	github.com/benjamintf1/unmarshalledmatchers v1.0.0
 	github.com/nats-io/nats.go v1.35.0
@@ -17,7 +17,7 @@ require (
 	github.com/onsi/gomega v1.33.1
 	github.com/prometheus/client_golang v1.19.1
 	github.com/prometheus/client_model v0.6.1
-	github.com/prometheus/common v0.53.0
+	github.com/prometheus/common v0.54.0
 	google.golang.org/grpc v1.64.0
 	google.golang.org/protobuf v1.34.1
 	gopkg.in/yaml.v3 v3.0.1
