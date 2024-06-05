@@ -2,15 +2,15 @@ module code.cloudfoundry.org/metrics-discovery
 
 go 1.21.0
 
-toolchain go1.21.10
+toolchain go1.21.11
 
 require (
-	code.cloudfoundry.org/go-diodes v0.0.0-20240515174142-71582f284718
+	code.cloudfoundry.org/go-diodes v0.0.0-20240604201846-c756bfed2ed3
 	code.cloudfoundry.org/go-envstruct v1.7.0
 	code.cloudfoundry.org/go-loggregator/v9 v9.2.1
-	code.cloudfoundry.org/go-metric-registry v0.0.0-20240523160243-6c152ef80e25
-	code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20240603070048-a90160e28495
-	code.cloudfoundry.org/tlsconfig v0.0.0-20240530171334-2593348de0c6
+	code.cloudfoundry.org/go-metric-registry v0.0.0-20240604201903-7cef498efb7a
+	code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20240604192159-0c056d8148bf
+	code.cloudfoundry.org/tlsconfig v0.0.0-20240604172015-5be76e21ea65
 	github.com/benjamintf1/unmarshalledmatchers v1.0.0
 	github.com/nats-io/nats.go v1.35.0
 	github.com/onsi/ginkgo/v2 v2.19.0
@@ -24,7 +24,7 @@ require (
 )
 
 require (
-	code.cloudfoundry.org/go-batching v0.0.0-20240522165838-74c69d79243c // indirect
+	code.cloudfoundry.org/go-batching v0.0.0-20240604201829-c8533406dd64 // indirect
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
@@ -39,11 +39,11 @@ require (
 	github.com/prometheus/procfs v0.15.1 // indirect
 	github.com/square/certstrap v1.3.0 // indirect
 	go.step.sm/crypto v0.46.0 // indirect
-	golang.org/x/crypto v0.23.0 // indirect
-	golang.org/x/net v0.25.0 // indirect
-	golang.org/x/sys v0.20.0 // indirect
-	golang.org/x/text v0.15.0 // indirect
-	golang.org/x/tools v0.21.0 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20240528184218-531527333157 // indirect
+	golang.org/x/crypto v0.24.0 // indirect
+	golang.org/x/net v0.26.0 // indirect
+	golang.org/x/sys v0.21.0 // indirect
+	golang.org/x/text v0.16.0 // indirect
+	golang.org/x/tools v0.22.0 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20240604185151-ef581f913117 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
