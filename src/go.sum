@@ -8,8 +8,8 @@ code.cloudfoundry.org/go-loggregator/v9 v9.2.1 h1:S6Lgg5UJbhh2bt2TGQxs6R00CF8PrU
 code.cloudfoundry.org/go-loggregator/v9 v9.2.1/go.mod h1:FTFFruqGeOhVCDFvyLgl8EV8YW63NNwRzLhxJcporu8=
 code.cloudfoundry.org/go-metric-registry v0.0.0-20240604201903-7cef498efb7a h1:XpebbxgIBBy7SrwIGW+gREZuAtnJ9PHWC4Y+k7yje2I=
 code.cloudfoundry.org/go-metric-registry v0.0.0-20240604201903-7cef498efb7a/go.mod h1:/Be8VtLiCeMUoYdUzFtmW8GGkk89HAy3zD79KUXzbhs=
-code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20240604192159-0c056d8148bf h1:EmmABS4FL7hQNwPpyO4AEZ43EFFA8vOOq7njrt8qyHU=
-code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20240604192159-0c056d8148bf/go.mod h1:3g7KeOBzN+XZBvuRVkX41LBMRTG+HNgtA6DKJjFdrC0=
+code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20240605163137-482a07ab6dbc h1:KzDejtGhap8QSBkGMGVQ+u9HupyXgBRsr8PQlWLPq6g=
+code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20240605163137-482a07ab6dbc/go.mod h1:wvherEAITeIr/OoqKfSZa8ngKJiglUjfgfmCSW9OGUc=
 code.cloudfoundry.org/tlsconfig v0.0.0-20240604172015-5be76e21ea65 h1:0wXfAs/32wbpMKDGiV3XEHev1l9dLgIPjda+WRwJhCc=
 code.cloudfoundry.org/tlsconfig v0.0.0-20240604172015-5be76e21ea65/go.mod h1:R4odSd3iXVYlIlesDHaQi9IZx2gXQryfvJmJSjPS/ug=
 filippo.io/edwards25519 v1.1.0 h1:FNf4tywRC1HmFuKW5xopWpigGjJKiJSV0Cqo0cJWDaA=
@@ -89,8 +89,8 @@ github.com/square/certstrap v1.3.0 h1:N9P0ZRA+DjT8pq5fGDj0z3FjafRKnBDypP0QHpMlaA
 github.com/square/certstrap v1.3.0/go.mod h1:wGZo9eE1B7WX2GKBn0htJ+B3OuRl2UsdCFySNooy9hU=
 github.com/stretchr/testify v1.9.0 h1:HtqpIVDClZ4nwg75+f6Lvsy/wHu+3BoSGCbBAcpTsTg=
 github.com/stretchr/testify v1.9.0/go.mod h1:r2ic/lqez/lEtzL7wO/rwa5dbSLXVDPFyf8C91i36aY=
-go.step.sm/crypto v0.46.0 h1:cuVZMpDbmEsUX+atC24+VineQr4gO+zO46MxbIVai4Y=
-go.step.sm/crypto v0.46.0/go.mod h1:hcr0oTS2vGRTGSZxoVYxE+RRcsd4xP3rpqt3wPwYGqc=
+go.step.sm/crypto v0.47.0 h1:LWxiKWiN0Y/A5+dq+fTIAvFYAL8oe3PQmCurjtn6ZBU=
+go.step.sm/crypto v0.47.0/go.mod h1:0NMEfYrFfV5jqs8aJY5wRqIShBV8y/fyDLTseyv5xhY=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
 golang.org/x/crypto v0.24.0 h1:mnl8DM0o513X8fdIkmyFE/5hTYxbwYOjDS/+rK6qpRI=
 golang.org/x/crypto v0.24.0/go.mod h1:Z1PMYSOR5nyMcyAVAIQSKCDwalqy85Aqn1x3Ws4L5DM=
