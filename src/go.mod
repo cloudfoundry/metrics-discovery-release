@@ -12,7 +12,7 @@ require (
 	code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20240613070107-8479c7b33126
 	code.cloudfoundry.org/tlsconfig v0.0.0-20240613173017-075d5b187a0d
 	github.com/benjamintf1/unmarshalledmatchers v1.0.0
-	github.com/nats-io/nats.go v1.35.0
+	github.com/nats-io/nats.go v1.36.0
 	github.com/onsi/ginkgo/v2 v2.19.0
 	github.com/onsi/gomega v1.33.1
 	github.com/prometheus/client_golang v1.19.1
