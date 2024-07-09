@@ -9,7 +9,7 @@ require (
 	code.cloudfoundry.org/go-envstruct v1.7.0
 	code.cloudfoundry.org/go-loggregator/v9 v9.2.1
 	code.cloudfoundry.org/go-metric-registry v0.0.0-20240604201903-7cef498efb7a
-	code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20240708083220-c9de40c24a00
+	code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20240709083219-8808abbaa706
 	code.cloudfoundry.org/tlsconfig v0.0.0-20240705175211-7a5a6eee6ef2
 	github.com/benjamintf1/unmarshalledmatchers v1.0.0
 	github.com/nats-io/nats.go v1.36.0
@@ -45,6 +45,6 @@ require (
 	golang.org/x/sys v0.22.0 // indirect
 	golang.org/x/text v0.16.0 // indirect
 	golang.org/x/tools v0.23.0 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20240701130421-f6361c86f094 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20240708141625-4ad9e859172b // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )

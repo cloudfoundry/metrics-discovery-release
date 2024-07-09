@@ -15,7 +15,7 @@ code.cloudfoundry.org/go-loggregator/v9/rpc/loggregator_v2
 ## explicit; go 1.21
 code.cloudfoundry.org/go-metric-registry
 code.cloudfoundry.org/go-metric-registry/testhelpers
-# code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20240708083220-c9de40c24a00
+# code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20240709083219-8808abbaa706
 ## explicit; go 1.21.0
 code.cloudfoundry.org/loggregator-agent-release/src/pkg/config
 code.cloudfoundry.org/loggregator-agent-release/src/pkg/diodes
@@ -203,7 +203,7 @@ golang.org/x/text/unicode/norm
 ## explicit; go 1.19
 golang.org/x/tools/cover
 golang.org/x/tools/go/ast/inspector
-# google.golang.org/genproto/googleapis/rpc v0.0.0-20240701130421-f6361c86f094
+# google.golang.org/genproto/googleapis/rpc v0.0.0-20240708141625-4ad9e859172b
 ## explicit; go 1.20
 google.golang.org/genproto/googleapis/rpc/status
 # google.golang.org/grpc v1.65.0
