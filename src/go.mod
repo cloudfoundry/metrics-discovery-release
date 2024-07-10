@@ -9,7 +9,7 @@ require (
 	code.cloudfoundry.org/go-envstruct v1.7.0
 	code.cloudfoundry.org/go-loggregator/v9 v9.2.1
 	code.cloudfoundry.org/go-metric-registry v0.0.0-20240604201903-7cef498efb7a
-	code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20240709083219-8808abbaa706
+	code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20240709181010-a0cf4132100a
 	code.cloudfoundry.org/tlsconfig v0.0.0-20240705175211-7a5a6eee6ef2
 	github.com/benjamintf1/unmarshalledmatchers v1.0.0
 	github.com/nats-io/nats.go v1.36.0
@@ -39,12 +39,12 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/prometheus/procfs v0.15.1 // indirect
 	github.com/square/certstrap v1.3.0 // indirect
-	go.step.sm/crypto v0.48.1 // indirect
+	go.step.sm/crypto v0.49.0 // indirect
 	golang.org/x/crypto v0.25.0 // indirect
 	golang.org/x/net v0.27.0 // indirect
 	golang.org/x/sys v0.22.0 // indirect
 	golang.org/x/text v0.16.0 // indirect
 	golang.org/x/tools v0.23.0 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20240708141625-4ad9e859172b // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20240709173604-40e1e62336c5 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
