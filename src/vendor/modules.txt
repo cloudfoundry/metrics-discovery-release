@@ -1,21 +1,21 @@
-# code.cloudfoundry.org/go-batching v0.0.0-20240604201829-c8533406dd64
+# code.cloudfoundry.org/go-batching v0.0.0-20240730230425-f1661a61b989
 ## explicit; go 1.21
 code.cloudfoundry.org/go-batching
-# code.cloudfoundry.org/go-diodes v0.0.0-20240723012033-bf559dd3d0b1
+# code.cloudfoundry.org/go-diodes v0.0.0-20240730232652-ce6331b0e7c0
 ## explicit; go 1.22
 code.cloudfoundry.org/go-diodes
 # code.cloudfoundry.org/go-envstruct v1.7.0
 ## explicit; go 1.21
 code.cloudfoundry.org/go-envstruct
-# code.cloudfoundry.org/go-loggregator/v9 v9.2.1
+# code.cloudfoundry.org/go-loggregator/v10 v10.0.0
 ## explicit; go 1.21
-code.cloudfoundry.org/go-loggregator/v9
-code.cloudfoundry.org/go-loggregator/v9/rpc/loggregator_v2
-# code.cloudfoundry.org/go-metric-registry v0.0.0-20240604201903-7cef498efb7a
+code.cloudfoundry.org/go-loggregator/v10
+code.cloudfoundry.org/go-loggregator/v10/rpc/loggregator_v2
+# code.cloudfoundry.org/go-metric-registry v0.0.0-20240731205343-e778db45fec9
 ## explicit; go 1.21
 code.cloudfoundry.org/go-metric-registry
 code.cloudfoundry.org/go-metric-registry/testhelpers
-# code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20240730083218-b0f6c900acc3
+# code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20240731083154-184101695db3
 ## explicit; go 1.22.0
 code.cloudfoundry.org/loggregator-agent-release/src/pkg/config
 code.cloudfoundry.org/loggregator-agent-release/src/pkg/diodes
@@ -23,7 +23,7 @@ code.cloudfoundry.org/loggregator-agent-release/src/pkg/egress/v2
 code.cloudfoundry.org/loggregator-agent-release/src/pkg/ingress/v2
 code.cloudfoundry.org/loggregator-agent-release/src/pkg/plumbing/batching
 code.cloudfoundry.org/loggregator-agent-release/src/pkg/scraper
-# code.cloudfoundry.org/tlsconfig v0.0.0-20240712175922-ffce9516cec8
+# code.cloudfoundry.org/tlsconfig v0.0.0-20240730181439-b476395a9e4e
 ## explicit; go 1.21
 code.cloudfoundry.org/tlsconfig
 code.cloudfoundry.org/tlsconfig/certtest
@@ -207,7 +207,7 @@ golang.org/x/text/unicode/norm
 ## explicit; go 1.19
 golang.org/x/tools/cover
 golang.org/x/tools/go/ast/inspector
-# google.golang.org/genproto/googleapis/rpc v0.0.0-20240725223205-93522f1f2a9f
+# google.golang.org/genproto/googleapis/rpc v0.0.0-20240730163845-b1a4ccb954bf
 ## explicit; go 1.20
 google.golang.org/genproto/googleapis/rpc/status
 # google.golang.org/grpc v1.65.0
