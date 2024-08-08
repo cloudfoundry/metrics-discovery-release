@@ -5,15 +5,15 @@ go 1.22.0
 toolchain go1.22.6
 
 require (
-	code.cloudfoundry.org/go-diodes v0.0.0-20240730232652-ce6331b0e7c0
+	code.cloudfoundry.org/go-diodes v0.0.0-20240807231455-f9cf434a8c3e
 	code.cloudfoundry.org/go-envstruct v1.7.0
 	code.cloudfoundry.org/go-loggregator/v10 v10.0.0
 	code.cloudfoundry.org/go-metric-registry v0.0.0-20240731205343-e778db45fec9
-	code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20240805083151-fef97dbf428b
+	code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20240808083201-3efc421ccdae
 	code.cloudfoundry.org/tlsconfig v0.0.0-20240806182125-2cf75882e274
 	github.com/benjamintf1/unmarshalledmatchers v1.0.0
 	github.com/nats-io/nats.go v1.36.0
-	github.com/onsi/ginkgo/v2 v2.19.1
+	github.com/onsi/ginkgo/v2 v2.20.0
 	github.com/onsi/gomega v1.34.1
 	github.com/prometheus/client_golang v1.19.1
 	github.com/prometheus/client_model v0.6.1
