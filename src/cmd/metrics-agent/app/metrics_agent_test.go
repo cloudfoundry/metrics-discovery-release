@@ -406,7 +406,7 @@ func getFreePorts() (uint16, uint16) {
 	}
 	defer l2.Close()
 
-	return uint16(l.Addr().(*net.TCPAddr).Port), uint16(l2.Addr().(*net.TCPAddr).Port)
+	return uint16(l.Addr().(*net.TCPAddr).Port), uint16(l2.Addr().(*net.TCPAddr).Port) //#nosec G115
 }
 
 type stubPromServer struct {
