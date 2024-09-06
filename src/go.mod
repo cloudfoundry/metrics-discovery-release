@@ -2,22 +2,22 @@ module code.cloudfoundry.org/metrics-discovery
 
 go 1.22.0
 
-toolchain go1.22.6
+toolchain go1.22.7
 
 require (
 	code.cloudfoundry.org/go-diodes v0.0.0-20240813203737-5032edb05ceb
 	code.cloudfoundry.org/go-envstruct v1.7.0
 	code.cloudfoundry.org/go-loggregator/v10 v10.0.1
 	code.cloudfoundry.org/go-metric-registry v0.0.0-20240828184116-9710cd731bb8
-	code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20240904234224-9211c55b2568
-	code.cloudfoundry.org/tlsconfig v0.3.0
+	code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20240905083138-96d9f8d605dd
+	code.cloudfoundry.org/tlsconfig v0.4.0
 	github.com/benjamintf1/unmarshalledmatchers v1.0.0
 	github.com/nats-io/nats.go v1.37.0
 	github.com/onsi/ginkgo/v2 v2.20.2
 	github.com/onsi/gomega v1.34.2
-	github.com/prometheus/client_golang v1.20.2
+	github.com/prometheus/client_golang v1.20.3
 	github.com/prometheus/client_model v0.6.1
-	github.com/prometheus/common v0.58.0
+	github.com/prometheus/common v0.59.1
 	google.golang.org/grpc v1.66.0
 	google.golang.org/protobuf v1.34.2
 	gopkg.in/yaml.v3 v3.0.1
@@ -40,8 +40,8 @@ require (
 	github.com/prometheus/procfs v0.15.1 // indirect
 	github.com/square/certstrap v1.3.0 // indirect
 	go.step.sm/crypto v0.51.2 // indirect
-	golang.org/x/crypto v0.26.0 // indirect
-	golang.org/x/net v0.28.0 // indirect
+	golang.org/x/crypto v0.27.0 // indirect
+	golang.org/x/net v0.29.0 // indirect
 	golang.org/x/sys v0.25.0 // indirect
 	golang.org/x/text v0.18.0 // indirect
 	golang.org/x/tools v0.24.0 // indirect
