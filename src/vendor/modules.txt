@@ -15,7 +15,7 @@ code.cloudfoundry.org/go-loggregator/v10/rpc/loggregator_v2
 ## explicit; go 1.21
 code.cloudfoundry.org/go-metric-registry
 code.cloudfoundry.org/go-metric-registry/testhelpers
-# code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20240910083107-f0c8b4024409
+# code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20240910222156-d9d8412af857
 ## explicit; go 1.22.0
 code.cloudfoundry.org/loggregator-agent-release/src/pkg/config
 code.cloudfoundry.org/loggregator-agent-release/src/pkg/diodes
@@ -23,7 +23,7 @@ code.cloudfoundry.org/loggregator-agent-release/src/pkg/egress/v2
 code.cloudfoundry.org/loggregator-agent-release/src/pkg/ingress/v2
 code.cloudfoundry.org/loggregator-agent-release/src/pkg/plumbing/batching
 code.cloudfoundry.org/loggregator-agent-release/src/pkg/scraper
-# code.cloudfoundry.org/tlsconfig v0.4.0
+# code.cloudfoundry.org/tlsconfig v0.5.0
 ## explicit; go 1.22
 code.cloudfoundry.org/tlsconfig
 code.cloudfoundry.org/tlsconfig/certtest
@@ -54,7 +54,7 @@ github.com/google/go-cmp/cmp/internal/diff
 github.com/google/go-cmp/cmp/internal/flags
 github.com/google/go-cmp/cmp/internal/function
 github.com/google/go-cmp/cmp/internal/value
-# github.com/google/pprof v0.0.0-20240903155634-a8630aee4ab9
+# github.com/google/pprof v0.0.0-20240910150728-a0b0bb1d4134
 ## explicit; go 1.22
 github.com/google/pprof/profile
 # github.com/klauspost/compress v1.17.9
@@ -142,7 +142,7 @@ github.com/prometheus/procfs/internal/util
 # github.com/square/certstrap v1.3.0
 ## explicit; go 1.18
 github.com/square/certstrap/pkix
-# go.step.sm/crypto v0.51.2
+# go.step.sm/crypto v0.52.0
 ## explicit; go 1.22
 go.step.sm/crypto/fingerprint
 go.step.sm/crypto/internal/bcrypt_pbkdf
