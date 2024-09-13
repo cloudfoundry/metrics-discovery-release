@@ -9,7 +9,7 @@ require (
 	code.cloudfoundry.org/go-envstruct v1.7.0
 	code.cloudfoundry.org/go-loggregator/v10 v10.0.1
 	code.cloudfoundry.org/go-metric-registry v0.0.0-20240911230103-8810864fa5d2
-	code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20240911083107-98f1d1ea3918
+	code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20240912083220-67f948271078
 	code.cloudfoundry.org/tlsconfig v0.5.0
 	github.com/benjamintf1/unmarshalledmatchers v1.0.0
 	github.com/nats-io/nats.go v1.37.0
