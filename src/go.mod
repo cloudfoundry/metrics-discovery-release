@@ -14,7 +14,7 @@ require (
 	github.com/benjamintf1/unmarshalledmatchers v1.0.0
 	github.com/nats-io/nats.go v1.37.0
 	github.com/onsi/ginkgo/v2 v2.22.0
-	github.com/onsi/gomega v1.35.1
+	github.com/onsi/gomega v1.36.0
 	github.com/prometheus/client_golang v1.20.5
 	github.com/prometheus/client_model v0.6.1
 	github.com/prometheus/common v0.60.1
@@ -24,7 +24,7 @@ require (
 )
 
 require (
-	code.cloudfoundry.org/go-batching v0.0.0-20241104233206-68f6863ec92a // indirect
+	code.cloudfoundry.org/go-batching v0.0.0-20241125161418-1c4c43ed1a1e // indirect
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
