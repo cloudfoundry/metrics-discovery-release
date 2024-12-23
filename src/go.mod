@@ -5,26 +5,26 @@ go 1.22.0
 toolchain go1.22.10
 
 require (
-	code.cloudfoundry.org/go-diodes v0.0.0-20241202111822-779c0b5a3368
+	code.cloudfoundry.org/go-diodes v0.0.0-20241223074059-7f8c1f03edeb
 	code.cloudfoundry.org/go-envstruct v1.7.0
 	code.cloudfoundry.org/go-loggregator/v10 v10.0.1
-	code.cloudfoundry.org/go-metric-registry v0.0.0-20241209201411-ef47a098cdc4
-	code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20241212181709-5c53942166c4
-	code.cloudfoundry.org/tlsconfig v0.12.0
+	code.cloudfoundry.org/go-metric-registry v0.0.0-20241216212740-f99815f94a2a
+	code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20241219215119-4d4bd858d5e4
+	code.cloudfoundry.org/tlsconfig v0.13.0
 	github.com/benjamintf1/unmarshalledmatchers v1.0.0
-	github.com/nats-io/nats.go v1.37.0
-	github.com/onsi/ginkgo/v2 v2.22.0
+	github.com/nats-io/nats.go v1.38.0
+	github.com/onsi/ginkgo/v2 v2.22.1
 	github.com/onsi/gomega v1.36.1
 	github.com/prometheus/client_golang v1.20.5
 	github.com/prometheus/client_model v0.6.1
 	github.com/prometheus/common v0.61.0
-	google.golang.org/grpc v1.69.0
-	google.golang.org/protobuf v1.35.2
+	google.golang.org/grpc v1.69.2
+	google.golang.org/protobuf v1.36.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (
-	code.cloudfoundry.org/go-batching v0.0.0-20241125161418-1c4c43ed1a1e // indirect
+	code.cloudfoundry.org/go-batching v0.0.0-20241216135522-e303a59490fa // indirect
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
@@ -39,12 +39,12 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/prometheus/procfs v0.15.1 // indirect
 	github.com/square/certstrap v1.3.0 // indirect
-	go.step.sm/crypto v0.55.0 // indirect
+	go.step.sm/crypto v0.56.0 // indirect
 	golang.org/x/crypto v0.31.0 // indirect
-	golang.org/x/net v0.32.0 // indirect
+	golang.org/x/net v0.33.0 // indirect
 	golang.org/x/sys v0.28.0 // indirect
 	golang.org/x/text v0.21.0 // indirect
 	golang.org/x/tools v0.28.0 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20241209162323-e6fa225c2576 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20241219192143-6b3ec007d9bb // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
