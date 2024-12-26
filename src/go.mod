@@ -1,8 +1,6 @@
 module code.cloudfoundry.org/metrics-discovery
 
-go 1.22.0
-
-toolchain go1.22.10
+go 1.23.0
 
 require (
 	code.cloudfoundry.org/go-diodes v0.0.0-20241223074059-7f8c1f03edeb
