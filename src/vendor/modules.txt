@@ -1,4 +1,4 @@
-# code.cloudfoundry.org/go-batching v0.0.0-20241216135522-e303a59490fa
+# code.cloudfoundry.org/go-batching v0.0.0-20241223135445-b8f45a03eb70
 ## explicit; go 1.22.0
 code.cloudfoundry.org/go-batching
 # code.cloudfoundry.org/go-diodes v0.0.0-20241223074059-7f8c1f03edeb
@@ -15,7 +15,7 @@ code.cloudfoundry.org/go-loggregator/v10/rpc/loggregator_v2
 ## explicit; go 1.22.0
 code.cloudfoundry.org/go-metric-registry
 code.cloudfoundry.org/go-metric-registry/testhelpers
-# code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20241219215119-4d4bd858d5e4
+# code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20241223221140-3d7a8cbe327a
 ## explicit; go 1.22.0
 code.cloudfoundry.org/loggregator-agent-release/src/pkg/config
 code.cloudfoundry.org/loggregator-agent-release/src/pkg/diodes
@@ -23,7 +23,7 @@ code.cloudfoundry.org/loggregator-agent-release/src/pkg/egress/v2
 code.cloudfoundry.org/loggregator-agent-release/src/pkg/ingress/v2
 code.cloudfoundry.org/loggregator-agent-release/src/pkg/plumbing/batching
 code.cloudfoundry.org/loggregator-agent-release/src/pkg/scraper
-# code.cloudfoundry.org/tlsconfig v0.13.0
+# code.cloudfoundry.org/tlsconfig v0.14.0
 ## explicit; go 1.22
 code.cloudfoundry.org/tlsconfig
 code.cloudfoundry.org/tlsconfig/certtest
@@ -104,8 +104,8 @@ github.com/onsi/ginkgo/v2/internal/parallel_support
 github.com/onsi/ginkgo/v2/internal/testingtproxy
 github.com/onsi/ginkgo/v2/reporters
 github.com/onsi/ginkgo/v2/types
-# github.com/onsi/gomega v1.36.1
-## explicit; go 1.22
+# github.com/onsi/gomega v1.36.2
+## explicit; go 1.22.0
 github.com/onsi/gomega
 github.com/onsi/gomega/format
 github.com/onsi/gomega/internal
@@ -212,7 +212,7 @@ golang.org/x/text/unicode/norm
 ## explicit; go 1.22.0
 golang.org/x/tools/cover
 golang.org/x/tools/go/ast/inspector
-# google.golang.org/genproto/googleapis/rpc v0.0.0-20241219192143-6b3ec007d9bb
+# google.golang.org/genproto/googleapis/rpc v0.0.0-20241223144023-3abc09e42ca8
 ## explicit; go 1.21
 google.golang.org/genproto/googleapis/rpc/status
 # google.golang.org/grpc v1.69.2
@@ -274,7 +274,7 @@ google.golang.org/grpc/serviceconfig
 google.golang.org/grpc/stats
 google.golang.org/grpc/status
 google.golang.org/grpc/tap
-# google.golang.org/protobuf v1.36.0
+# google.golang.org/protobuf v1.36.1
 ## explicit; go 1.21
 google.golang.org/protobuf/encoding/protodelim
 google.golang.org/protobuf/encoding/protojson
