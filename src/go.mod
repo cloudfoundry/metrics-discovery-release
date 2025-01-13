@@ -5,12 +5,12 @@ go 1.23.0
 toolchain go1.23.4
 
 require (
-	code.cloudfoundry.org/go-diodes v0.0.0-20241223074059-7f8c1f03edeb
+	code.cloudfoundry.org/go-diodes v0.0.0-20250107092748-442ea8f9957b
 	code.cloudfoundry.org/go-envstruct v1.7.0
 	code.cloudfoundry.org/go-loggregator/v10 v10.0.1
-	code.cloudfoundry.org/go-metric-registry v0.0.0-20241216212740-f99815f94a2a
-	code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20250106210147-2005be891f03
-	code.cloudfoundry.org/tlsconfig v0.14.0
+	code.cloudfoundry.org/go-metric-registry v0.0.0-20250107131239-51ba784c3fe1
+	code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20250107004746-2d1b91326a9e
+	code.cloudfoundry.org/tlsconfig v0.15.0
 	github.com/benjamintf1/unmarshalledmatchers v1.0.0
 	github.com/nats-io/nats.go v1.38.0
 	github.com/onsi/ginkgo/v2 v2.22.2
@@ -18,13 +18,13 @@ require (
 	github.com/prometheus/client_golang v1.20.5
 	github.com/prometheus/client_model v0.6.1
 	github.com/prometheus/common v0.61.0
-	google.golang.org/grpc v1.69.2
-	google.golang.org/protobuf v1.36.1
+	google.golang.org/grpc v1.69.4
+	google.golang.org/protobuf v1.36.2
 	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (
-	code.cloudfoundry.org/go-batching v0.0.0-20241223135445-b8f45a03eb70 // indirect
+	code.cloudfoundry.org/go-batching v0.0.0-20250107092849-12350a48cdcd // indirect
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
