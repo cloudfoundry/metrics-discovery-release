@@ -5,10 +5,10 @@ go 1.23.0
 toolchain go1.23.6
 
 require (
-	code.cloudfoundry.org/go-diodes v0.0.0-20250211080108-4c71ef7b9a72
+	code.cloudfoundry.org/go-diodes v0.0.0-20250217093403-cd1363c1f46a
 	code.cloudfoundry.org/go-envstruct v1.7.0
 	code.cloudfoundry.org/go-loggregator/v10 v10.0.1
-	code.cloudfoundry.org/go-metric-registry v0.0.0-20250211080758-b1d4eddf8bb8
+	code.cloudfoundry.org/go-metric-registry v0.0.0-20250217183042-3b486222274d
 	code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20250210093547-6b53792b31d6
 	code.cloudfoundry.org/tlsconfig v0.18.0
 	github.com/benjamintf1/unmarshalledmatchers v1.0.0
@@ -24,7 +24,7 @@ require (
 )
 
 require (
-	code.cloudfoundry.org/go-batching v0.0.0-20250211080613-4a7cabc0fad6 // indirect
+	code.cloudfoundry.org/go-batching v0.0.0-20250217142405-e451d572b3eb // indirect
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
@@ -45,6 +45,6 @@ require (
 	golang.org/x/sys v0.30.0 // indirect
 	golang.org/x/text v0.22.0 // indirect
 	golang.org/x/tools v0.30.0 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20250207221924-e9438ea467c6 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20250218202821-56aae31c358a // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
