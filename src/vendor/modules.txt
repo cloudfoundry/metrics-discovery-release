@@ -1,7 +1,7 @@
-# code.cloudfoundry.org/go-batching v0.0.0-20250317153438-425cd9af613c
+# code.cloudfoundry.org/go-batching v0.0.0-20250324153037-ac776dbe7880
 ## explicit; go 1.23.0
 code.cloudfoundry.org/go-batching
-# code.cloudfoundry.org/go-diodes v0.0.0-20250317104522-5c806ff4fd8d
+# code.cloudfoundry.org/go-diodes v0.0.0-20250324121313-75aea42a1fc3
 ## explicit; go 1.23.0
 code.cloudfoundry.org/go-diodes
 # code.cloudfoundry.org/go-envstruct v1.7.0
@@ -11,11 +11,11 @@ code.cloudfoundry.org/go-envstruct
 ## explicit; go 1.22.0
 code.cloudfoundry.org/go-loggregator/v10
 code.cloudfoundry.org/go-loggregator/v10/rpc/loggregator_v2
-# code.cloudfoundry.org/go-metric-registry v0.0.0-20250318085922-a92b53f5f52f
+# code.cloudfoundry.org/go-metric-registry v0.0.0-20250326210619-55aec564e1b0
 ## explicit; go 1.23.0
 code.cloudfoundry.org/go-metric-registry
 code.cloudfoundry.org/go-metric-registry/testhelpers
-# code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20250317083850-388b5762bddd
+# code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20250326001144-868fb7893ae9
 ## explicit; go 1.23.0
 code.cloudfoundry.org/loggregator-agent-release/src/pkg/config
 code.cloudfoundry.org/loggregator-agent-release/src/pkg/diodes
@@ -23,7 +23,7 @@ code.cloudfoundry.org/loggregator-agent-release/src/pkg/egress/v2
 code.cloudfoundry.org/loggregator-agent-release/src/pkg/ingress/v2
 code.cloudfoundry.org/loggregator-agent-release/src/pkg/plumbing/batching
 code.cloudfoundry.org/loggregator-agent-release/src/pkg/scraper
-# code.cloudfoundry.org/tlsconfig v0.21.0
+# code.cloudfoundry.org/tlsconfig v0.22.0
 ## explicit; go 1.23.0
 code.cloudfoundry.org/tlsconfig
 code.cloudfoundry.org/tlsconfig/certtest
@@ -71,8 +71,8 @@ github.com/klauspost/compress/zstd/internal/xxhash
 # github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822
 ## explicit
 github.com/munnerz/goautoneg
-# github.com/nats-io/nats.go v1.39.1
-## explicit; go 1.22.0
+# github.com/nats-io/nats.go v1.40.1
+## explicit; go 1.23.0
 github.com/nats-io/nats.go
 github.com/nats-io/nats.go/encoders/builtin
 github.com/nats-io/nats.go/internal/parser
@@ -144,7 +144,7 @@ github.com/prometheus/procfs/internal/util
 # github.com/square/certstrap v1.3.0
 ## explicit; go 1.18
 github.com/square/certstrap/pkix
-# go.step.sm/crypto v0.59.1
+# go.step.sm/crypto v0.60.0
 ## explicit; go 1.23.0
 go.step.sm/crypto/fingerprint
 go.step.sm/crypto/internal/bcrypt_pbkdf
@@ -170,7 +170,7 @@ golang.org/x/crypto/salsa20/salsa
 golang.org/x/crypto/scrypt
 golang.org/x/crypto/ssh
 golang.org/x/crypto/ssh/internal/bcrypt_pbkdf
-# golang.org/x/net v0.37.0
+# golang.org/x/net v0.38.0
 ## explicit; go 1.23.0
 golang.org/x/net/context
 golang.org/x/net/html
@@ -215,7 +215,7 @@ golang.org/x/text/unicode/norm
 golang.org/x/tools/cover
 golang.org/x/tools/go/ast/inspector
 golang.org/x/tools/internal/astutil/edge
-# google.golang.org/genproto/googleapis/rpc v0.0.0-20250313205543-e70fdf4c4cb4
+# google.golang.org/genproto/googleapis/rpc v0.0.0-20250324211829-b45e905df463
 ## explicit; go 1.23.0
 google.golang.org/genproto/googleapis/rpc/status
 # google.golang.org/grpc v1.71.0
@@ -280,8 +280,8 @@ google.golang.org/grpc/serviceconfig
 google.golang.org/grpc/stats
 google.golang.org/grpc/status
 google.golang.org/grpc/tap
-# google.golang.org/protobuf v1.36.5
-## explicit; go 1.21
+# google.golang.org/protobuf v1.36.6
+## explicit; go 1.22
 google.golang.org/protobuf/encoding/protodelim
 google.golang.org/protobuf/encoding/protojson
 google.golang.org/protobuf/encoding/prototext
