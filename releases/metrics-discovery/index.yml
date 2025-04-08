@@ -117,4 +117,6 @@ builds:
     version: 3.2.23
   f56759b1-d2e7-4fb5-55b3-30c07300ea20:
     version: 3.2.6
+  f65b5bc5-a43b-43c4-691d-eaefd6f91ff1:
+    version: 3.2.33
 format-version: "2"
