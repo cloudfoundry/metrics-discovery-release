@@ -8,8 +8,8 @@ code.cloudfoundry.org/go-loggregator/v10 v10.2.0 h1:0vUdIKvZb+eDoZ06xy/L0R0KIK9q
 code.cloudfoundry.org/go-loggregator/v10 v10.2.0/go.mod h1:5rfrVz/L3CLsWeKqXFcgfZLTvAhyL8ZR0bRquHfT4RM=
 code.cloudfoundry.org/go-metric-registry v0.0.0-20250512163413-c16153523050 h1:3nd0ANTcFZDkIfqp+nwmxD9AZbnbOIFCKpLgaGKxVZs=
 code.cloudfoundry.org/go-metric-registry v0.0.0-20250512163413-c16153523050/go.mod h1:g5bJie+5m0U1WzcqX6AV8Wd3wrJp8yz3vYh9/9HdD10=
-code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20250507190625-d97551dec0bc h1:I4b1etVO0BtGN6CHEu7uPVRH/+dADToRlXdWviHFKvk=
-code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20250507190625-d97551dec0bc/go.mod h1:pl0J0w8xByzoZOCIYaGO2rtjDeMGTRJ5o2FJeqXEODI=
+code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20250517042608-bc715c8bfcaf h1:IHfhWvsaj7FsPSkq602qofb5yDYha8Hh/aSXaOSMtDc=
+code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20250517042608-bc715c8bfcaf/go.mod h1:5m35VDAAL8kQmxhLUhrvJZ+6XVL8FVCNMa5De7D9yiE=
 code.cloudfoundry.org/tlsconfig v0.27.0 h1:2thU4KOShc0DpzAohYKnmU/MxqtIOrx2pC5NzSntPc4=
 code.cloudfoundry.org/tlsconfig v0.27.0/go.mod h1:S0imKZw0arqMYk6tfb88bfsOJ0+08Po+LTlM2DQkK+0=
 filippo.io/edwards25519 v1.1.0 h1:FNf4tywRC1HmFuKW5xopWpigGjJKiJSV0Cqo0cJWDaA=
@@ -111,8 +111,8 @@ go.opentelemetry.io/otel/sdk/metric v1.34.0 h1:5CeK9ujjbFVL5c1PhLuStg1wxA7vQv7ce
 go.opentelemetry.io/otel/sdk/metric v1.34.0/go.mod h1:jQ/r8Ze28zRKoNRdkjCZxfs6YvBTG1+YIqyFVFYec5w=
 go.opentelemetry.io/otel/trace v1.35.0 h1:dPpEfJu1sDIqruz7BHFG3c7528f6ddfSWfFDVt/xgMs=
 go.opentelemetry.io/otel/trace v1.35.0/go.mod h1:WUk7DtFp1Aw2MkvqGdwiXYDZZNvA/1J8o6xRXLrIkyc=
-go.step.sm/crypto v0.63.0 h1:U1QGELQqJ85oDfeNFE2V52cow1rvy0m3MekG3wFmyXY=
-go.step.sm/crypto v0.63.0/go.mod h1:aj3LETmCZeSil1DMq3BlbhDBcN86+mmKrHZtXWyc0L4=
+go.step.sm/crypto v0.64.0 h1:tZ2k9Am6v3Y7cZCn89uTt77BYYXqvw+5WekUX3WZiXQ=
+go.step.sm/crypto v0.64.0/go.mod h1:EEY+UgKKqsvydv4mvtSpW2fqu2ezvPcAzkC80DwxmrI=
 go.uber.org/automaxprocs v1.6.0 h1:O3y2/QNTOdbF+e/dpXNNW7Rx2hZ4sTIPyybbxyNqTUs=
 go.uber.org/automaxprocs v1.6.0/go.mod h1:ifeIMSnPZuznNm6jmdzmU3/bfk01Fe2fotchwEFJ8r8=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
@@ -142,10 +142,10 @@ golang.org/x/tools v0.0.0-20180917221912-90fa682c2a6e/go.mod h1:n7NCudcB/nEzxVGm
 golang.org/x/tools v0.33.0 h1:4qz2S3zmRxbGIhDIAgjxvFutSvH5EfnsYrRBj0UI0bc=
 golang.org/x/tools v0.33.0/go.mod h1:CIJMaWEY88juyUfo7UbgPqbC8rU2OqfAV1h2Qp0oMYI=
 golang.org/x/xerrors v0.0.0-20191204190536-9bdfabe68543/go.mod h1:I/5z698sn9Ka8TeJc9MKroUUfqBBauWjQqLJ2OPfmY0=
-google.golang.org/genproto/googleapis/rpc v0.0.0-20250512202823-5a2f75b736a9 h1:IkAfh6J/yllPtpYFU0zZN1hUPYdT0ogkBT/9hMxHjvg=
-google.golang.org/genproto/googleapis/rpc v0.0.0-20250512202823-5a2f75b736a9/go.mod h1:qQ0YXyHHx3XkvlzUtpXDkS29lDSafHMZBAZDc03LQ3A=
-google.golang.org/grpc v1.72.1 h1:HR03wO6eyZ7lknl75XlxABNVLLFc2PAb6mHlYh756mA=
-google.golang.org/grpc v1.72.1/go.mod h1:wH5Aktxcg25y1I3w7H69nHfXdOG3UiadoBtjh3izSDM=
+google.golang.org/genproto/googleapis/rpc v0.0.0-20250519155744-55703ea1f237 h1:cJfm9zPbe1e873mHJzmQ1nwVEeRDU/T1wXDK2kUSU34=
+google.golang.org/genproto/googleapis/rpc v0.0.0-20250519155744-55703ea1f237/go.mod h1:qQ0YXyHHx3XkvlzUtpXDkS29lDSafHMZBAZDc03LQ3A=
+google.golang.org/grpc v1.72.2 h1:TdbGzwb82ty4OusHWepvFWGLgIbNo1/SUynEN0ssqv8=
+google.golang.org/grpc v1.72.2/go.mod h1:wH5Aktxcg25y1I3w7H69nHfXdOG3UiadoBtjh3izSDM=
 google.golang.org/protobuf v0.0.0-20200109180630-ec00e32a8dfd/go.mod h1:DFci5gLYBciE7Vtevhsrf46CRTquxDuWsQurQQe4oz8=
 google.golang.org/protobuf v0.0.0-20200221191635-4d8936d0db64/go.mod h1:kwYJMbMJ01Woi6D6+Kah6886xMZcty6N08ah7+eCXa0=
 google.golang.org/protobuf v0.0.0-20200228230310-ab0ca4ff8a60/go.mod h1:cfTl7dwQJ+fmap5saPgwCLgHXTUD7jkjRqWcaiX5VyM=
