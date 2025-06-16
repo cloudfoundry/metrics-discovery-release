@@ -11,11 +11,11 @@ code.cloudfoundry.org/go-envstruct
 ## explicit; go 1.23.0
 code.cloudfoundry.org/go-loggregator/v10
 code.cloudfoundry.org/go-loggregator/v10/rpc/loggregator_v2
-# code.cloudfoundry.org/go-metric-registry v0.0.0-20250512163413-c16153523050
+# code.cloudfoundry.org/go-metric-registry v0.0.0-20250611124144-ca953cadd16e
 ## explicit; go 1.23.0
 code.cloudfoundry.org/go-metric-registry
 code.cloudfoundry.org/go-metric-registry/testhelpers
-# code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20250605192107-7d6b02c94d1a
+# code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20250609083613-4f2fb56875a0
 ## explicit; go 1.23.0
 code.cloudfoundry.org/loggregator-agent-release/src/pkg/config
 code.cloudfoundry.org/loggregator-agent-release/src/pkg/diodes
@@ -23,7 +23,7 @@ code.cloudfoundry.org/loggregator-agent-release/src/pkg/egress/v2
 code.cloudfoundry.org/loggregator-agent-release/src/pkg/ingress/v2
 code.cloudfoundry.org/loggregator-agent-release/src/pkg/plumbing/batching
 code.cloudfoundry.org/loggregator-agent-release/src/pkg/scraper
-# code.cloudfoundry.org/tlsconfig v0.28.0
+# code.cloudfoundry.org/tlsconfig v0.29.0
 ## explicit; go 1.23.0
 code.cloudfoundry.org/tlsconfig
 code.cloudfoundry.org/tlsconfig/certtest

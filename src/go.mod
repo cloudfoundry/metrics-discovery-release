@@ -8,9 +8,9 @@ require (
 	code.cloudfoundry.org/go-diodes v0.0.0-20250505082646-e4c2d772c2ec
 	code.cloudfoundry.org/go-envstruct v1.7.0
 	code.cloudfoundry.org/go-loggregator/v10 v10.2.0
-	code.cloudfoundry.org/go-metric-registry v0.0.0-20250512163413-c16153523050
-	code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20250605192107-7d6b02c94d1a
-	code.cloudfoundry.org/tlsconfig v0.28.0
+	code.cloudfoundry.org/go-metric-registry v0.0.0-20250611124144-ca953cadd16e
+	code.cloudfoundry.org/loggregator-agent-release/src v0.0.0-20250609083613-4f2fb56875a0
+	code.cloudfoundry.org/tlsconfig v0.29.0
 	github.com/benjamintf1/unmarshalledmatchers v1.0.0
 	github.com/nats-io/nats.go v1.43.0
 	github.com/onsi/ginkgo/v2 v2.23.4
